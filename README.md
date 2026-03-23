@@ -86,7 +86,7 @@ Then restart your shell or run `source ~/.bashrc` (or `~/.zshrc`).
 
 ## Currently Supported
 
-- **Rust** — `rustc` error codes (E0001 through E0999)
+- **Rust** — `rustc` error codes 
 
 ### Coming Soon
 
