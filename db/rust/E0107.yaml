@@ -1,0 +1,36 @@
+id: E0107
+tool: rustc
+language: rust
+title: Wrong number of type or lifetime arguments
+tags: [generics, type-parameters, lifetimes]
+
+explain: |
+  You provided the wrong number of generic type arguments or lifetime arguments when using a
+  type, function, or trait. For example, `HashMap` expects two type parameters (key and value),
+  so writing `HashMap<String>` with only one is an error. This also applies to lifetime
+  parameters when a struct or function requires explicit lifetime annotations and you provide
+  too many or too few.
+
+fix: |
+  Check the definition of the type or function to see how many generic parameters it expects,
+  then adjust your usage to provide exactly that many. The compiler error message will tell you
+  how many arguments were expected versus how many you supplied.
+
+example_error: |
+  error[E0107]: missing generics for struct `HashMap`
+   --> src/main.rs:3:12
+    |
+  3 |     let m: HashMap<String> = HashMap::new();
+    |            ^^^^^^^ expected 2 generic arguments
+    |
+  note: struct defined here, with 2 generic parameters: `K`, `V`
+
+example_code: |
+  use std::collections::HashMap;
+
+  fn main() {
+      let m: HashMap<String> = HashMap::new(); // Error: expected 2 generic arguments
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0107.html

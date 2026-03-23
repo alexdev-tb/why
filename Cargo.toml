@@ -1,0 +1,26 @@
+[package]
+name = "why-cli"
+version = "0.1.0"
+edition = "2021"
+description = "Plain English explanations for compiler errors and CLI failures"
+license = "MIT"
+repository = "https://github.com/alexdev-tb/why"
+keywords = ["cli", "errors", "compiler", "developer-tools"]
+categories = ["command-line-utilities", "development-tools"]
+
+[[bin]]
+name = "why"
+path = "src/main.rs"
+
+[dependencies]
+clap = { version = "4", features = ["derive"] }
+serde = { version = "1", features = ["derive"] }
+serde_yaml = "0.9"
+colored = "2"
+regex = "1"
+dirs = "5"
+include_dir = "0.7"
+ureq = "2"
+flate2 = "1"
+tar = "0.4"
+

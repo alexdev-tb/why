@@ -1,0 +1,44 @@
+id: E0603
+tool: rustc
+language: rust
+title: Private item accessed from outside module
+tags: [visibility, modules, privacy, encapsulation]
+
+explain: |
+  You tried to use a struct, function, constant, or other item that is private to
+  another module. In Rust, items are private by default -- they can only be
+  accessed within the module where they are defined (and its submodules). If you
+  try to access something from outside that module without it being marked `pub`,
+  the compiler will reject it.
+
+fix: |
+  If you own the module, add the `pub` keyword to make the item public, e.g.
+  `pub fn helper()` or `pub struct Config`. If you don't own the code, look for a
+  public API that provides access to the functionality you need. The module author
+  may have intentionally kept it private.
+
+example_error: |
+  error[E0603]: function `internal_helper` is private
+   --> src/main.rs:4:14
+    |
+  4 |     utils::internal_helper();
+    |            ^^^^^^^^^^^^^^^ private function
+    |
+  note: the function `internal_helper` is defined here
+   --> src/utils.rs:1:1
+
+example_code: |
+  // src/utils.rs
+  fn internal_helper() {
+      println!("I'm private!");
+  }
+
+  // src/main.rs
+  mod utils;
+
+  fn main() {
+      utils::internal_helper(); // Error: function `internal_helper` is private
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0603.html

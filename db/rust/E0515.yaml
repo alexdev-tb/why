@@ -1,0 +1,38 @@
+id: E0515
+tool: rustc
+language: rust
+title: Cannot return reference to local variable
+tags: [lifetimes, borrowing, references, dangling-pointer]
+
+explain: |
+  You tried to return a reference to a value that is created inside the function.
+  When the function ends, all its local variables are dropped (deallocated). If
+  Rust allowed you to return a reference to one of those locals, the caller would
+  receive a dangling pointer to freed memory. This is the kind of bug that causes
+  crashes in C/C++, and Rust prevents it at compile time.
+
+fix: |
+  Return an owned value instead of a reference. For example, return `String`
+  instead of `&str`, or `Vec<T>` instead of `&[T]`. If you need to return a
+  reference, the data it points to must outlive the function -- typically by being
+  passed in as a parameter with a matching lifetime.
+
+example_error: |
+  error[E0515]: cannot return reference to local variable `s`
+   --> src/main.rs:3:5
+    |
+  3 |     &s
+    |     ^^ returns a reference to data owned by the current function
+
+example_code: |
+  fn greeting() -> &str {
+      let s = String::from("hello");
+      &s // Error: cannot return reference to local variable
+  }
+
+  fn main() {
+      println!("{}", greeting());
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0515.html

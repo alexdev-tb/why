@@ -1,0 +1,40 @@
+id: E0277
+tool: rustc
+language: rust
+title: Trait bound not satisfied
+tags: [traits, generics, bounds, type-system]
+
+explain: |
+  You tried to use a type in a context that requires it to implement a specific trait, but
+  that type does not implement the trait. For example, if a function requires its argument to
+  implement `Display`, but you pass in a struct that has no `Display` implementation, the
+  compiler cannot generate the necessary code. This often happens with generics, printing,
+  or when using standard library functions that have trait bounds on their parameters.
+
+fix: |
+  Implement the required trait for your type, either by deriving it (e.g., `#[derive(Debug)]`)
+  or by writing a manual `impl` block. If you are working with generics, make sure the type
+  parameter's bounds include the required trait (e.g., `T: Display`).
+
+example_error: |
+  error[E0277]: `MyStruct` doesn't implement `std::fmt::Display`
+   --> src/main.rs:8:20
+    |
+  8 |     println!("{}", my_value);
+    |                    ^^^^^^^^ `MyStruct` cannot be formatted with the default formatter
+    |
+    = help: the trait `std::fmt::Display` is not implemented for `MyStruct`
+    = note: in format strings you may be able to use `{:?}` (or {:#?} for pretty-print) instead
+
+example_code: |
+  struct MyStruct {
+      name: String,
+  }
+
+  fn main() {
+      let my_value = MyStruct { name: "hello".into() };
+      println!("{}", my_value); // Error: MyStruct doesn't implement Display
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0277.html

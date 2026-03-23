@@ -1,0 +1,40 @@
+id: E0106
+tool: rustc
+language: rust
+title: Missing lifetime specifier
+tags: [lifetimes, references, type-system]
+
+explain: |
+  You wrote a function signature or type definition that includes references but did not specify
+  their lifetimes, and the compiler cannot figure out the lifetimes on its own using its elision
+  rules. Lifetimes tell the compiler how long references are valid. When there is more than one
+  input reference or the relationship between input and output lifetimes is ambiguous, you must
+  annotate them explicitly so the compiler can verify memory safety.
+
+fix: |
+  Add explicit lifetime annotations to the function signature. For example, if your function takes
+  two `&str` parameters and returns a `&str`, you need to specify which input lifetime the output
+  is tied to: `fn foo<'a>(x: &'a str, y: &str) -> &'a str`. If both inputs could be the source,
+  consider which one the return value actually borrows from.
+
+example_error: |
+  error[E0106]: missing lifetime specifier
+   --> src/main.rs:1:33
+    |
+  1 | fn longest(a: &str, b: &str) -> &str {
+    |               ----     ----      ^ expected named lifetime parameter
+    |
+    = help: this function's return type contains a borrowed value, but the signature does not say whether it is borrowed from `a` or `b`
+
+example_code: |
+  fn longest(a: &str, b: &str) -> &str {  // Error: missing lifetime specifier
+      if a.len() > b.len() { a } else { b }
+  }
+
+  fn main() {
+      let result = longest("hello", "world");
+      println!("{}", result);
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0106.html

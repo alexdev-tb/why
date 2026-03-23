@@ -1,0 +1,40 @@
+id: E0583
+tool: rustc
+language: rust
+title: File not found for module
+tags: [modules, files, project-structure, mod]
+
+explain: |
+  You declared a module with `mod module_name;` but the compiler cannot find the
+  corresponding source file. Rust expects module files to follow a specific naming
+  convention: for `mod foo;` declared in `src/main.rs`, it looks for either
+  `src/foo.rs` or `src/foo/mod.rs`. If neither file exists, or the file is in the
+  wrong location, you get this error.
+
+fix: |
+  Create the missing file in the correct location. For `mod foo;` in
+  `src/main.rs`, create `src/foo.rs`. For `mod bar;` inside `src/foo.rs`, create
+  `src/foo/bar.rs`. Make sure the filename exactly matches the module name
+  (including case).
+
+example_error: |
+  error[E0583]: file not found for module `database`
+   --> src/main.rs:1:1
+    |
+  1 | mod database;
+    | ^^^^^^^^^^^^^
+    |
+    = help: to create the module `database`, create file "src/database.rs"
+            or "src/database/mod.rs"
+
+example_code: |
+  // src/main.rs
+  mod database; // Error: file not found for module `database`
+                // (src/database.rs does not exist)
+
+  fn main() {
+      database::connect();
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0583.html

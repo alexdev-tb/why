@@ -1,0 +1,38 @@
+id: E0382
+tool: rustc
+language: rust
+title: Use of moved value
+tags: [ownership, move-semantics, borrow-checker]
+
+explain: |
+  You tried to use a value after it has been moved to another variable or passed to a function
+  that took ownership of it. In Rust, most types are "moved" rather than copied when assigned
+  or passed, meaning the original variable becomes invalid. This is a core part of Rust's
+  ownership system that prevents double-free bugs and data races.
+
+fix: |
+  Either clone the value before moving it (by calling `.clone()`), borrow it with a reference
+  (`&value`) instead of transferring ownership, or restructure your code so you only use the
+  value after the move. If the type is simple (like integers), consider implementing or deriving
+  the `Copy` trait.
+
+example_error: |
+  error[E0382]: use of moved value: `name`
+   --> src/main.rs:5:20
+    |
+  3 |     let name = String::from("hello");
+    |         ---- move occurs because `name` has type `String`, which does not implement the `Copy` trait
+  4 |     let greeting = name;
+    |                    ---- value moved here
+  5 |     println!("{}", name);
+    |                    ^^^^ value used here after move
+
+example_code: |
+  fn main() {
+      let name = String::from("hello");
+      let greeting = name;       // `name` is moved here
+      println!("{}", name);      // Error: `name` was already moved
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0382.html

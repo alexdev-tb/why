@@ -1,0 +1,39 @@
+id: E0614
+tool: rustc
+language: rust
+title: Cannot dereference type
+tags: [dereferencing, types, operators, traits]
+
+explain: |
+  You tried to use the dereference operator (`*`) on a type that doesn't support
+  it. In Rust, only types that implement the `Deref` trait can be dereferenced.
+  This typically happens when you use `*` on a primitive type like an integer, or
+  on a custom type that hasn't implemented `Deref`. Smart pointers like `Box`,
+  `Rc`, and `Arc` all implement `Deref`, but arbitrary types do not.
+
+fix: |
+  Remove the dereference operator if it's not needed, or implement the `Deref`
+  trait for your custom type. If you're trying to access the inner value of a
+  wrapper, consider adding a method to unwrap it or implementing `Deref` to the
+  inner type.
+
+example_error: |
+  error[E0614]: type `Wrapper` cannot be dereferenced
+   --> src/main.rs:8:20
+    |
+  8 |     let inner = *w;
+    |                 ^^
+
+example_code: |
+  struct Wrapper {
+      value: i32,
+  }
+
+  fn main() {
+      let w = Wrapper { value: 42 };
+      let inner = *w; // Error: type `Wrapper` cannot be dereferenced
+      println!("{}", inner);
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0614.html

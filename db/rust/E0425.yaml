@@ -1,0 +1,32 @@
+id: E0425
+tool: rustc
+language: rust
+title: Cannot find value in this scope
+tags: [name-resolution, scope, variables]
+
+explain: |
+  The compiler encountered a name that it cannot find in the current scope. This usually means
+  you have a typo in a variable or function name, you are trying to use a variable that has not
+  been declared yet, or the variable is defined in a different scope (such as inside an `if` block)
+  and is not accessible where you are trying to use it.
+
+fix: |
+  Double-check the spelling of the variable or function name. Make sure the variable is declared
+  before you use it and that it is in scope. If the name comes from another module, make sure you
+  have the correct `use` statement to bring it into scope.
+
+example_error: |
+  error[E0425]: cannot find value `username` in this scope
+   --> src/main.rs:3:20
+    |
+  3 |     println!("{}", username);
+    |                    ^^^^^^^^ not found in this scope
+
+example_code: |
+  fn main() {
+      // let username = "alice";  // forgot to declare this
+      println!("{}", username);   // Error: cannot find value `username`
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0425.html

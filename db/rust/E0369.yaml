@@ -1,0 +1,43 @@
+id: E0369
+tool: rustc
+language: rust
+title: Binary operation cannot be applied
+tags: [operators, traits, types, arithmetic]
+
+explain: |
+  You tried to use a binary operator (like `+`, `-`, `*`, `==`, etc.) on types
+  that don't support that operation. In Rust, operators are backed by traits (e.g.
+  `Add` for `+`, `PartialEq` for `==`), and a type must implement the
+  corresponding trait for the operator to work. This commonly happens when trying
+  to add two `String`s together or compare custom structs.
+
+fix: |
+  Implement the required trait for your type, or convert the operands to types
+  that already support the operator. For example, use `&str` concatenation with
+  `format!()`, or derive `PartialEq` on your struct with `#[derive(PartialEq)]`.
+
+example_error: |
+  error[E0369]: binary operation `+` cannot be applied to type `Point`
+   --> src/main.rs:8:15
+    |
+  8 |     let c = a + b;
+    |             - ^ - Point
+    |             |
+    |             Point
+    |
+    = note: an implementation of `std::ops::Add` might be missing for `Point`
+
+example_code: |
+  struct Point {
+      x: i32,
+      y: i32,
+  }
+
+  fn main() {
+      let a = Point { x: 1, y: 2 };
+      let b = Point { x: 3, y: 4 };
+      let c = a + b; // Error: binary operation `+` cannot be applied to type `Point`
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0369.html

@@ -1,0 +1,39 @@
+id: E0609
+tool: rustc
+language: rust
+title: No field on type
+tags: [structs, fields, types, access]
+
+explain: |
+  You tried to access a field that doesn't exist on a struct or type. This usually
+  means you misspelled the field name, or you're thinking of a field from a
+  different struct. Rust checks field access at compile time, so there's no way to
+  access a field that wasn't defined in the struct declaration.
+
+fix: |
+  Check the struct definition to see what fields are actually available. Fix the
+  field name to match the definition. If you need this field, add it to the struct
+  declaration and update all places where the struct is constructed.
+
+example_error: |
+  error[E0609]: no field `username` on type `User`
+   --> src/main.rs:8:22
+    |
+  8 |     println!("{}", u.username);
+    |                      ^^^^^^^^ unknown field
+    |
+    = note: available fields are: `name`, `email`
+
+example_code: |
+  struct User {
+      name: String,
+      email: String,
+  }
+
+  fn main() {
+      let u = User { name: "Alice".into(), email: "alice@example.com".into() };
+      println!("{}", u.username); // Error: no field `username` on type `User`
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0609.html
