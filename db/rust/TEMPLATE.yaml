@@ -1,5 +1,5 @@
 # Copy this template to create a new error entry.
-# Filename should match the error code: E0XXX.yaml
+# Filename should match the error code: E0XXX.yaml 
 
 id: E0XXX
 tool: rustc
