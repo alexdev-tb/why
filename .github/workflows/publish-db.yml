@@ -10,7 +10,18 @@ permissions:
   contents: write
 
 jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - run: pip install pyyaml
+      - run: python scripts/validate.py
+
   publish-db:
+    needs: validate
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -20,11 +31,16 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Create a fresh orphan branch with only db/ contents
+          # Save db contents before wiping the tree
+          cp -r db /tmp/why-db
+
           git checkout --orphan db-staging
           git rm -rf .
-          cp -r db/* .
+
+          # Copy db contents to root (rust/, python/, etc.)
+          cp -r /tmp/why-db/* .
           rm -f TEMPLATE.yaml
+
           git add -A
           count=$(find . -name '*.yaml' | wc -l)
           git commit -m "Update error database ($count entries)"
