@@ -33,7 +33,7 @@ $ why
 ## Installation
 
 ```sh
-cargo install why
+cargo install --git https://github.com/alexdev-tb/why
 ```
 
 ## Usage
