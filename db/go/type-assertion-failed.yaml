@@ -1,0 +1,30 @@
+id: type-assertion-failed
+tool: go
+language: go
+title: Type assertion failed
+tags: [type-assertion, interface, panic]
+
+explain: |
+  A type assertion panic occurs when you use a type assertion to claim that an interface value
+  holds a specific concrete type, but it actually holds a different type. Type assertions require you
+  to know exactly what type the interface contains, or use the two-value form to safely check.
+
+fix: |
+  Use the two-value form of type assertion: value, ok := data.(Type)
+  Check the ok boolean to verify the type before using the value
+  Use a type switch for multiple possible types
+  Verify what type is actually stored in the interface
+  Use %T with fmt.Printf to inspect the actual type at runtime
+
+example_error: |
+  panic: interface conversion: interface {} is int, not string
+
+example_code: |
+  package main
+  func main() {
+      var data interface{} = 42
+      text := data.(string)  // Error: data is int, not string
+  }
+
+links:
+  - https://golang.org/doc/effective_go#interfaces_and_types

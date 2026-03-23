@@ -1,0 +1,29 @@
+id: BufferError
+tool: python
+language: python
+title: Buffer-related operation failed
+tags: [buffer, memory, bytes]
+
+explain: |
+  A BufferError occurs when a buffer-related operation cannot proceed.
+  Common causes include:
+  - Attempting to resize an object that does not support resizing
+  - Buffer protocol violations
+  - Operations on read-only buffers
+
+fix: |
+  Check if the buffer supports the operation you're trying to perform
+  For read-only buffers, work with copies instead of modifying the original
+  Ensure objects support the required buffer protocol features
+  Use appropriate data structures for your use case
+
+example_error: |
+  BufferError: cannot resize this memoryview object
+
+example_code: |
+  import array
+  buf = memoryview(array.array('i', [1, 2, 3]))
+  # Cannot resize a memoryview
+
+links:
+  - https://docs.python.org/3/library/exceptions.html#BufferError

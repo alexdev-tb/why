@@ -1,0 +1,28 @@
+id: EOFError
+tool: python
+language: python
+title: Unexpected end of file
+tags: [input, file, eof]
+
+explain: |
+  An EOFError occurs when input() or another built-in function hits the end of a file unexpectedly.
+  Common causes include:
+  - Reading from a file that has reached its end
+  - Running an interactive script with no input piped to stdin
+  - Automated test runners not providing expected input to input()
+
+fix: |
+  Check that input is available before calling input()
+  Use try/except to handle EOFError gracefully
+  Provide default values or handle the end-of-file case
+  Ensure scripts receive proper input when run non-interactively
+
+example_error: |
+  EOFError: EOF when reading a line
+
+example_code: |
+  # This raises EOFError when run without piped input
+  name = input("Enter your name: ")
+
+links:
+  - https://docs.python.org/3/library/exceptions.html#EOFError

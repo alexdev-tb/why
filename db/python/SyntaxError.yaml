@@ -1,0 +1,32 @@
+id: SyntaxError
+tool: python
+language: python
+title: Syntax error in code
+tags: [syntax, parsing, code-structure]
+
+explain: |
+  A SyntaxError occurs when Python's parser encounters code that doesn't follow Python's syntax rules.
+  These are compile-time errors (caught before execution) rather than runtime errors.
+  Common causes include:
+  - Missing colons after if, for, while, def, class statements
+  - Mismatched or missing parentheses, brackets, or quotes
+  - Invalid characters or statements
+  - Incorrect indentation
+  - Using invalid keywords or reserved words incorrectly
+
+fix: |
+  Read the error message carefully - it shows the line number and position of the error.
+  Check for missing colons at the end of function/class/control flow statements.
+  Verify parentheses, brackets, and quotes are balanced and properly matched.
+  Check indentation is consistent (4 spaces per level is standard).
+  Ensure you're not using Python keywords as variable names.
+
+example_error: |
+  SyntaxError: invalid syntax
+
+example_code: |
+  if x > 5  # Error: missing colon
+      print("x is large")
+
+links:
+  - https://docs.python.org/3/library/exceptions.html#SyntaxError

@@ -1,0 +1,28 @@
+id: ValueError
+tool: python
+language: python
+title: Argument has inappropriate value
+tags: [value, conversion, validation]
+
+explain: |
+  A ValueError is raised when a function receives an argument that has the right type but an inappropriate value.
+  Common causes include:
+  - Converting a string to a number when the string isn't a valid number (e.g., int("abc"))
+  - Unpacking sequences with the wrong number of values
+  - Passing an invalid value to a function that expects specific values
+  - Using an invalid string format for parsing
+
+fix: |
+  Validate input before conversion. Check that strings contain valid numbers before using int() or float().
+  Ensure sequences have the expected number of elements when unpacking.
+  Review function documentation to understand what values are acceptable.
+  Use try-except blocks to handle conversion errors gracefully.
+
+example_error: |
+  ValueError: invalid literal for int() with base 10: 'abc'
+
+example_code: |
+  x = int("abc")  # Error: "abc" is not a valid integer
+
+links:
+  - https://docs.python.org/3/library/exceptions.html#ValueError

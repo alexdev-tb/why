@@ -1,0 +1,30 @@
+id: UnicodeDecodeError
+tool: python
+language: python
+title: Unicode decode error
+tags: [encoding, unicode, string]
+
+explain: |
+  A UnicodeDecodeError occurs when Python tries to decode bytes to a string using an encoding that's incompatible with the actual data.
+  Common causes include:
+  - Reading a file with the wrong encoding
+  - Decoding binary data with an incompatible encoding
+  - Files that weren't saved with the encoding you're assuming
+  - Mixing different text encodings in the same file
+
+fix: |
+  Specify the correct encoding when opening files: open(file, encoding='utf-8')
+  If unsure about encoding, use 'utf-8' (it's the standard) or 'latin-1' (very permissive)
+  Use errors='replace' or errors='ignore' to be more lenient: open(file, errors='replace')
+  Check the file encoding if dealing with legacy files (use file command or editor info)
+  For web data, check HTTP headers for Content-Type encoding
+
+example_error: |
+  UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0
+
+example_code: |
+  with open("file.txt", "r") as f:  # Error: file might not be UTF-8
+      content = f.read()
+
+links:
+  - https://docs.python.org/3/library/exceptions.html#UnicodeDecodeError

@@ -1,0 +1,27 @@
+id: OSError
+tool: python
+language: python
+title: Operating system error
+tags: [system, io, file-system]
+
+explain: |
+  An OSError is a generic error for issues with operating system operations like file I/O or system calls.
+  Many specific errors (FileNotFoundError, PermissionError, etc.) are subclasses of OSError.
+  Common causes include:
+  - Issues with file system operations
+  - System resource limitations (out of memory, too many open files)
+  - Hardware issues or network problems
+  - Invalid system calls or operations
+
+fix: |
+  Check the specific error type - the error message usually gives more details
+  Look at the error number (errno) to understand the specific issue
+  For file operations, verify the path and permissions
+  Ensure system resources are available (disk space, memory, file handles)
+  Use try-except blocks to handle OS errors gracefully
+
+example_error: |
+  OSError: [Errno 28] No space left on device
+
+links:
+  - https://docs.python.org/3/library/exceptions.html#OSError

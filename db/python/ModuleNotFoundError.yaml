@@ -1,0 +1,30 @@
+id: ModuleNotFoundError
+tool: python
+language: python
+title: No module named (subclass of ImportError)
+tags: [import, module, dependency, not-installed]
+
+explain: |
+  A ModuleNotFoundError is a subclass of ImportError that specifically tells you a module can't be found.
+  This is raised when an import statement tries to import a module that doesn't exist or isn't installed.
+  Common causes include:
+  - Package isn't installed in the current Python environment
+  - Wrong package name (similar names like 'requests' vs 'request')
+  - Using the wrong Python version or virtual environment
+  - Package installed in a different Python environment
+
+fix: |
+  Use pip to install the missing module: pip install module_name
+  Check the correct package name from PyPI (pypi.org)
+  Ensure you're using the right Python environment (activate your virtual environment if using one)
+  Use pip list to see installed packages
+  For common modules like 'requests', ensure it's exactly spelled correctly
+
+example_error: |
+  ModuleNotFoundError: No module named 'requests'
+
+example_code: |
+  import requests  # Error: requests package not installed
+
+links:
+  - https://docs.python.org/3/library/exceptions.html#ModuleNotFoundError

@@ -1,0 +1,28 @@
+id: no-required-module
+tool: go
+language: go
+title: Required module not found
+tags: [modules, import, dependency]
+
+explain: |
+  A "no required module provides" error occurs when you import a package that isn't defined in your go.mod file.
+  Go uses modules for dependency management. When you import a package, Go looks in go.mod for the module that provides it.
+  If the module isn't listed, or the version isn't correct, Go can't find the package.
+
+fix: |
+  Run 'go get <module>' to download and add the module to go.mod
+  Check the correct import path - it should match the module name in go.mod
+  Run 'go mod tidy' to clean up and fetch missing dependencies
+  Check your go.mod file to see what modules are available
+  Verify the module version is compatible with your Go version
+
+example_error: |
+  no required module provides package github.com/user/repo
+
+example_code: |
+  package main
+  import "github.com/user/repo/package"  // Error if not in go.mod
+  func main() {}
+
+links:
+  - https://golang.org/doc/modules/managing-dependencies

@@ -74,9 +74,63 @@ pub fn extract_error_code(stderr: &str) -> Option<String> {
         return Some(format!("E{}", &caps[1]));
     }
 
-    let python_re = Regex::new(r"(?m)^(\w*(?:Error|Exception|Warning))\b").unwrap();
+    let python_re = Regex::new(r"(?m)^((?:\w*(?:Error|Exception|Warning)|StopIteration|KeyboardInterrupt|SystemExit|GeneratorExit|BaseException))\b").unwrap();
     if let Some(caps) = python_re.captures(stderr) {
         return Some(caps[1].to_string());
+    }
+
+    // Match Go errors: "undefined: variable", "cannot use X as Y", "no required module", etc.
+    let go_patterns = vec![
+        r"^undefined:\s",
+        r"^cannot use\s",
+        r"^no required module\s",
+        r"^syntax error",
+        r"^not enough arguments",
+        r"^too many arguments",
+        r"^invalid operation",
+        r"^assignment mismatch",
+        r"^interface {} is",  // type assertion error
+        r"^concurrent map",
+        r"^declared but not used",
+        r"^imported and not used",
+    ];
+
+    for pattern in go_patterns {
+        if let Ok(re) = Regex::new(pattern) {
+            if re.is_match(stderr) {
+                // Extract the error type from the message
+                if let Some(line) = stderr.lines().next() {
+                    let error_type = if line.starts_with("undefined:") {
+                        "undefined"
+                    } else if line.starts_with("cannot use") {
+                        "cannot-use-type"
+                    } else if line.starts_with("no required module") {
+                        "no-required-module"
+                    } else if line.starts_with("syntax error") {
+                        "syntax-error"
+                    } else if line.starts_with("not enough arguments") {
+                        "not-enough-arguments"
+                    } else if line.starts_with("too many arguments") {
+                        "too-many-arguments"
+                    } else if line.starts_with("invalid operation") {
+                        "invalid-operation"
+                    } else if line.starts_with("assignment mismatch") {
+                        "assignment-mismatch"
+                    } else if line.contains("concurrent map") {
+                        "concurrent-map-write"
+                    } else if line.starts_with("declared but not used") {
+                        "unused-variable"
+                    } else if line.starts_with("imported and not used") {
+                        "unused-import"
+                    } else if line.contains("interface") && line.contains("is") {
+                        "type-assertion-failed"
+                    } else {
+                        continue;
+                    };
+                    return Some(error_type.to_string());
+                }
+            }
+        }
     }
 
     None
@@ -103,6 +157,24 @@ mod tests {
     fn test_extract_python_exception() {
         let stderr = "Traceback (most recent call last):\n  File \"test.py\", line 1\nTypeError: unsupported operand type";
         assert_eq!(extract_error_code(stderr), Some("TypeError".to_string()));
+    }
+
+    #[test]
+    fn test_extract_go_undefined() {
+        let stderr = "undefined: myVariable";
+        assert_eq!(extract_error_code(stderr), Some("undefined".to_string()));
+    }
+
+    #[test]
+    fn test_extract_go_cannot_use() {
+        let stderr = "cannot use myInt (type int) as type int32 in assignment";
+        assert_eq!(extract_error_code(stderr), Some("cannot-use-type".to_string()));
+    }
+
+    #[test]
+    fn test_extract_go_syntax_error() {
+        let stderr = "syntax error: unexpected x, expected }";
+        assert_eq!(extract_error_code(stderr), Some("syntax-error".to_string()));
     }
 
     #[test]

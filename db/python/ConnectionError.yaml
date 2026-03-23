@@ -1,0 +1,31 @@
+id: ConnectionError
+tool: python
+language: python
+title: Connection-related error
+tags: [network, connection, socket]
+
+explain: |
+  A ConnectionError is the base class for connection-related errors including:
+  - BrokenPipeError: connection lost during write
+  - ConnectionAbortedError: connection aborted by local end
+  - ConnectionRefusedError: connection refused by remote end
+  - ConnectionResetError: connection reset by remote end
+  These occur when network communication fails.
+
+fix: |
+  Check that the remote server is running and accessible
+  Verify network connectivity and firewall settings
+  Implement retry logic with exponential backoff
+  Use timeout parameters to fail fast on unresponsive connections
+  Handle connection errors gracefully in your code
+
+example_error: |
+  ConnectionRefusedError: [Errno 111] Connection refused
+
+example_code: |
+  import socket
+  sock = socket.socket()
+  sock.connect(('localhost', 9999))  # Error if no server listening
+
+links:
+  - https://docs.python.org/3/library/exceptions.html#ConnectionError

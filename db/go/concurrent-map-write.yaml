@@ -1,0 +1,39 @@
+id: concurrent-map-write
+tool: go
+language: go
+title: Concurrent map write error
+tags: [concurrency, map, race-condition]
+
+explain: |
+  A concurrent map write error occurs when multiple goroutines try to write to or read and write
+  the same map at the same time without synchronization. Go maps are not thread-safe, and this
+  will cause a fatal error at runtime. This is usually caught with the race detector.
+
+fix: |
+  Use a sync.Mutex to protect map access
+  Use sync.RWMutex for multiple readers and single writer
+  Create separate map instances for each goroutine if possible
+  Use channels to communicate between goroutines instead of shared maps
+  Run tests with -race flag to detect race conditions: go test -race
+  Ensure all map mutations happen in a synchronized manner
+
+example_error: |
+  fatal error: concurrent map write
+
+example_code: |
+  package main
+  import (
+      "fmt"
+  )
+  func main() {
+      m := make(map[int]int)
+      go func() {
+          m[1] = 10  // goroutine 1 writes
+      }()
+      go func() {
+          m[2] = 20  // goroutine 2 writes - race condition!
+      }()
+  }
+
+links:
+  - https://golang.org/doc/effective_go#concurrency

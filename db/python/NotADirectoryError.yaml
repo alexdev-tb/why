@@ -1,0 +1,30 @@
+id: NotADirectoryError
+tool: python
+language: python
+title: Expected a directory, got a file
+tags: [file, filesystem, directory]
+
+explain: |
+  A NotADirectoryError occurs when you try to perform a directory operation on something that is not a directory.
+  Common causes:
+  - Trying to access a subdirectory through a path component that is a file
+  - Attempting to list contents of a file with os.listdir()
+  - Creating subdirectories when a parent component is a file, not a directory
+
+fix: |
+  Check that the path is a directory before operations
+  Use os.path.isdir() to verify before proceeding
+  Ensure parent paths point to directories, not files
+  Fix the path to point to an actual directory
+  Use try/except to handle path issues gracefully
+
+example_error: |
+  NotADirectoryError: [Errno 20] Not a directory: '/path/to/file/subdir'
+
+example_code: |
+  import os
+  # This fails if 'file.txt' is a file, not a directory
+  contents = os.listdir('file.txt/subdir')
+
+links:
+  - https://docs.python.org/3/library/exceptions.html#NotADirectoryError

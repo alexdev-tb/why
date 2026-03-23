@@ -1,0 +1,36 @@
+id: method-receiver-type
+tool: go
+language: go
+title: Wrong method receiver type
+tags: [method, receiver, type]
+
+explain: |
+  This error occurs when you define a method with a receiver of the wrong type.
+  Methods are tied to specific types through their receiver. You can only call a method on a value
+  of the appropriate type. If you define a method on a pointer receiver, you can't call it on a non-pointer.
+
+fix: |
+  Ensure the receiver type matches how you're calling the method
+  If you need to call on both pointer and non-pointer values, define the method on the pointer type
+  Check if you meant to use & (address-of) or * (dereference)
+  Type receivers are matched exactly - (*Type) is different from Type
+  Verify the method is defined on the right type
+
+example_error: |
+  cannot call pointer method on T
+
+example_code: |
+  package main
+  type Person struct {
+      name string
+  }
+  func (p *Person) UpdateName(newName string) {  // pointer receiver
+      p.name = newName
+  }
+  func main() {
+      person := Person{"Alice"}
+      person.UpdateName("Bob")  // Error: person is not a pointer
+  }
+
+links:
+  - https://golang.org/doc/effective_go#methods

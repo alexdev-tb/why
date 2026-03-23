@@ -1,0 +1,30 @@
+id: assignment-to-nil-map
+tool: go
+language: go
+title: Assignment to entry in nil map
+tags: [map, nil, assignment]
+
+explain: |
+  This panic occurs when you try to add or modify entries in a map that hasn't been initialized.
+  In Go, maps must be created with make() before you can use them. Creating a map variable but not
+  initializing it with make() results in a nil map, and you cannot assign values to nil maps.
+
+fix: |
+  Initialize the map with make(): myMap := make(map[keyType]valueType)
+  Use make with optional capacity: make(map[string]int, initialCapacity)
+  Check if map is nil before using it
+  Initialize maps in struct constructors or init functions
+  Use nil maps only for checking if a map has been initialized
+
+example_error: |
+  panic: assignment to entry in nil map
+
+example_code: |
+  package main
+  func main() {
+      var myMap map[string]int  // nil map
+      myMap["key"] = 42  // Error: nil map
+  }
+
+links:
+  - https://golang.org/doc/effective_go#maps

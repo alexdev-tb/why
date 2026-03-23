@@ -1,0 +1,27 @@
+id: TabError
+tool: python
+language: python
+title: Inconsistent use of tabs and spaces (subclass of IndentationError)
+tags: [syntax, indentation, whitespace, tabs]
+
+explain: |
+  A TabError occurs when code mixes tabs and spaces for indentation inconsistently.
+  Python allows both tabs and spaces, but mixing them can cause syntax errors.
+  TabError is a subclass of IndentationError.
+  Common causes include:
+  - Copying code from different sources with different indentation styles
+  - Using a text editor that converts tabs to spaces (or vice versa) inconsistently
+  - Different settings in different editors
+
+fix: |
+  Choose one indentation style for your project (4 spaces is standard for Python).
+  Configure your editor to use spaces instead of tabs for Python files.
+  Use "Convert Indentation to Spaces" feature in most modern editors.
+  Use tools like autopep8 or black to auto-fix indentation issues.
+  When copying code, check indentation is consistent.
+
+example_error: |
+  TabError: inconsistent use of tabs and spaces in indentation
+
+links:
+  - https://docs.python.org/3/library/exceptions.html#TabError

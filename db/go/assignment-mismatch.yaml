@@ -1,0 +1,32 @@
+id: assignment-mismatch
+tool: go
+language: go
+title: Assignment count mismatch
+tags: [assignment, multiple-return, unpacking]
+
+explain: |
+  An "assignment mismatch" error occurs when the number of values on the right side of an assignment
+  doesn't match the number of variables on the left side. This commonly happens with functions that return
+  multiple values or when unpacking data structures.
+
+fix: |
+  Count the return values from the function and match with variables
+  Use blank underscore _ to ignore values you don't need
+  Check if the function returns an error as the last value and handle it
+  Add or remove variables from the left side to match the right side
+  Use named return values if it helps clarify what's being returned
+
+example_error: |
+  assignment mismatch: 2 variables but myFunc returns 3 values
+
+example_code: |
+  package main
+  func getValue() (int, string, error) {
+      return 42, "hello", nil
+  }
+  func main() {
+      x, y := getValue()  // Error: missing third variable for error
+  }
+
+links:
+  - https://golang.org/doc/effective_go#multiple-returns

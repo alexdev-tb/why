@@ -1,0 +1,30 @@
+id: unused-variable
+tool: go
+language: go
+title: Declared but unused variable
+tags: [unused, declaration, variable]
+
+explain: |
+  Go treats unused variables as compile errors because they usually indicate a mistake in your code.
+  This is a feature to help catch bugs early. If you declare a variable but don't use it anywhere,
+  the compiler will refuse to build your code.
+
+fix: |
+  Use the variable somewhere in your code
+  If you don't need it, remove the variable declaration
+  Use the blank identifier _ to discard a value: _, err := someFunc()
+  If temporarily debugging, you can use _ = variableName
+  Check if you meant to use a different variable name (typo)
+
+example_error: |
+  declared but not used: x
+
+example_code: |
+  package main
+  func main() {
+      x := 42  // Error: x is declared but never used
+      println("Hello")
+  }
+
+links:
+  - https://golang.org/doc/effective_go#blank

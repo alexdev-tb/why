@@ -1,0 +1,31 @@
+id: panic-runtime-error
+tool: go
+language: go
+title: Runtime panic
+tags: [panic, runtime, fatal]
+
+explain: |
+  A panic occurs when your program encounters something it cannot handle safely and must terminate immediately.
+  Common causes include nil pointer dereferences, index out of bounds, type assertions that fail,
+  division by zero, and intentional panic() calls. A panic will crash your program unless caught with recover().
+
+fix: |
+  Check for nil values before using them: if x != nil { ... }
+  Verify array/slice indices are within bounds before access
+  Use type assertions safely: value.(Type) or value, ok := something.(Type)
+  Add bounds checking before operations
+  Use recover() in a defer statement to catch panics in critical sections
+  Add input validation to prevent invalid operations
+
+example_error: |
+  panic: runtime error: invalid memory address or nil pointer dereference
+
+example_code: |
+  package main
+  func main() {
+      var ptr *int
+      println(*ptr)  // Error: nil pointer dereference
+  }
+
+links:
+  - https://golang.org/doc/effective_go#defer

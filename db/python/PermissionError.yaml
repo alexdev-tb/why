@@ -1,0 +1,31 @@
+id: PermissionError
+tool: python
+language: python
+title: Permission denied
+tags: [file-system, permissions, access-control]
+
+explain: |
+  A PermissionError occurs when you try to perform an operation on a file or directory but don't have the required permissions.
+  Common causes include:
+  - Trying to read/write/delete a file you don't have permission to access
+  - Running code from a restricted directory
+  - Trying to write to system directories without admin/sudo permissions
+  - File permissions set too restrictively
+
+fix: |
+  Check file permissions using ls -l (macOS/Linux) or file properties (Windows)
+  Change permissions using chmod (macOS/Linux) if you own the file
+  Run with elevated privileges (sudo) if necessary (be careful!)
+  Write to locations you have permission for (home directory, /tmp)
+  Check that your user owns the file or has read/write access
+  For system files, consider using a different location for your data
+
+example_error: |
+  PermissionError: [Errno 13] Permission denied: '/root/file.txt'
+
+example_code: |
+  with open("/root/secret.txt", "w") as f:  # Error: may not have write permission
+      f.write("data")
+
+links:
+  - https://docs.python.org/3/library/exceptions.html#PermissionError

@@ -1,0 +1,30 @@
+id: IndexError
+tool: python
+language: python
+title: Sequence index out of range
+tags: [index, list, sequence]
+
+explain: |
+  An IndexError occurs when you try to access a sequence (list, tuple, string) at an index that doesn't exist.
+  Common causes include:
+  - Using an index that's too large or too small
+  - Forgetting that indices start at 0
+  - Using a negative index incorrectly
+  - Accessing an index on an empty sequence
+  - Off-by-one errors when looping
+
+fix: |
+  Check that the index is within the valid range for the sequence (0 to len(sequence) - 1).
+  Remember that negative indices count from the end (-1 is the last element).
+  Use len() to check the sequence length before accessing an index.
+  Consider using try-except blocks when accessing unknown sequences.
+
+example_error: |
+  IndexError: list index out of range
+
+example_code: |
+  items = [1, 2, 3]
+  print(items[5])  # Error: index 5 doesn't exist
+
+links:
+  - https://docs.python.org/3/library/exceptions.html#IndexError

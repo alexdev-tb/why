@@ -1,0 +1,31 @@
+id: IndentationError
+tool: python
+language: python
+title: Indentation error (subclass of SyntaxError)
+tags: [syntax, indentation, whitespace]
+
+explain: |
+  An IndentationError occurs when code has incorrect indentation. This is a subclass of SyntaxError.
+  Python uses indentation to define code blocks (functions, classes, loops, conditionals).
+  Common causes include:
+  - Mixing tabs and spaces (Python prefers 4 spaces)
+  - Incorrect indentation level for code blocks
+  - Not indenting code that should be indented
+  - Unexpected indentation where none is expected
+
+fix: |
+  Check that code inside blocks (after colons) is indented consistently.
+  Use 4 spaces for each indentation level (avoid mixing tabs and spaces).
+  Ensure code at the top level of a file has no indentation.
+  Use a good editor that shows whitespace to debug indentation issues.
+  When copying code, verify indentation was preserved correctly.
+
+example_error: |
+  IndentationError: expected an indented block
+
+example_code: |
+  if x > 5:
+  print("x is large")  # Error: should be indented
+
+links:
+  - https://docs.python.org/3/library/exceptions.html#IndentationError

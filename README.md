@@ -47,7 +47,7 @@ why
 Look up a specific error code directly:
 
 ```sh
-why E0499
+why ErrorCode
 ```
 
 Browse all supported error codes:
@@ -86,7 +86,7 @@ Then restart your shell or run `source ~/.bashrc` (or `~/.zshrc`).
 
 ## Currently Supported
 
-- **Rust** — `rustc` error codes 
+- **Rust** — `rustc` error codes
 
 ### Coming Soon
 

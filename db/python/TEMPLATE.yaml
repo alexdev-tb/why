@@ -1,0 +1,24 @@
+# Copy this template to create a new error entry.
+# Filename should match the exception name: ExceptionName.yaml
+
+id: ExceptionName
+tool: python
+language: python
+title: Short descriptive title
+tags: []
+
+explain: |
+  Plain English explanation of what went wrong and why.
+  Write as if explaining to a developer seeing this for the first time.
+
+fix: |
+  Concrete steps to fix the issue.
+
+example_error: |
+  ExceptionName: the error message as Python prints it
+
+example_code: |
+  # Minimal code that reproduces the error
+
+links:
+  - https://docs.python.org/3/library/exceptions.html#ExceptionName

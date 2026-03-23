@@ -1,0 +1,31 @@
+id: RecursionError
+tool: python
+language: python
+title: Maximum recursion depth exceeded
+tags: [recursion, stack, infinite-loop]
+
+explain: |
+  A RecursionError (a subclass of RuntimeError) occurs when a recursive function calls itself too many times.
+  This typically indicates infinite recursion - the function never reaches a base case.
+  Common causes include:
+  - Missing or incorrect base case in recursive function
+  - Base case condition that's never met
+  - Recursive calls that don't make progress toward the base case
+  - Very deep recursion that exceeds Python's limit (default ~1000 calls)
+
+fix: |
+  Ensure your recursive function has a base case that stops the recursion.
+  Verify the base case condition is correct and will eventually be reached.
+  Check that each recursive call makes progress (e.g., reducing input size).
+  Consider using iteration instead of recursion for deep computations.
+  If necessary, increase the recursion limit with sys.setrecursionlimit() (not recommended for large values).
+
+example_error: |
+  RecursionError: maximum recursion depth exceeded
+
+example_code: |
+  def infinite_loop(n):
+      return infinite_loop(n + 1)  # Error: no base case, infinite recursion
+
+links:
+  - https://docs.python.org/3/library/exceptions.html#RecursionError

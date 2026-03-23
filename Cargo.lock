@@ -867,7 +867,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "why-cli"
+name = "why"
 version = "0.1.0"
 dependencies = [
  "clap",

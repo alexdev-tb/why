@@ -1,0 +1,31 @@
+id: ConnectionRefusedError
+tool: python
+language: python
+title: Connection refused by remote host
+tags: [network, connection, socket, refused]
+
+explain: |
+  A ConnectionRefusedError occurs when a connection attempt is refused by the remote host.
+  This typically means:
+  - The target server is not running or not listening on the specified port
+  - Firewall is blocking the connection
+  - The service has crashed or is unavailable
+  - Wrong port number specified
+
+fix: |
+  Verify the server is running on the target host and port
+  Check firewall rules to ensure the port is open
+  Confirm the correct hostname/IP address and port
+  Use netstat or similar tools to verify listening ports
+  Implement retry logic to handle temporary service unavailability
+
+example_error: |
+  ConnectionRefusedError: [Errno 111] Connection refused
+
+example_code: |
+  import socket
+  sock = socket.socket()
+  sock.connect(('127.0.0.1', 8000))  # Error if no server listening
+
+links:
+  - https://docs.python.org/3/library/exceptions.html#ConnectionRefusedError

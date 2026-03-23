@@ -1,0 +1,32 @@
+id: not-enough-arguments
+tool: go
+language: go
+title: Function called with missing arguments
+tags: [function, arguments, parameters]
+
+explain: |
+  A "not enough arguments" error occurs when you call a function but don't provide all required parameters.
+  Go functions have a fixed number of required arguments (unless they are variadic with ...).
+  Each parameter must be provided in the correct order and type.
+
+fix: |
+  Check the function signature to see how many parameters are required
+  Provide all required arguments in order
+  Use the correct types for each argument
+  If using named parameters in a struct-based config, make sure all required fields are set
+  For variadic functions with ..., you can pass zero or more arguments
+
+example_error: |
+  not enough arguments to call myFunc
+
+example_code: |
+  package main
+  func add(a int, b int) int {
+      return a + b
+  }
+  func main() {
+      result := add(5)  // Error: missing argument b
+  }
+
+links:
+  - https://golang.org/doc/effective_go#functions
