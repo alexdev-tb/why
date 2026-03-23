@@ -1,0 +1,31 @@
+name: Publish DB
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "db/**"
+
+permissions:
+  contents: write
+
+jobs:
+  publish-db:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Publish db branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Create a fresh orphan branch with only db/ contents
+          git checkout --orphan db-staging
+          git rm -rf .
+          cp -r db/* .
+          rm -f TEMPLATE.yaml
+          git add -A
+          count=$(find . -name '*.yaml' | wc -l)
+          git commit -m "Update error database ($count entries)"
+          git push origin db-staging:db --force

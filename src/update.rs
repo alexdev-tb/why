@@ -5,9 +5,8 @@ use std::io;
 use std::path::{Path, PathBuf};
 use tar::Archive;
 
-/// main branch.
-const ARCHIVE_URL: &str =
-    "https://github.com/alexdev-tb/why/archive/refs/heads/main.tar.gz";
+const DB_URL: &str =
+    "https://github.com/alexdev-tb/why/archive/refs/heads/db.tar.gz";
 
 pub fn cache_dir() -> Option<PathBuf> {
     dirs::data_dir().map(|d| d.join("why").join("db"))
@@ -30,7 +29,7 @@ pub fn run() {
         "→".green().bold()
     );
 
-    let response = match ureq::get(ARCHIVE_URL).call() {
+    let response = match ureq::get(DB_URL).call() {
         Ok(r) => r,
         Err(e) => {
             eprintln!(
@@ -75,19 +74,7 @@ fn extract_db<R: io::Read>(archive: &mut Archive<R>, dest: &Path) -> io::Result<
         let mut entry = entry?;
         let path = entry.path()?.into_owned();
 
-        // Tarball paths: why-main/db/rust/E0499.yaml → strip to rust/E0499.yaml
-        let components: Vec<_> = path.components().collect();
-
-        let db_idx = components.iter().position(|c| {
-            matches!(c, std::path::Component::Normal(s) if *s == "db")
-        });
-
-        let db_idx = match db_idx {
-            Some(i) => i,
-            None => continue,
-        };
-
-        let relative: PathBuf = components[db_idx + 1..].iter().collect();
+        let relative: PathBuf = path.components().skip(1).collect();
 
         if relative.as_os_str().is_empty() {
             continue;
@@ -133,7 +120,7 @@ mod tests {
     use flate2::Compression;
 
 
-    /// Build a .tar.gz in memory mimicking a GitHub archive.
+    /// Build a .tar.gz mimicking a GitHub branch archive (why-db/ prefix).
     fn build_test_tarball() -> Vec<u8> {
         let gz_buf = Vec::new();
         let encoder = GzEncoder::new(gz_buf, Compression::default());
@@ -147,7 +134,7 @@ mod tests {
         builder
             .append_data(
                 &mut header,
-                "why-main/db/rust/E0499.yaml",
+                "why-db/rust/E0499.yaml",
                 &yaml_content[..],
             )
             .unwrap();
@@ -158,27 +145,18 @@ mod tests {
         header2.set_mode(0o644);
         header2.set_cksum();
         builder
-            .append_data(&mut header2, "why-main/db/python/TypeError.yaml", &yaml2[..])
-            .unwrap();
-
-        let readme = b"# Why\n";
-        let mut header3 = tar::Header::new_gnu();
-        header3.set_size(readme.len() as u64);
-        header3.set_mode(0o644);
-        header3.set_cksum();
-        builder
-            .append_data(&mut header3, "why-main/README.md", &readme[..])
+            .append_data(&mut header2, "why-db/python/TypeError.yaml", &yaml2[..])
             .unwrap();
 
         let template = b"id: TEMPLATE\ntool: rustc\nlanguage: rust\ntitle: Template\nexplain: ...\nfix: ...\n";
-        let mut header4 = tar::Header::new_gnu();
-        header4.set_size(template.len() as u64);
-        header4.set_mode(0o644);
-        header4.set_cksum();
+        let mut header3 = tar::Header::new_gnu();
+        header3.set_size(template.len() as u64);
+        header3.set_mode(0o644);
+        header3.set_cksum();
         builder
             .append_data(
-                &mut header4,
-                "why-main/db/rust/TEMPLATE.yaml",
+                &mut header3,
+                "why-db/rust/TEMPLATE.yaml",
                 &template[..],
             )
             .unwrap();
@@ -201,7 +179,6 @@ mod tests {
 
         assert!(dest.join("rust/E0499.yaml").exists());
         assert!(dest.join("python/TypeError.yaml").exists());
-        assert!(!dest.join("README.md").exists());
         assert!(dest.join("rust/TEMPLATE.yaml").exists());
 
         assert_eq!(count_yaml_files(&dest), 2);
