@@ -1,0 +1,30 @@
+id: E0404
+tool: rustc
+language: rust
+title: Expected trait but found something else in trait bound
+tags: [traits, bounds, generics, type-aliases]
+
+explain: |
+  You wrote a trait bound (using `:` or `where`) but the name you used is not
+  a trait — it could be a struct, an enum, a type alias, or just a plain type.
+  Only traits can be used as bounds because bounds describe behaviour, and only
+  traits define behaviour in Rust.
+
+fix: |
+  Replace the non-trait name with the actual trait you meant to use. If you
+  are trying to restrict a generic to a specific concrete type, that is not
+  possible directly with bounds — consider using an associated type or a
+  different design instead.
+
+example_error: |
+  error[E0404]: expected trait, found struct `String`
+   --> src/main.rs:1:11
+    |
+  1 | fn foo<T: String>(x: T) {}
+    |           ^^^^^^ not a trait
+
+example_code: |
+  fn foo<T: String>(x: T) {} // Error: String is a struct, not a trait
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0404.html

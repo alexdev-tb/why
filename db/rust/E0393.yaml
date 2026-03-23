@@ -1,0 +1,34 @@
+id: E0393
+tool: rustc
+language: rust
+title: Type parameter on trait has no default and must be specified
+tags: [traits, generics, type-parameters, defaults]
+
+explain: |
+  You used a trait that has a generic type parameter but you did not specify
+  what that type should be, and the trait does not have a default for it.
+  Rust cannot guess what type you meant, so you must tell it explicitly.
+
+fix: |
+  Provide the type argument when referring to the trait. For example, if the
+  trait is `Converter<T>`, write `Converter<i32>` or whichever type you need.
+  If the type should be inferred from context, make sure there is enough
+  information elsewhere for the compiler to figure it out.
+
+example_error: |
+  error[E0393]: the type parameter `T` must be explicitly specified
+   --> src/main.rs:6:12
+    |
+  1 | trait Converter<T> {}
+    | ------------------ type parameter `T` must be specified for this
+  ...
+  6 | fn run(x: &dyn Converter) {}
+    |            ^^^^^^^^^ missing type parameter `T`
+
+example_code: |
+  trait Converter<T> {}
+
+  fn run(x: &dyn Converter) {} // Error: must specify the type parameter T
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0393.html

@@ -1,0 +1,33 @@
+id: E0017
+tool: rustc
+language: rust
+title: Static or const contains a reference to a mutable value
+tags: [const, static, mutability, references]
+
+explain: |
+  You tried to put a reference to a mutable value inside a `const` or `static`.
+  Constants and statics must be fully fixed at compile time and live for the
+  entire program, so they cannot hold references to things that could change or
+  that might not last that long. Allowing this would mean a constant could
+  silently point to something that no longer exists or has been mutated.
+
+fix: |
+  Make sure anything you reference inside a `const` or `static` is itself
+  constant and immutable. If you need a mutable global, use a `static mut`
+  (which requires `unsafe` to access) or a thread-safe wrapper like
+  `Mutex<T>` inside a `static`.
+
+example_error: |
+  error[E0017]: references in statics may only refer to immutable values
+   --> src/main.rs:3:20
+    |
+  3 | static FOO: &i32 = &mut 42;
+    |                    ^^^^^^^ static requires immutable value
+
+example_code: |
+  static FOO: &i32 = &mut 42; // Error: mutable reference in static
+
+  fn main() {}
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0017.html

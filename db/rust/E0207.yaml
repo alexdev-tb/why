@@ -1,0 +1,35 @@
+id: E0207
+tool: rustc
+language: rust
+title: Unconstrained type parameter in impl block
+tags: [generics, traits, impl, type-parameters]
+
+explain: |
+  You declared a generic type parameter on an `impl` block but it is not
+  actually used in the type being implemented. Rust requires every type
+  parameter on an `impl` to appear somewhere in the implementing type or the
+  trait being implemented, so the compiler can always figure out what the
+  parameter should be from context.
+
+fix: |
+  Either remove the unused type parameter, or use it somewhere in the `impl`
+  header — for example in the trait itself or in the type you are implementing
+  for. If you need the parameter only inside the method bodies, use it as a
+  method-level generic parameter instead.
+
+example_error: |
+  error[E0207]: the type parameter `T` is not constrained by the impl trait,
+                self type, or predicates
+   --> src/main.rs:4:6
+    |
+  4 | impl<T> MyTrait for MyStruct {}
+    |      ^ unconstrained type parameter
+
+example_code: |
+  struct MyStruct;
+  trait MyTrait {}
+
+  impl<T> MyTrait for MyStruct {} // Error: T is never used
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0207.html

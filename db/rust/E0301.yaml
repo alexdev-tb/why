@@ -1,0 +1,35 @@
+id: E0301
+tool: rustc
+language: rust
+title: Cannot mutably borrow in a pattern guard
+tags: [borrowing, pattern-matching, guards, closures]
+
+explain: |
+  You tried to take a mutable borrow inside a `match` guard (the `if` condition
+  that can follow a pattern). Match guards are not allowed to mutate anything
+  because Rust may evaluate them more than once when checking patterns, and
+  a mutation midway through that process would be unsafe and unpredictable.
+
+fix: |
+  Move the mutation out of the guard and into the match arm body instead, or
+  restructure your logic so you do not need to mutate inside the condition.
+  If you only need to read a value in the guard, a shared borrow is fine.
+
+example_error: |
+  error[E0301]: cannot mutably borrow in a pattern guard
+   --> src/main.rs:6:12
+    |
+  6 |         if v.push(1) == () => {}
+    |            ^^^^^^^^^ cannot mutably borrow
+
+example_code: |
+  fn main() {
+      let mut v = vec![1, 2];
+      match v.len() {
+          n if { v.push(1); n > 2 } => {} // Error: mutable borrow in guard
+          _ => {}
+      }
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0301.html

@@ -1,0 +1,37 @@
+id: E0072
+tool: rustc
+language: rust
+title: Recursive type has infinite size
+tags: [types, recursion, structs, enums, boxing]
+
+explain: |
+  You defined a type that contains itself directly, which means Rust cannot
+  figure out how much memory to allocate for it. For example, a struct `Node`
+  that has a field of type `Node` would need infinite memory. Rust needs to know
+  the exact size of every type at compile time.
+
+fix: |
+  Wrap the recursive field in a `Box<T>`, which stores the value on the heap
+  instead of inline. This breaks the infinite size problem because a `Box` is
+  always a fixed size (it's just a pointer). For example, change `next: Node`
+  to `next: Box<Node>`, or use `Option<Box<Node>>` if the field is optional.
+
+example_error: |
+  error[E0072]: recursive type `Node` has infinite size
+   --> src/main.rs:1:1
+    |
+  1 | struct Node {
+    | ^^^^^^^^^^^ recursive type has infinite size
+  2 |     next: Node,
+    |     ---------- recursive without indirection
+    |
+  help: insert some indirection (e.g., a `Box`, `Rc`, or `&`) to break the cycle
+
+example_code: |
+  struct Node {
+      value: i32,
+      next: Node, // Error: recursive type has infinite size
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0072.html

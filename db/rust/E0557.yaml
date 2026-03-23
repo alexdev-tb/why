@@ -1,0 +1,32 @@
+id: E0557
+tool: rustc
+language: rust
+title: Feature attribute is not recognized
+tags: [features, attributes, nightly, crate-features]
+
+explain: |
+  You used a `#[feature(...)]` attribute with a name that Rust does not
+  recognise, either because the feature does not exist, has been stabilised
+  and no longer needs enabling, or was spelled incorrectly. Feature flags are
+  only valid on nightly Rust and only for features that are still unstable.
+
+fix: |
+  Double-check the spelling of the feature name against the official Rust
+  documentation or the compiler's list of unstable features. If the feature
+  has already been stabilised it is available in stable Rust without any
+  attribute — just remove the `#![feature(...)]` line.
+
+example_error: |
+  error[E0557]: feature has been removed
+   --> src/main.rs:1:12
+    |
+  1 | #![feature(rust_2018_preview)]
+    |            ^^^^^^^^^^^^^^^^^^ feature has been removed
+
+example_code: |
+  #![feature(rust_2018_preview)] // Error: this feature no longer exists
+
+  fn main() {}
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0557.html

@@ -1,0 +1,35 @@
+id: E0529
+tool: rustc
+language: rust
+title: Expected array or slice in pattern, found different type
+tags: [pattern-matching, slices, arrays, destructuring]
+
+explain: |
+  You used a slice or array pattern (like `[a, b, c]`) to match against a value
+  that is not a slice or array. Slice patterns are only valid when the value
+  being matched is actually a slice `&[T]` or a fixed-size array `[T; N]`.
+  Using them on a `Vec`, an iterator, or any other type will cause this error.
+
+fix: |
+  If you have a `Vec`, convert it to a slice first using `.as_slice()` and then
+  match on that. If you are expecting a fixed-length array, make sure the type
+  annotation reflects that. Check what type you are actually matching against
+  and use the appropriate pattern syntax for it.
+
+example_error: |
+  error[E0529]: expected an array or slice, found `Vec<i32>`
+   --> src/main.rs:4:9
+    |
+  4 |     if let [first, ..] = numbers {
+    |            ^^^^^^^^^^^^ pattern cannot match with input type `Vec<i32>`
+
+example_code: |
+  fn main() {
+      let numbers = vec![1, 2, 3];
+      if let [first, ..] = numbers { // Error: Vec is not a slice
+          println!("first: {}", first);
+      }
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0529.html

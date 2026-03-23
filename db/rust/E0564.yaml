@@ -1,0 +1,34 @@
+id: E0564
+tool: rustc
+language: rust
+title: Only named lifetimes are allowed in `impl Trait`
+tags: [lifetimes, impl-trait, generics, return-types]
+
+explain: |
+  You used `impl Trait` as a return type in a function that also has lifetime
+  parameters, but the lifetimes are not connected in a way the compiler can
+  track. When a function returns `impl Trait` and the returned value depends on
+  a borrowed input, Rust needs explicit lifetime annotations to know how long
+  the returned value is allowed to live.
+
+fix: |
+  Add a named lifetime to both the input reference and the `impl Trait` return
+  type so the compiler knows the output borrows from that input. For example,
+  change `fn foo(s: &str) -> impl Trait` to
+  `fn foo<'a>(s: &'a str) -> impl Trait + 'a`.
+
+example_error: |
+  error[E0564]: only named lifetimes are allowed in `impl Trait`,
+                but `'_` was found in the type `impl Display + '_`
+   --> src/main.rs:1:35
+    |
+  1 | fn first_word(s: &str) -> impl std::fmt::Display + '_ {
+    |                                                    ^^ anonymous lifetime not allowed here
+
+example_code: |
+  fn first_word(s: &str) -> impl std::fmt::Display + '_ { // Error: use a named lifetime
+      s.split_whitespace().next().unwrap_or("")
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0564.html
