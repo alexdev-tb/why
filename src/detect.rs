@@ -79,57 +79,44 @@ pub fn extract_error_code(stderr: &str) -> Option<String> {
         return Some(caps[1].to_string());
     }
 
-    // Match Go errors: "undefined: variable", "cannot use X as Y", "no required module", etc.
-    let go_patterns = vec![
-        r"^undefined:\s",
-        r"^cannot use\s",
-        r"^no required module\s",
-        r"^syntax error",
-        r"^not enough arguments",
-        r"^too many arguments",
-        r"^invalid operation",
-        r"^assignment mismatch",
-        r"^interface {} is",  // type assertion error
-        r"^concurrent map",
-        r"^declared but not used",
-        r"^imported and not used",
-    ];
+    // Match Go errors (file:line:col: error format)
+    for line in stderr.lines() {
+        let error_type = if line.contains("undefined:") {
+            Some("undefined")
+        } else if line.contains("cannot use") {
+            Some("cannot-use-type")
+        } else if line.contains("no required module") {
+            Some("no-required-module")
+        } else if line.contains("syntax error") {
+            Some("syntax-error")
+        } else if line.contains("not enough arguments") {
+            Some("not-enough-arguments")
+        } else if line.contains("too many arguments") {
+            Some("too-many-arguments")
+        } else if line.contains("invalid operation") {
+            Some("invalid-operation")
+        } else if line.contains("assignment mismatch") {
+            Some("assignment-mismatch")
+        } else if line.contains("concurrent map") {
+            Some("concurrent-map-write")
+        } else if line.contains("declared but not used") {
+            Some("unused-variable")
+        } else if line.contains("imported and not used") {
+            Some("unused-import")
+        } else if line.contains("interface") && line.contains("is") && line.contains("not") {
+            Some("type-assertion-failed")
+        } else if line.contains("index out of range") {
+            Some("index-out-of-range")
+        } else if line.contains("assignment to entry in nil map") {
+            Some("assignment-to-nil-map")
+        } else if line.contains("runtime error") {
+            Some("panic-runtime-error")
+        } else {
+            None
+        };
 
-    for pattern in go_patterns {
-        if let Ok(re) = Regex::new(pattern) {
-            if re.is_match(stderr) {
-                // Extract the error type from the message
-                if let Some(line) = stderr.lines().next() {
-                    let error_type = if line.starts_with("undefined:") {
-                        "undefined"
-                    } else if line.starts_with("cannot use") {
-                        "cannot-use-type"
-                    } else if line.starts_with("no required module") {
-                        "no-required-module"
-                    } else if line.starts_with("syntax error") {
-                        "syntax-error"
-                    } else if line.starts_with("not enough arguments") {
-                        "not-enough-arguments"
-                    } else if line.starts_with("too many arguments") {
-                        "too-many-arguments"
-                    } else if line.starts_with("invalid operation") {
-                        "invalid-operation"
-                    } else if line.starts_with("assignment mismatch") {
-                        "assignment-mismatch"
-                    } else if line.contains("concurrent map") {
-                        "concurrent-map-write"
-                    } else if line.starts_with("declared but not used") {
-                        "unused-variable"
-                    } else if line.starts_with("imported and not used") {
-                        "unused-import"
-                    } else if line.contains("interface") && line.contains("is") {
-                        "type-assertion-failed"
-                    } else {
-                        continue;
-                    };
-                    return Some(error_type.to_string());
-                }
-            }
+        if let Some(error_type) = error_type {
+            return Some(error_type.to_string());
         }
     }
 
@@ -161,19 +148,19 @@ mod tests {
 
     #[test]
     fn test_extract_go_undefined() {
-        let stderr = "undefined: myVariable";
+        let stderr = "./test.go:4:5: undefined: fmt";
         assert_eq!(extract_error_code(stderr), Some("undefined".to_string()));
     }
 
     #[test]
     fn test_extract_go_cannot_use() {
-        let stderr = "cannot use myInt (type int) as type int32 in assignment";
+        let stderr = "./main.go:10:8: cannot use myInt (type int) as type int32 in assignment";
         assert_eq!(extract_error_code(stderr), Some("cannot-use-type".to_string()));
     }
 
     #[test]
     fn test_extract_go_syntax_error() {
-        let stderr = "syntax error: unexpected x, expected }";
+        let stderr = "./main.go:5:2: syntax error: unexpected x, expected }";
         assert_eq!(extract_error_code(stderr), Some("syntax-error".to_string()));
     }
 
