@@ -1,5 +1,5 @@
 [package]
-name = "why-cli"
+name = "why"
 version = "0.1.0"
 edition = "2021"
 description = "Plain English explanations for compiler errors and CLI failures"
