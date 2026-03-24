@@ -1,8 +1,18 @@
+<div align="center">
+
 # why
+
+![Build-Status](https://img.shields.io/github/actions/workflow/status/alexdev-tb/why/ci.yml?branch=main&label=Build)
+![License](https://img.shields.io/github/license/alexdev-tb/why)
+![Repo-stars](https://img.shields.io/github/stars/alexdev-tb/why?style=flat&label=Stars&color=blue)
+![Repo-forks](https://img.shields.io/github/forks/alexdev-tb/why?style=flat&label=Forks&color=blue)
+![Languages](https://img.shields.io/badge/Languages%20Supported-3-blue?style=flat)
 
 **Plain English explanations for compiler errors and CLI failures.**
 
 Stop staring at cryptic error messages. Just type `why`.
+
+</div>
 
 ## Demo
 
@@ -97,7 +107,7 @@ Then restart your shell or run `source ~/.bashrc` (or `~/.zshrc`).
 
 ### Coming Soon
 
-- C/C++ errors 
+- C/C++ errors
 - Node.js errors
 - TypeScript
 
