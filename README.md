@@ -2,11 +2,11 @@
 
 # why
 
-![Build-Status](https://img.shields.io/github/actions/workflow/status/alexdev-tb/why/ci.yml?branch=main&label=Build)
-![License](https://img.shields.io/github/license/alexdev-tb/why)
-![Repo-stars](https://img.shields.io/github/stars/alexdev-tb/why?style=flat&label=Stars&color=blue)
-![Repo-forks](https://img.shields.io/github/forks/alexdev-tb/why?style=flat&label=Forks&color=blue)
-![Languages](https://img.shields.io/badge/Languages%20Supported-3-blue?style=flat)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/alexdev-tb/why/ci.yml?branch=main&label=Build)](https://github.com/alexdev-tb/why/actions)
+[![License](https://img.shields.io/github/license/alexdev-tb/why)](https://github.com/alexdev-tb/why/blob/main/LICENSE)
+[![Repo-Stars](https://img.shields.io/github/stars/alexdev-tb/why?style=flat&label=Stars&color=blue)](https://github.com/alexdev-tb/why/stargazers)
+[![Repo-Forks](https://img.shields.io/github/forks/alexdev-tb/why?style=flat&label=Forks&color=blue)](https://github.com/alexdev-tb/why/forks)
+[![Languages](https://img.shields.io/badge/Languages%20Supported-3-blue?style=flat)](https://github.com/alexdev-tb/why)
 
 **Plain English explanations for compiler errors and CLI failures.**
 
