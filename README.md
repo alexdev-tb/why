@@ -16,30 +16,7 @@ Stop staring at cryptic error messages. Just type `why`.
 
 ## Demo
 
-```
-$ cargo build
-error[E0499]: cannot borrow `x` as mutable more than once at a time
-
-$ why
-
-→ E0499 — Multiple mutable borrows
-────────────────────────────────────────────────────────────
-You tried to create a second mutable reference to a value while the first mutable reference is
-still active. Rust's borrow checker enforces that you can have either one mutable reference or
-any number of immutable references to a value at a time, but never both. This rule prevents
-data races at compile time and ensures memory safety without a garbage collector.
-
-Fix:
-Limit the scope of the first mutable borrow so it ends before the second one begins. You can
-do this by introducing a block `{ }` around the first borrow, or by restructuring your code
-so that both mutations do not overlap. Sometimes using a method that takes `&mut self` once
-to perform both operations is the cleanest solution.
-
-Docs: https://doc.rust-lang.org/error_codes/E0499.html
-────────────────────────────────────────────────────────────
-Was this helpful? Improve this entry → https://github.com/alexdev-tb/why
-
-```
+<img width="897" height="438" alt="Screenshot_20260324_215001" src="https://github.com/user-attachments/assets/f53649a5-0ea1-4890-b418-e1dba3ca8587" />
 
 ## What it does
 
