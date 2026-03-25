@@ -68,76 +68,108 @@ fn rerun_for_stderr(cmd: &str) -> Option<String> {
     }
 }
 
+struct PatternRule {
+    groups: &'static [&'static [&'static str]],
+    exclude: &'static [&'static str],
+    code: &'static str,
+}
+
+/// C/C++ error patterns
+const C_CPP_PATTERNS: &[PatternRule] = &[
+    PatternRule { groups: &[&["undeclared", "first use in this function"]], exclude: &[], code: "undeclared-identifier" },
+    PatternRule { groups: &[&["multiple definition of"]], exclude: &[], code: "multiple-definition" },
+    PatternRule { groups: &[&["undefined reference"]], exclude: &[], code: "undefined-reference" },
+    PatternRule { groups: &[&["incompatible types when"], &["incompatible type"]], exclude: &[], code: "type-mismatch" },
+    PatternRule { groups: &[&["implicit declaration of function"]], exclude: &[], code: "implicit-function-declaration" },
+    PatternRule { groups: &[&["too few arguments"]], exclude: &[], code: "function-argument-mismatch" },
+    PatternRule { groups: &[&["too many arguments"]], exclude: &["go"], code: "function-argument-mismatch" },
+    PatternRule { groups: &[&["No such file or directory", "fatal error"]], exclude: &[], code: "missing-header" },
+    PatternRule { groups: &[&["has no member named"]], exclude: &[], code: "no-member" },
+    PatternRule { groups: &[&["redefinition of"]], exclude: &[], code: "redefinition" },
+    PatternRule { groups: &[&["format", "expects argument of type"]], exclude: &[], code: "format-specifier" },
+    PatternRule { groups: &[&["is used uninitialized"], &["may be uninitialized"]], exclude: &[], code: "uninitialized-variable" },
+    PatternRule { groups: &[&["array subscript", "above array bounds"]], exclude: &[], code: "array-out-of-bounds" },
+    PatternRule { groups: &[&["control reaches end of non-void function"]], exclude: &[], code: "return-type-mismatch" },
+    PatternRule { groups: &[&["double free"]], exclude: &[], code: "double-free" },
+    PatternRule { groups: &[&["stack smashing detected"]], exclude: &[], code: "stack-smashing" },
+    PatternRule { groups: &[&["Segmentation fault"], &["segmentation fault"]], exclude: &[], code: "segmentation-fault" },
+    PatternRule { groups: &[&["expected", "before"], &["expected", "';'"]], exclude: &[], code: "syntax-error" },
+];
+
+/// Go error patterns.
+const GO_PATTERNS: &[PatternRule] = &[
+    PatternRule { groups: &[&["undefined:"]], exclude: &[], code: "undefined" },
+    PatternRule { groups: &[&["cannot use"]], exclude: &[], code: "cannot-use-type" },
+    PatternRule { groups: &[&["no required module"]], exclude: &[], code: "no-required-module" },
+    PatternRule { groups: &[&["syntax error"]], exclude: &[], code: "syntax-error" },
+    PatternRule { groups: &[&["not enough arguments"]], exclude: &[], code: "not-enough-arguments" },
+    PatternRule { groups: &[&["too many arguments"]], exclude: &[], code: "too-many-arguments" },
+    PatternRule { groups: &[&["invalid operation"]], exclude: &[], code: "invalid-operation" },
+    PatternRule { groups: &[&["assignment mismatch"]], exclude: &[], code: "assignment-mismatch" },
+    PatternRule { groups: &[&["concurrent map"]], exclude: &[], code: "concurrent-map-write" },
+    PatternRule { groups: &[&["declared but not used"]], exclude: &[], code: "unused-variable" },
+    PatternRule { groups: &[&["imported and not used"]], exclude: &[], code: "unused-import" },
+    PatternRule { groups: &[&["interface", "is", "not"]], exclude: &[], code: "type-assertion-failed" },
+    PatternRule { groups: &[&["index out of range"]], exclude: &[], code: "index-out-of-range" },
+    PatternRule { groups: &[&["assignment to entry in nil map"]], exclude: &[], code: "assignment-to-nil-map" },
+    PatternRule { groups: &[&["runtime error"]], exclude: &[], code: "panic-runtime-error" },
+];
+
+fn match_line(line: &str, rule: &PatternRule) -> bool {
+    let any_group_matches = rule.groups.iter().any(|group| {
+        group.iter().all(|pat| line.contains(pat))
+    });
+    any_group_matches && rule.exclude.iter().all(|pat| !line.contains(pat))
+}
+
+fn match_patterns(stderr: &str, rules: &[PatternRule]) -> Option<String> {
+    for line in stderr.lines() {
+        for rule in rules {
+            if match_line(line, rule) {
+                return Some(rule.code.to_string());
+            }
+        }
+    }
+    None
+}
+
 pub fn extract_error_code(stderr: &str) -> Option<String> {
     let rust_re = Regex::new(r"error\[E(\d+)\]").unwrap();
     if let Some(caps) = rust_re.captures(stderr) {
         return Some(format!("E{}", &caps[1]));
     }
 
+    // Python detection
     let python_re = Regex::new(r"(?m)^((?:\w*(?:Error|Exception|Warning)|StopIteration|KeyboardInterrupt|SystemExit|GeneratorExit|BaseException))\b").unwrap();
     if let Some(caps) = python_re.captures(stderr) {
         return Some(caps[1].to_string());
     }
 
-    // Match Go errors (file:line:col: error format)
-    for line in stderr.lines() {
-        let error_type = if line.contains("undefined:") {
-            Some("undefined")
-        } else if line.contains("cannot use") {
-            Some("cannot-use-type")
-        } else if line.contains("no required module") {
-            Some("no-required-module")
-        } else if line.contains("syntax error") {
-            Some("syntax-error")
-        } else if line.contains("not enough arguments") {
-            Some("not-enough-arguments")
-        } else if line.contains("too many arguments") {
-            Some("too-many-arguments")
-        } else if line.contains("invalid operation") {
-            Some("invalid-operation")
-        } else if line.contains("assignment mismatch") {
-            Some("assignment-mismatch")
-        } else if line.contains("concurrent map") {
-            Some("concurrent-map-write")
-        } else if line.contains("declared but not used") {
-            Some("unused-variable")
-        } else if line.contains("imported and not used") {
-            Some("unused-import")
-        } else if line.contains("interface") && line.contains("is") && line.contains("not") {
-            Some("type-assertion-failed")
-        } else if line.contains("index out of range") {
-            Some("index-out-of-range")
-        } else if line.contains("assignment to entry in nil map") {
-            Some("assignment-to-nil-map")
-        } else if line.contains("runtime error") {
-            Some("panic-runtime-error")
-        } else {
-            None
-        };
-
-        if let Some(error_type) = error_type {
-            return Some(error_type.to_string());
-        }
+    // C/C++ (checked before Go to avoid collisions)
+    if let Some(code) = match_patterns(stderr, C_CPP_PATTERNS) {
+        return Some(code);
     }
 
-    None
+    // Go detection
+    match_patterns(stderr, GO_PATTERNS)
 }
+
+// TESTS
 
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
-    fn test_extract_rust_error_code() {
-        let stderr = r#"error[E0499]: cannot borrow `x` as mutable more than once at a time
- --> src/main.rs:4:13"#;
-        assert_eq!(extract_error_code(stderr), Some("E0499".to_string()));
-    }
-
-    #[test]
-    fn test_extract_rust_error_code_e0308() {
-        let stderr = "error[E0308]: mismatched types";
-        assert_eq!(extract_error_code(stderr), Some("E0308".to_string()));
+    fn test_extract_rust_error_codes() {
+        let cases = vec![
+            (r#"error[E0499]: cannot borrow `x` as mutable more than once at a time
+ --> src/main.rs:4:13"#, Some("E0499")),
+            ("error[E0308]: mismatched types", Some("E0308")),
+        ];
+        for (stderr, expected) in cases {
+            assert_eq!(extract_error_code(stderr), expected.map(String::from), "failed on: {stderr}");
+        }
     }
 
     #[test]
@@ -147,47 +179,61 @@ mod tests {
     }
 
     #[test]
-    fn test_extract_go_undefined() {
-        let stderr = "./test.go:4:5: undefined: fmt";
-        assert_eq!(extract_error_code(stderr), Some("undefined".to_string()));
+    fn test_extract_c_cpp_errors() {
+        let cases = vec![
+            ("main.c:5:5: error: 'x' undeclared (first use in this function)\n     x = 10;", "undeclared-identifier"),
+            ("/tmp/ccXXXXXXXX.o: In function `main':\nmain.c:(.text+0x18): undefined reference to `add'\ncollect2: error: ld returned 1 exit status", "undefined-reference"),
+            ("main.c:6:10: error: incompatible types when assigning to type 'int *' from type 'double *'", "type-mismatch"),
+            ("main.c:4:5: warning: implicit declaration of function 'printf' [-Wimplicit-function-declaration]", "implicit-function-declaration"),
+            ("Segmentation fault (core dumped)", "segmentation-fault"),
+            ("main.c:5:10: error: expected ';' before 'return'", "syntax-error"),
+            ("main.c:8:5: error: too few arguments to function 'int add(int, int)'", "function-argument-mismatch"),
+            ("main.c:2:10: fatal error: myheader.h: No such file or directory\n    2 | #include \"myheader.h\"\n      |          ^~~~~~~~~~~~\ncompilation terminated.", "missing-header"),
+            ("main.c:9:20: error: 'struct point' has no member named 'z'", "no-member"),
+            ("main.c:5:8: error: redefinition of 'struct point'", "redefinition"),
+            ("main.c:5:14: warning: format '%d' expects argument of type 'int', but argument 2 has type 'double' [-Wformat=]", "format-specifier"),
+            ("main.c:5:5: warning: 'x' is used uninitialized [-Wuninitialized]", "uninitialized-variable"),
+            ("main.c:5:5: warning: array subscript 10 is above array bounds of 'int [10]' [-Warray-bounds]", "array-out-of-bounds"),
+            ("main.c:6:1: warning: control reaches end of non-void function [-Wreturn-type]", "return-type-mismatch"),
+            ("free(): double free detected in tcache 2\nAborted (core dumped)", "double-free"),
+            ("*** stack smashing detected ***: terminated\nAborted (core dumped)", "stack-smashing"),
+            ("/usr/bin/ld: /tmp/ccYYYYYY.o: in function `helper':\nutils.c:(.text+0x0): multiple definition of `helper'; /tmp/ccXXXXXX.o:main.c:(.text+0x0): first defined here", "multiple-definition"),
+        ];
+        for (stderr, expected) in cases {
+            assert_eq!(extract_error_code(stderr), Some(expected.to_string()), "failed on: {stderr}");
+        }
     }
 
     #[test]
-    fn test_extract_go_cannot_use() {
-        let stderr = "./main.go:10:8: cannot use myInt (type int) as type int32 in assignment";
-        assert_eq!(extract_error_code(stderr), Some("cannot-use-type".to_string()));
-    }
-
-    #[test]
-    fn test_extract_go_syntax_error() {
-        let stderr = "./main.go:5:2: syntax error: unexpected x, expected }";
-        assert_eq!(extract_error_code(stderr), Some("syntax-error".to_string()));
+    fn test_extract_go_errors() {
+        let cases = vec![
+            ("./test.go:4:5: undefined: fmt", "undefined"),
+            ("./main.go:10:8: cannot use myInt (type int) as type int32 in assignment", "cannot-use-type"),
+            ("./main.go:5:2: syntax error: unexpected x, expected }", "syntax-error"),
+        ];
+        for (stderr, expected) in cases {
+            assert_eq!(extract_error_code(stderr), Some(expected.to_string()), "failed on: {stderr}");
+        }
     }
 
     #[test]
     fn test_extract_no_match() {
-        let stderr = "some random output";
-        assert_eq!(extract_error_code(stderr), None);
+        assert_eq!(extract_error_code("some random output"), None);
     }
 
     #[test]
     fn test_is_safe_to_rerun() {
-        assert!(is_safe_to_rerun("cargo build"));
-        assert!(is_safe_to_rerun("rustc main.rs"));
-        assert!(is_safe_to_rerun("python3 script.py"));
-        assert!(is_safe_to_rerun("gcc -o main main.c"));
-        assert!(is_safe_to_rerun("npm run build"));
-        assert!(is_safe_to_rerun("/usr/bin/cargo build"));
-        assert!(is_safe_to_rerun("git status"));
+        for cmd in &["cargo build", "rustc main.rs", "python3 script.py", "gcc -o main main.c",
+                      "npm run build", "/usr/bin/cargo build", "git status"] {
+            assert!(is_safe_to_rerun(cmd), "expected safe: {cmd}");
+        }
     }
 
     #[test]
     fn test_is_not_safe_to_rerun() {
-        assert!(!is_safe_to_rerun("rm -rf /"));
-        assert!(!is_safe_to_rerun("curl -X POST http://example.com"));
-        assert!(!is_safe_to_rerun("docker run something"));
-        assert!(!is_safe_to_rerun("sudo anything"));
-        assert!(!is_safe_to_rerun("ssh server"));
-        assert!(!is_safe_to_rerun(""));
+        for cmd in &["rm -rf /", "curl -X POST http://example.com", "docker run something",
+                      "sudo anything", "ssh server", ""] {
+            assert!(!is_safe_to_rerun(cmd), "expected unsafe: {cmd}");
+        }
     }
 }
