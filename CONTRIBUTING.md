@@ -2,7 +2,7 @@
 
 Welcome! Thanks for your interest in making compiler errors less painful for everyone.
 
-`why` is a community-maintained database of plain English error explanations. Every contribution — whether it is a single YAML file or a typo fix — makes a real difference for developers who are stuck and frustrated.
+`why` is a community-maintained database of plain English error explanations. Every contribution whether it is a single YAML file or a typo fix makes a real difference for developers who are stuck and frustrated.
 
 ## Quick Start
 
