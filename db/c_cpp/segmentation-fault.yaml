@@ -1,0 +1,43 @@
+id: segmentation-fault
+tool: gcc/clang
+language: c_cpp
+title: Segmentation fault (runtime memory error)
+tags: [runtime, memory, pointers, undefined-behavior]
+
+explain: |
+  Your program attempted to access memory that it doesn't have permission to access. This is a runtime error (program crash) that occurs when:
+  - Dereferencing a null pointer
+  - Accessing memory outside allocated bounds (buffer overflow)
+  - Using uninitialized pointers
+  - Accessing freed memory (use-after-free)
+  - Stack overflow from infinite recursion
+  - Writing to read-only memory
+  - Incorrect pointer arithmetic leading to invalid memory
+
+fix: |
+  1. Check for null pointers before dereferencing: if (ptr != NULL) { ... }
+  2. Verify array bounds before access - use proper array sizes
+  3. Initialize pointers before use
+  4. Don't use memory after freeing it
+  5. Check for buffer overflows - use bounds-checking functions
+  6. Limit recursion depth to prevent stack overflow
+  7. Use valgrind or AddressSanitizer to debug memory issues: gcc -fsanitize=address
+  8. Use gdb debugger to identify exact line causing crash
+
+example_error: |
+  Segmentation fault (core dumped)
+
+example_code: |
+  #include <stdio.h>
+  #include <stdlib.h>
+
+  int main() {
+      int *ptr = NULL;
+      printf("%d\n", *ptr);  // Error: dereferencing NULL
+      return 0;
+  }
+
+links:
+  - https://en.cppreference.com/w/c/language/nullptr
+  - https://valgrind.org/
+  - https://gcc.gnu.org/onlinedocs/gcc/Instrumentation-Options.html#index-fsanitize

@@ -1,0 +1,20 @@
+id: TEMPLATE_ID
+tool: gcc/clang
+language: c_cpp
+title: Template title for new C/C++ errors
+tags: [tag1, tag2, tag3]
+
+explain: |
+  Detailed explanation of what the error means and why it occurs.
+
+fix: |
+  Step-by-step instructions on how to fix the error.
+
+example_error: |
+  Example compiler error message
+
+example_code: |
+  // Example problematic code
+
+links:
+  - https://example.com

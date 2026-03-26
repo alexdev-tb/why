@@ -1,0 +1,36 @@
+id: implicit-function-declaration
+tool: gcc/clang
+language: c_cpp
+title: Implicit function declaration
+tags: [functions, declarations, headers, C99]
+
+explain: |
+  You are calling a function that hasn't been declared before the call. In older C89/C90, the compiler would implicitly assume the function exists and returns int, but this is bad practice and can cause errors. This usually happens when:
+  - Missing #include for a header file containing the function
+  - Typo in function name
+  - Function defined after it's used (in C, not C++)
+  - Using a non-standard or compiler-specific function without proper declaration
+  - Mixing C and C++ without proper extern "C" declarations
+
+fix: |
+  1. Include the appropriate header file (e.g., #include <string.h> for strcpy)
+  2. Add forward declaration before use: type function_name(params);
+  3. Check spelling of function name matches standard library or defined functions
+  4. Reorder code so function is defined before use
+  5. Compile with -std=c99 or later and -Werror=implicit-function-declaration to catch these
+  6. For C++ use, ensure proper extern "C" if mixing with C
+
+example_error: |
+  warning: implicit declaration of function 'printf' [-Wimplicit-function-declaration]
+
+example_code: |
+  // Missing #include <stdio.h>
+
+  int main() {
+      printf("Hello\n");  // Missing declaration!
+      return 0;
+  }
+
+links:
+  - https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html
+  - https://en.cppreference.com/w/c/io

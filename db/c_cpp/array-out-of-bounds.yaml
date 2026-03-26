@@ -1,0 +1,32 @@
+id: array-out-of-bounds
+tool: gcc/clang
+language: c_cpp
+title: Array subscript out of bounds
+tags: [arrays, bounds, memory, warnings, undefined-behavior]
+
+explain: |
+  You are accessing an array with an index that is outside the valid range. Array indices in C/C++ start at 0, so for an array of size N, valid indices are 0 through N-1. Accessing out-of-bounds memory is undefined behavior and can corrupt data, crash the program, or create security vulnerabilities.
+
+fix: |
+  1. Check that all array indices are within valid bounds (0 to size-1)
+  2. Pay attention to off-by-one errors in loops: use < size, not <= size
+  3. Compile with -Wall -Warray-bounds to catch static cases
+  4. Use AddressSanitizer for runtime checking: gcc -fsanitize=address
+  5. In C++, use .at() on std::vector/std::array for bounds-checked access
+  6. Consider using sizeof(arr)/sizeof(arr[0]) to compute array length
+
+example_error: |
+  warning: array subscript 10 is above array bounds of 'int [10]' [-Warray-bounds]
+
+example_code: |
+  #include <stdio.h>
+
+  int main() {
+      int arr[10];
+      arr[10] = 42;  // Error: valid indices are 0-9
+      return 0;
+  }
+
+links:
+  - https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Warray-bounds
+  - https://gcc.gnu.org/onlinedocs/gcc/Instrumentation-Options.html#index-fsanitize

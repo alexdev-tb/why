@@ -1,0 +1,41 @@
+id: multiple-definition
+tool: gcc/clang
+language: c_cpp
+title: Multiple definition of a symbol (linker error)
+tags: [linking, symbols, definition, headers]
+
+explain: |
+  The linker found the same function or global variable defined in more than one object file. C/C++ requires exactly one definition of each symbol across all linked translation units (the One Definition Rule). Common causes include:
+  - Defining a function or global variable in a header file that gets included by multiple .c files
+  - Accidentally defining the same function in two different source files
+  - Missing static keyword on functions meant to be file-local
+  - Not using extern for global variable declarations in headers
+
+fix: |
+  1. Move function definitions from header files to a single .c/.cpp file
+  2. Use extern in headers for global variables and define them in one .c file
+  3. Use static for functions and variables that should be file-local
+  4. Use inline for small functions defined in headers (C99+/C++)
+  5. In C++, use anonymous namespaces instead of static for internal linkage
+  6. Check that you haven't duplicated a function definition across files
+
+example_error: |
+  /usr/bin/ld: /tmp/ccXXXXXX.o: in function `helper':
+  utils.c:(.text+0x0): multiple definition of `helper'; /tmp/ccYYYYYY.o:main.c:(.text+0x0): first defined here
+  collect2: error: ld returned 1 exit status
+
+example_code: |
+  // helper.h
+  void helper() {        // Defined in header - bad!
+      printf("help\n");
+  }
+
+  // main.c
+  #include "helper.h"    // First definition
+
+  // utils.c
+  #include "helper.h"    // Second definition - linker error!
+
+links:
+  - https://en.cppreference.com/w/c/language/storage_duration
+  - https://gcc.gnu.org/onlinedocs/gcc/Link-Options.html

@@ -1,0 +1,36 @@
+id: redefinition
+tool: gcc/clang
+language: c_cpp
+title: Redefinition of a symbol
+tags: [declaration, definition, headers, linking]
+
+explain: |
+  A variable, function, type, or macro has been defined more than once in the same translation unit. C/C++ requires that each entity is defined exactly once. Common causes include:
+  - Including the same header file multiple times without include guards
+  - Defining a function or variable in a header file included by multiple source files
+  - Accidentally duplicating a definition in the same file
+  - Conflicting type definitions from different headers
+
+fix: |
+  1. Add include guards to all header files: #ifndef HEADER_H / #define HEADER_H / ... / #endif
+  2. Or use #pragma once at the top of header files
+  3. Use extern declarations in headers and define variables in exactly one .c file
+  4. Use static or inline for functions defined in headers
+  5. Check that you haven't accidentally pasted the same definition twice
+
+example_error: |
+  error: redefinition of 'struct point'
+
+example_code: |
+  // point.h (missing include guard)
+  struct point {
+      int x, y;
+  };
+
+  // main.c
+  #include "point.h"
+  #include "point.h"  // Error: struct point defined twice
+
+links:
+  - https://en.cppreference.com/w/c/language/storage_duration
+  - https://gcc.gnu.org/onlinedocs/cpp/Once-Only-Headers.html

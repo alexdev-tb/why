@@ -1,0 +1,39 @@
+id: missing-header
+tool: gcc/clang
+language: c_cpp
+title: Header file not found
+tags: [headers, include, preprocessor, files]
+
+explain: |
+  The preprocessor cannot find a header file specified in an #include directive. This is a fatal error that stops compilation. Common causes include:
+  - Typo in the header file name
+  - Missing -I flag to specify the include directory
+  - Required development library not installed on the system
+  - Using angle brackets <> instead of quotes "" for local headers or vice versa
+  - Header file does not exist or is in a different directory
+
+fix: |
+  1. Check the spelling of the header file name
+  2. Install the required development package (e.g., apt install libfoo-dev, yum install foo-devel)
+  3. Add the include directory with -I flag: gcc -I/path/to/headers main.c
+  4. Use quotes for local headers: #include "myheader.h"
+  5. Use angle brackets for system headers: #include <stdio.h>
+  6. Use pkg-config to get correct flags: gcc $(pkg-config --cflags libfoo) main.c
+
+example_error: |
+  fatal error: myheader.h: No such file or directory
+     2 | #include "myheader.h"
+       |          ^~~~~~~~~~~~
+  compilation terminated.
+
+example_code: |
+  #include <stdio.h>
+  #include "myheader.h"  // Error: file not found
+
+  int main() {
+      return 0;
+  }
+
+links:
+  - https://gcc.gnu.org/onlinedocs/cpp/Search-Path.html
+  - https://gcc.gnu.org/onlinedocs/gcc/Directory-Options.html
