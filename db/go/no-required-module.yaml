@@ -3,6 +3,8 @@ tool: go
 language: go
 title: Required module not found
 tags: [modules, import, dependency]
+patterns:
+  - ["no required module"]
 
 explain: |
   A "no required module provides" error occurs when you import a package that isn't defined in your go.mod file.

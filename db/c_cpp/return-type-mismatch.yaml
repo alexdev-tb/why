@@ -3,6 +3,8 @@ tool: gcc/clang
 language: c_cpp
 title: Control reaches end of non-void function
 tags: [functions, return, types, warnings]
+patterns:
+  - ["control reaches end of non-void function"]
 
 explain: |
   A function declared to return a value does not have a return statement on all code paths. This means the function could exit without returning anything, leading to undefined behavior when the caller uses the return value. Common causes include:

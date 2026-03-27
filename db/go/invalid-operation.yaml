@@ -3,6 +3,8 @@ tool: go
 language: go
 title: Invalid operation between types
 tags: [operator, operation, types]
+patterns:
+  - ["invalid operation"]
 
 explain: |
   An "invalid operation" error occurs when you try to perform an operation between incompatible types.

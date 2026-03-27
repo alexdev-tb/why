@@ -3,6 +3,8 @@ tool: go
 language: go
 title: Undefined identifier or variable
 tags: [scope, undefined, identifier]
+patterns:
+  - ["undefined:"]
 
 explain: |
   An undefined error occurs when you reference a variable, function, type, or package that doesn't exist or is out of scope.

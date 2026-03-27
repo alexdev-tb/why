@@ -3,6 +3,8 @@ tool: gcc/clang
 language: c_cpp
 title: Multiple definition of a symbol (linker error)
 tags: [linking, symbols, definition, headers]
+patterns:
+  - ["multiple definition of"]
 
 explain: |
   The linker found the same function or global variable defined in more than one object file. C/C++ requires exactly one definition of each symbol across all linked translation units (the One Definition Rule). Common causes include:

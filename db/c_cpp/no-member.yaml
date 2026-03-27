@@ -3,6 +3,8 @@ tool: gcc/clang
 language: c_cpp
 title: Struct or class has no member with that name
 tags: [structs, classes, members, fields]
+patterns:
+  - ["has no member named"]
 
 explain: |
   You are trying to access a member (field or method) of a struct, union, or class that does not exist. The compiler cannot find a member with the name you specified. Common causes include:

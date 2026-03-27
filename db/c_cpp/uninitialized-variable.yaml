@@ -3,6 +3,9 @@ tool: gcc/clang
 language: c_cpp
 title: Variable used without being initialized
 tags: [variables, initialization, warnings, undefined-behavior]
+patterns:
+  - ["is used uninitialized"]
+  - ["may be uninitialized"]
 
 explain: |
   You are reading the value of a local variable before assigning it a value. In C/C++, local variables are not automatically initialized to zero — they contain whatever garbage data was previously on the stack. Using an uninitialized variable is undefined behavior and can produce unpredictable results.

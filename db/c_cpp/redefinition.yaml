@@ -3,6 +3,8 @@ tool: gcc/clang
 language: c_cpp
 title: Redefinition of a symbol
 tags: [declaration, definition, headers, linking]
+patterns:
+  - ["redefinition of"]
 
 explain: |
   A variable, function, type, or macro has been defined more than once in the same translation unit. C/C++ requires that each entity is defined exactly once. Common causes include:

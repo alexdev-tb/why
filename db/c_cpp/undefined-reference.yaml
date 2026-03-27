@@ -3,6 +3,8 @@ tool: gcc/clang
 language: c_cpp
 title: Undefined reference to a symbol
 tags: [linking, functions, symbols, linker]
+patterns:
+  - ["undefined reference"]
 
 explain: |
   The compiler can find the declaration of a function or variable, but the linker cannot find its definition/implementation. This is a linker error that occurs during the linking phase. Common causes include:

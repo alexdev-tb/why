@@ -3,6 +3,8 @@ tool: go
 language: go
 title: Syntax error in code
 tags: [syntax, parsing]
+patterns:
+  - ["syntax error"]
 
 explain: |
   A syntax error occurs when Go's parser encounters code that doesn't follow Go's language rules.

@@ -3,6 +3,8 @@ tool: go
 language: go
 title: Assignment to entry in nil map
 tags: [map, nil, assignment]
+patterns:
+  - ["assignment to entry in nil map"]
 
 explain: |
   This panic occurs when you try to add or modify entries in a map that hasn't been initialized.

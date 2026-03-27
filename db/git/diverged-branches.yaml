@@ -1,0 +1,14 @@
+id: diverged-branches
+tool: git
+language: git
+title: Branches have diverged
+tags: [branch, merge, remote]
+patterns:
+  - ["have diverged"]
+  - ["divergent branches", "need to specify"]
+
+explain: |
+  Your local branch and the remote branch have different commits...
+
+fix: |
+  git pull --rebase origin main

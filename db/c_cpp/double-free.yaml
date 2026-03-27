@@ -3,6 +3,8 @@ tool: gcc/clang
 language: c_cpp
 title: Double free or memory corruption
 tags: [runtime, memory, heap, free, undefined-behavior]
+patterns:
+  - ["double free"]
 
 explain: |
   Your program attempted to free a block of memory that was already freed, or the heap metadata has been corrupted. This is a runtime error detected by the C library's memory allocator. Common causes include:

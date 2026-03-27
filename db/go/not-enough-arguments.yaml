@@ -3,6 +3,8 @@ tool: go
 language: go
 title: Function called with missing arguments
 tags: [function, arguments, parameters]
+patterns:
+  - ["not enough arguments"]
 
 explain: |
   A "not enough arguments" error occurs when you call a function but don't provide all required parameters.

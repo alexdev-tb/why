@@ -1,0 +1,37 @@
+# Copy this file into the appropriate db/<tool>/ directory.
+# Rename it to match the error: error-slug.yaml, E0XXX.yaml, ExceptionName.yaml, etc.
+#
+# Fields marked (required) must be filled in. Others are optional but recommended.
+#
+# The "patterns" field is how `why` auto-detects this error from stderr output.
+# Each pattern is a list of strings that ALL must appear in a single line (AND).
+# Multiple patterns give OR logic — any one matching is enough.
+# For tools with structured error codes (rustc, python), patterns are optional
+# since detection works via the error code / exception name.
+
+id: error-id # (required) unique identifier, matches filename
+tool: toolname # (required) e.g. gcc/clang, rustc, go, python, git, docker, npm
+language: langname # (required) e.g. c_cpp, rust, go, python, git, docker, npm
+title: Short descriptive title # (required)
+tags: []
+patterns: # (required for auto-detection, unless tool has structured error codes)
+  - ["text that must appear"]
+  - ["alternate", "match"] # any group matching = detected
+# exclude:                         # optional, to avoid false matches with other tools
+#   - "text that must NOT appear"
+
+explain: | # (required)
+  Plain English explanation of what went wrong and why.
+  Write as if explaining to a developer seeing this for the first time.
+
+fix: | # (required)
+  Concrete steps to fix the issue.
+
+example_error: |
+  The error message as the tool prints it
+
+example_code: |
+  // Minimal code that reproduces the error
+
+links:
+  - https://relevant-docs-link.example.com

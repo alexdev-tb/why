@@ -3,6 +3,8 @@ tool: gcc/clang
 language: c_cpp
 title: Use of undeclared identifier
 tags: [declaration, scope, variables, identifiers]
+patterns:
+  - ["undeclared", "first use in this function"]
 
 explain: |
   You are trying to use a variable, function, or other identifier that hasn't been declared before its use. In C/C++, all identifiers must be declared before they can be used. Common causes include:

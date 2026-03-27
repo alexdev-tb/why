@@ -3,6 +3,8 @@ tool: go
 language: go
 title: Type assertion failed
 tags: [type-assertion, interface, panic]
+patterns:
+  - ["interface", "is", "not"]
 
 explain: |
   A type assertion panic occurs when you use a type assertion to claim that an interface value

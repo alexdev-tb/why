@@ -3,6 +3,8 @@ tool: go
 language: go
 title: Slice or array index out of bounds
 tags: [index, array, slice, bounds]
+patterns:
+  - ["index out of range"]
 
 explain: |
   An index out of range panic occurs when you try to access an element of a slice or array at an index

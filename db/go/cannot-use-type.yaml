@@ -3,6 +3,8 @@ tool: go
 language: go
 title: Type mismatch or cannot convert type
 tags: [types, type-mismatch, conversion]
+patterns:
+  - ["cannot use"]
 
 explain: |
   A "cannot use" error occurs when you try to use a value of one type where a different type is expected.

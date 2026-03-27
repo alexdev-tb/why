@@ -3,6 +3,8 @@ tool: gcc/clang
 language: c_cpp
 title: Implicit function declaration
 tags: [functions, declarations, headers, C99]
+patterns:
+  - ["implicit declaration of function"]
 
 explain: |
   You are calling a function that hasn't been declared before the call. In older C89/C90, the compiler would implicitly assume the function exists and returns int, but this is bad practice and can cause errors. This usually happens when:

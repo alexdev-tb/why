@@ -3,6 +3,8 @@ tool: gcc/clang
 language: c_cpp
 title: Array subscript out of bounds
 tags: [arrays, bounds, memory, warnings, undefined-behavior]
+patterns:
+  - ["array subscript", "above array bounds"]
 
 explain: |
   You are accessing an array with an index that is outside the valid range. Array indices in C/C++ start at 0, so for an array of size N, valid indices are 0 through N-1. Accessing out-of-bounds memory is undefined behavior and can corrupt data, crash the program, or create security vulnerabilities.

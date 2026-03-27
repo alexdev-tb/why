@@ -3,6 +3,8 @@ tool: go
 language: go
 title: Concurrent map write error
 tags: [concurrency, map, race-condition]
+patterns:
+  - ["concurrent map"]
 
 explain: |
   A concurrent map write error occurs when multiple goroutines try to write to or read and write

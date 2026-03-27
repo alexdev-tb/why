@@ -3,6 +3,8 @@ tool: go
 language: go
 title: Function called with extra arguments
 tags: [function, arguments, parameters]
+patterns:
+  - ["too many arguments"]
 
 explain: |
   A "too many arguments" error occurs when you provide more arguments to a function than it expects.

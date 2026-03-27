@@ -3,6 +3,8 @@ tool: go
 language: go
 title: Imported but unused package
 tags: [import, unused, package]
+patterns:
+  - ["imported and not used"]
 
 explain: |
   An unused import occurs when you import a package but don't use anything from it in your code.

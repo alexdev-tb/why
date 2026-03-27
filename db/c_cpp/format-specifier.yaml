@@ -3,6 +3,8 @@ tool: gcc/clang
 language: c_cpp
 title: Format string type mismatch
 tags: [printf, format, strings, types, warnings]
+patterns:
+  - ["format", "expects argument of type"]
 
 explain: |
   The format specifier in a printf/scanf family function does not match the type of the corresponding argument. This can cause incorrect output, crashes, or undefined behavior. Common mismatches include:

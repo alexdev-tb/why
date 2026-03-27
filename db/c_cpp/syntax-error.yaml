@@ -3,6 +3,9 @@ tool: gcc/clang
 language: c_cpp
 title: Syntax error in C/C++ code
 tags: [syntax, parsing, compilation]
+patterns:
+  - ["expected", "before"]
+  - ["expected", "';'"]
 
 explain: |
   Your code violates the C/C++ grammar rules. The compiler couldn't parse your code. Common syntax errors include:

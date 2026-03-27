@@ -3,6 +3,9 @@ tool: gcc/clang
 language: c_cpp
 title: Type mismatch in assignment or parameter
 tags: [types, conversion, casting, type-safety]
+patterns:
+  - ["incompatible types when"]
+  - ["incompatible type"]
 
 explain: |
   You are trying to assign or pass a value of one type to something expecting a different type, and no implicit conversion is possible. C/C++ is type-strict about certain operations. Common causes include:

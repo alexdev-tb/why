@@ -3,6 +3,8 @@ tool: go
 language: go
 title: Runtime panic
 tags: [panic, runtime, fatal]
+patterns:
+  - ["runtime error"]
 
 explain: |
   A panic occurs when your program encounters something it cannot handle safely and must terminate immediately.

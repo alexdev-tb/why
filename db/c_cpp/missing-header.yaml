@@ -3,6 +3,8 @@ tool: gcc/clang
 language: c_cpp
 title: Header file not found
 tags: [headers, include, preprocessor, files]
+patterns:
+  - ["No such file or directory", "fatal error"]
 
 explain: |
   The preprocessor cannot find a header file specified in an #include directive. This is a fatal error that stops compilation. Common causes include:

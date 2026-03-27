@@ -3,6 +3,11 @@ tool: gcc/clang
 language: c_cpp
 title: Function called with wrong number of arguments
 tags: [functions, arguments, parameters]
+patterns:
+  - ["too few arguments"]
+  - ["too many arguments"]
+exclude:
+  - "go"
 
 explain: |
   You called a function with a different number of arguments than the function requires. Functions have a specific number of parameters they expect. Common causes include:

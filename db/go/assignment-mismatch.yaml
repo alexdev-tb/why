@@ -3,6 +3,8 @@ tool: go
 language: go
 title: Assignment count mismatch
 tags: [assignment, multiple-return, unpacking]
+patterns:
+  - ["assignment mismatch"]
 
 explain: |
   An "assignment mismatch" error occurs when the number of values on the right side of an assignment

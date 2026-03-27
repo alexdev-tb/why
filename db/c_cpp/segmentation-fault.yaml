@@ -3,6 +3,9 @@ tool: gcc/clang
 language: c_cpp
 title: Segmentation fault (runtime memory error)
 tags: [runtime, memory, pointers, undefined-behavior]
+patterns:
+  - ["Segmentation fault"]
+  - ["segmentation fault"]
 
 explain: |
   Your program attempted to access memory that it doesn't have permission to access. This is a runtime error (program crash) that occurs when:

@@ -3,6 +3,8 @@ tool: gcc/clang
 language: c_cpp
 title: Stack smashing detected (buffer overflow)
 tags: [runtime, memory, stack, buffer-overflow, security]
+patterns:
+  - ["stack smashing detected"]
 
 explain: |
   Your program wrote past the end of a stack-allocated buffer, overwriting the stack canary value placed by the compiler. This is a security protection mechanism that detects stack buffer overflows. Common causes include:

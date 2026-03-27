@@ -3,6 +3,8 @@ tool: go
 language: go
 title: Declared but unused variable
 tags: [unused, declaration, variable]
+patterns:
+  - ["declared but not used"]
 
 explain: |
   Go treats unused variables as compile errors because they usually indicate a mistake in your code.
