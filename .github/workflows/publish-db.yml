@@ -39,7 +39,8 @@ jobs:
 
           # Copy db contents to root (rust/, python/, etc.)
           cp -r /tmp/why-db/* .
-          rm -f TEMPLATE.yaml
+          # Remove all TEMPLATE files (root-level and any leftover per-language)
+          find . -name 'TEMPLATE.yaml' -delete
 
           git add -A
           count=$(find . -name '*.yaml' | wc -l)
