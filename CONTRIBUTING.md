@@ -159,6 +159,10 @@ python scripts/validate.py
 
 This runs the same checks as CI. Fix any errors it reports before submitting.
 
+## Using a coding agent?
+
+If you are using a coding agent (Claude, Copilot, Cursor, etc.) to generate entries, point it at [AGENTS.md](AGENTS.md). It has the exact conventions, field rules, and common mistakes laid out in a format agents work well with.
+
 ## Code of conduct
 
 Be kind. Be helpful. We're all here to make error messages less miserable.
