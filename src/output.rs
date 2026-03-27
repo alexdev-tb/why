@@ -6,16 +6,28 @@ pub fn print_entry(entry: &ErrorEntry) {
     let width = 60;
     let divider = "─".repeat(width);
 
+    let badge = format!("{}/{}", entry.language, entry.tool);
+    // "→ " + id + " — " + title = prefix; pad to right-align badge
+    let prefix_len = 2 + entry.id.len() + 3 + entry.title.len();
+    let padding = if prefix_len + badge.len() < width {
+        width - prefix_len - badge.len()
+    } else {
+        2
+    };
+
     println!();
     println!(
-        "  {} {} {} {}",
+        "  {} {} {} {}{}{}",
         "→".green().bold(),
         entry.id.bold().green(),
         "—".dimmed(),
-        entry.title.bold()
+        entry.title.bold(),
+        " ".repeat(padding),
+        badge.dimmed()
     );
     println!("  {}", divider.dimmed());
 
+    println!();
     for line in entry.explain.trim().lines() {
         println!("  {}", line);
     }
@@ -34,12 +46,8 @@ pub fn print_entry(entry: &ErrorEntry) {
         }
     }
 
+    println!();
     println!("  {}", divider.dimmed());
-    println!(
-        "  {} Improve this entry → {}",
-        "Was this helpful?".dimmed(),
-        "https://github.com/alexdev-tb/why".dimmed()
-    );
     println!();
 }
 
