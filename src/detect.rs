@@ -56,12 +56,19 @@ mod tests {
     #[test]
     fn test_extract_rust_error_codes() {
         let cases = vec![
-            (r#"error[E0499]: cannot borrow `x` as mutable more than once at a time
- --> src/main.rs:4:13"#, Some("E0499")),
+            (
+                r#"error[E0499]: cannot borrow `x` as mutable more than once at a time
+ --> src/main.rs:4:13"#,
+                Some("E0499"),
+            ),
             ("error[E0308]: mismatched types", Some("E0308")),
         ];
         for (stderr, expected) in cases {
-            assert_eq!(extract_error_code(stderr), expected.map(String::from), "failed on: {stderr}");
+            assert_eq!(
+                extract_error_code(stderr),
+                expected.map(String::from),
+                "failed on: {stderr}"
+            );
         }
     }
 
@@ -93,7 +100,11 @@ mod tests {
             ("/usr/bin/ld: /tmp/ccYYYYYY.o: in function `helper':\nutils.c:(.text+0x0): multiple definition of `helper'; /tmp/ccXXXXXX.o:main.c:(.text+0x0): first defined here", "multiple-definition"),
         ];
         for (stderr, expected) in cases {
-            assert_eq!(extract_error_code(stderr), Some(expected.to_string()), "failed on: {stderr}");
+            assert_eq!(
+                extract_error_code(stderr),
+                Some(expected.to_string()),
+                "failed on: {stderr}"
+            );
         }
     }
 
@@ -101,11 +112,21 @@ mod tests {
     fn test_extract_go_errors() {
         let cases = vec![
             ("./test.go:4:5: undefined: fmt", "undefined"),
-            ("./main.go:10:8: cannot use myInt (type int) as type int32 in assignment", "cannot-use-type"),
-            ("./main.go:5:2: syntax error: unexpected x, expected }", "syntax-error"),
+            (
+                "./main.go:10:8: cannot use myInt (type int) as type int32 in assignment",
+                "cannot-use-type",
+            ),
+            (
+                "./main.go:5:2: syntax error: unexpected x, expected }",
+                "syntax-error",
+            ),
         ];
         for (stderr, expected) in cases {
-            assert_eq!(extract_error_code(stderr), Some(expected.to_string()), "failed on: {stderr}");
+            assert_eq!(
+                extract_error_code(stderr),
+                Some(expected.to_string()),
+                "failed on: {stderr}"
+            );
         }
     }
 

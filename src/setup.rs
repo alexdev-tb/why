@@ -42,7 +42,11 @@ pub fn install() {
                 "error:".red().bold()
             );
             eprintln!("  Supported shells: bash, zsh");
-            eprintln!("  You can set it up manually — run: {} {}", "why".green(), "--setup-manual".dimmed());
+            eprintln!(
+                "  You can set it up manually — run: {} {}",
+                "why".green(),
+                "--setup-manual".dimmed()
+            );
             std::process::exit(1);
         }
     };
@@ -81,11 +85,7 @@ pub fn install() {
         std::process::exit(1);
     }
 
-    eprintln!(
-        "  {} Hook added to {}",
-        "✓".green().bold(),
-        display_path
-    );
+    eprintln!("  {} Hook added to {}", "✓".green().bold(), display_path);
     eprintln!(
         "  Restart your shell or run: {} {}",
         "source".green(),

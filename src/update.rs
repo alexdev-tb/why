@@ -5,8 +5,7 @@ use std::io;
 use std::path::{Path, PathBuf};
 use tar::Archive;
 
-const DB_URL: &str =
-    "https://github.com/alexdev-tb/why/archive/refs/heads/db.tar.gz";
+const DB_URL: &str = "https://github.com/alexdev-tb/why/archive/refs/heads/db.tar.gz";
 
 pub fn cache_dir() -> Option<PathBuf> {
     dirs::data_dir().map(|d| d.join("why").join("db"))
@@ -103,8 +102,16 @@ fn count_yaml_files(dir: &Path) -> usize {
         for entry in entries.flatten() {
             if entry.file_type().map(|t| t.is_dir()).unwrap_or(false) {
                 count += count_yaml_files(&entry.path());
-            } else if entry.path().extension().map(|e| e == "yaml").unwrap_or(false)
-                && entry.path().file_stem().map(|s| s != "TEMPLATE").unwrap_or(true)
+            } else if entry
+                .path()
+                .extension()
+                .map(|e| e == "yaml")
+                .unwrap_or(false)
+                && entry
+                    .path()
+                    .file_stem()
+                    .map(|s| s != "TEMPLATE")
+                    .unwrap_or(true)
             {
                 count += 1;
             }
@@ -119,7 +126,6 @@ mod tests {
     use flate2::write::GzEncoder;
     use flate2::Compression;
 
-
     /// Build a .tar.gz mimicking a GitHub branch archive (why-db/ prefix).
     fn build_test_tarball() -> Vec<u8> {
         let gz_buf = Vec::new();
@@ -132,11 +138,7 @@ mod tests {
         header.set_mode(0o644);
         header.set_cksum();
         builder
-            .append_data(
-                &mut header,
-                "why-db/rust/E0499.yaml",
-                &yaml_content[..],
-            )
+            .append_data(&mut header, "why-db/rust/E0499.yaml", &yaml_content[..])
             .unwrap();
 
         let yaml2 = b"id: TypeError\ntool: python\nlanguage: python\ntitle: Type Error\nexplain: Wrong type\nfix: Fix type\n";
@@ -148,17 +150,14 @@ mod tests {
             .append_data(&mut header2, "why-db/python/TypeError.yaml", &yaml2[..])
             .unwrap();
 
-        let template = b"id: TEMPLATE\ntool: rustc\nlanguage: rust\ntitle: Template\nexplain: ...\nfix: ...\n";
+        let template =
+            b"id: TEMPLATE\ntool: rustc\nlanguage: rust\ntitle: Template\nexplain: ...\nfix: ...\n";
         let mut header3 = tar::Header::new_gnu();
         header3.set_size(template.len() as u64);
         header3.set_mode(0o644);
         header3.set_cksum();
         builder
-            .append_data(
-                &mut header3,
-                "why-db/rust/TEMPLATE.yaml",
-                &template[..],
-            )
+            .append_data(&mut header3, "why-db/rust/TEMPLATE.yaml", &template[..])
             .unwrap();
 
         let encoder = builder.into_inner().unwrap();
