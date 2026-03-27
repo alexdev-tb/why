@@ -17,11 +17,11 @@ struct Cli {
     error_code: Option<String>,
 
     /// List all known errors, optionally filtered by language
-    #[arg(long)]
+    #[arg(short, long)]
     list: Option<Option<String>>,
 
     /// Install shell hook into your shell config automatically
-    #[arg(long)]
+    #[arg(short, long)]
     setup: bool,
 
     /// Show manual shell hook setup instructions
@@ -33,11 +33,11 @@ struct Cli {
     uninstall: bool,
 
     /// Print shell hook script to stdout (bash or zsh)
-    #[arg(long, value_name = "SHELL")]
+    #[arg(short = 'H', long, value_name = "SHELL")]
     hook: Option<String>,
 
     /// Download the latest error database from GitHub
-    #[arg(long)]
+    #[arg(short, long)]
     update: bool,
 }
 
