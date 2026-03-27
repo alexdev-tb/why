@@ -19,7 +19,7 @@ import yaml
 
 REQUIRED_FIELDS = {"id", "tool", "language", "title", "explain", "fix"}
 OPTIONAL_STRING_FIELDS = {"example_error", "example_code"}
-OPTIONAL_LIST_FIELDS = {"tags"}
+OPTIONAL_LIST_FIELDS = {"tags", "exclude", "patterns"}
 OPTIONAL_LIST_OF_STRINGS_FIELDS = {"links"}
 
 ALL_KNOWN_FIELDS = (

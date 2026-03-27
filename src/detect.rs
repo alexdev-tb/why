@@ -11,65 +11,19 @@ pub fn from_env() -> Option<String> {
     extract_error_code(&stderr)
 }
 
-struct PatternRule {
-    groups: &'static [&'static [&'static str]],
-    exclude: &'static [&'static str],
-    code: &'static str,
-}
+/// Match stderr against all DB entries that have `patterns` defined.
+fn match_from_db(stderr: &str) -> Option<String> {
+    let entries = crate::db::load_pattern_entries();
 
-/// C/C++ error patterns
-const C_CPP_PATTERNS: &[PatternRule] = &[
-    PatternRule { groups: &[&["undeclared", "first use in this function"]], exclude: &[], code: "undeclared-identifier" },
-    PatternRule { groups: &[&["multiple definition of"]], exclude: &[], code: "multiple-definition" },
-    PatternRule { groups: &[&["undefined reference"]], exclude: &[], code: "undefined-reference" },
-    PatternRule { groups: &[&["incompatible types when"], &["incompatible type"]], exclude: &[], code: "type-mismatch" },
-    PatternRule { groups: &[&["implicit declaration of function"]], exclude: &[], code: "implicit-function-declaration" },
-    PatternRule { groups: &[&["too few arguments"]], exclude: &[], code: "function-argument-mismatch" },
-    PatternRule { groups: &[&["too many arguments"]], exclude: &["go"], code: "function-argument-mismatch" },
-    PatternRule { groups: &[&["No such file or directory", "fatal error"]], exclude: &[], code: "missing-header" },
-    PatternRule { groups: &[&["has no member named"]], exclude: &[], code: "no-member" },
-    PatternRule { groups: &[&["redefinition of"]], exclude: &[], code: "redefinition" },
-    PatternRule { groups: &[&["format", "expects argument of type"]], exclude: &[], code: "format-specifier" },
-    PatternRule { groups: &[&["is used uninitialized"], &["may be uninitialized"]], exclude: &[], code: "uninitialized-variable" },
-    PatternRule { groups: &[&["array subscript", "above array bounds"]], exclude: &[], code: "array-out-of-bounds" },
-    PatternRule { groups: &[&["control reaches end of non-void function"]], exclude: &[], code: "return-type-mismatch" },
-    PatternRule { groups: &[&["double free"]], exclude: &[], code: "double-free" },
-    PatternRule { groups: &[&["stack smashing detected"]], exclude: &[], code: "stack-smashing" },
-    PatternRule { groups: &[&["Segmentation fault"], &["segmentation fault"]], exclude: &[], code: "segmentation-fault" },
-    PatternRule { groups: &[&["expected", "before"], &["expected", "';'"]], exclude: &[], code: "syntax-error" },
-];
-
-/// Go error patterns.
-const GO_PATTERNS: &[PatternRule] = &[
-    PatternRule { groups: &[&["undefined:"]], exclude: &[], code: "undefined" },
-    PatternRule { groups: &[&["cannot use"]], exclude: &[], code: "cannot-use-type" },
-    PatternRule { groups: &[&["no required module"]], exclude: &[], code: "no-required-module" },
-    PatternRule { groups: &[&["syntax error"]], exclude: &[], code: "syntax-error" },
-    PatternRule { groups: &[&["not enough arguments"]], exclude: &[], code: "not-enough-arguments" },
-    PatternRule { groups: &[&["too many arguments"]], exclude: &[], code: "too-many-arguments" },
-    PatternRule { groups: &[&["invalid operation"]], exclude: &[], code: "invalid-operation" },
-    PatternRule { groups: &[&["assignment mismatch"]], exclude: &[], code: "assignment-mismatch" },
-    PatternRule { groups: &[&["concurrent map"]], exclude: &[], code: "concurrent-map-write" },
-    PatternRule { groups: &[&["declared but not used"]], exclude: &[], code: "unused-variable" },
-    PatternRule { groups: &[&["imported and not used"]], exclude: &[], code: "unused-import" },
-    PatternRule { groups: &[&["interface", "is", "not"]], exclude: &[], code: "type-assertion-failed" },
-    PatternRule { groups: &[&["index out of range"]], exclude: &[], code: "index-out-of-range" },
-    PatternRule { groups: &[&["assignment to entry in nil map"]], exclude: &[], code: "assignment-to-nil-map" },
-    PatternRule { groups: &[&["runtime error"]], exclude: &[], code: "panic-runtime-error" },
-];
-
-fn match_line(line: &str, rule: &PatternRule) -> bool {
-    let any_group_matches = rule.groups.iter().any(|group| {
-        group.iter().all(|pat| line.contains(pat))
-    });
-    any_group_matches && rule.exclude.iter().all(|pat| !line.contains(pat))
-}
-
-fn match_patterns(stderr: &str, rules: &[PatternRule]) -> Option<String> {
     for line in stderr.lines() {
-        for rule in rules {
-            if match_line(line, rule) {
-                return Some(rule.code.to_string());
+        for (id, patterns, exclude) in &entries {
+            let any_group = patterns
+                .iter()
+                .any(|group| group.iter().all(|pat| line.contains(pat.as_str())));
+            let no_exclusion = exclude.iter().all(|pat| !line.contains(pat.as_str()));
+
+            if any_group && no_exclusion {
+                return Some(id.clone());
             }
         }
     }
@@ -77,24 +31,20 @@ fn match_patterns(stderr: &str, rules: &[PatternRule]) -> Option<String> {
 }
 
 pub fn extract_error_code(stderr: &str) -> Option<String> {
+    // Rust: structured error codes
     let rust_re = Regex::new(r"error\[E(\d+)\]").unwrap();
     if let Some(caps) = rust_re.captures(stderr) {
         return Some(format!("E{}", &caps[1]));
     }
 
-    // Python detection
+    // Python: exception class names
     let python_re = Regex::new(r"(?m)^((?:\w*(?:Error|Exception|Warning)|StopIteration|KeyboardInterrupt|SystemExit|GeneratorExit|BaseException))\b").unwrap();
     if let Some(caps) = python_re.captures(stderr) {
         return Some(caps[1].to_string());
     }
 
-    // C/C++ (checked before Go to avoid collisions)
-    if let Some(code) = match_patterns(stderr, C_CPP_PATTERNS) {
-        return Some(code);
-    }
-
-    // Go detection
-    match_patterns(stderr, GO_PATTERNS)
+    // Everything else: data-driven pattern matching from YAML entries
+    match_from_db(stderr)
 }
 
 // TESTS
@@ -163,5 +113,4 @@ mod tests {
     fn test_extract_no_match() {
         assert_eq!(extract_error_code("some random output"), None);
     }
-
 }

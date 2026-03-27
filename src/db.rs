@@ -16,6 +16,8 @@ pub struct ErrorEntry {
     pub explain: String,
     pub fix: String,
     pub tags: Option<Vec<String>>,
+    pub patterns: Option<Vec<Vec<String>>>,
+    pub exclude: Option<Vec<String>>,
     pub example_error: Option<String>,
     pub example_code: Option<String>,
     pub links: Option<Vec<String>>,
@@ -114,6 +116,71 @@ fn embedded_list(filter: Option<&str>) -> Vec<(String, String, String)> {
 
     entries.sort();
     entries
+}
+
+/// Load all entries that have `patterns` defined, for data-driven detection.
+/// Returns (id, patterns, exclude) tuples.
+pub fn load_pattern_entries() -> Vec<(String, Vec<Vec<String>>, Vec<String>)> {
+    // Same priority as lookup: env override → cache → embedded
+    if let Some(db_path) = env_db_dir() {
+        let entries = fs_pattern_entries(&db_path);
+        if !entries.is_empty() {
+            return entries;
+        }
+    }
+
+    if let Some(cache) = crate::update::cache_dir() {
+        if cache.is_dir() {
+            let entries = fs_pattern_entries(&cache);
+            if !entries.is_empty() {
+                return entries;
+            }
+        }
+    }
+
+    embedded_pattern_entries()
+}
+
+fn embedded_pattern_entries() -> Vec<(String, Vec<Vec<String>>, Vec<String>)> {
+    let mut out = Vec::new();
+    for lang_dir in EMBEDDED_DB.dirs() {
+        for file in lang_dir.files() {
+            if let Some(content) = file.contents_utf8() {
+                if let Ok(entry) = serde_yaml::from_str::<ErrorEntry>(content) {
+                    if let Some(patterns) = entry.patterns {
+                        let exclude = entry.exclude.unwrap_or_default();
+                        out.push((entry.id, patterns, exclude));
+                    }
+                }
+            }
+        }
+    }
+    out
+}
+
+fn fs_pattern_entries(db: &Path) -> Vec<(String, Vec<Vec<String>>, Vec<String>)> {
+    let mut out = Vec::new();
+    if let Ok(languages) = fs::read_dir(db) {
+        for lang_dir in languages.flatten() {
+            if !lang_dir.file_type().map(|t| t.is_dir()).unwrap_or(false) {
+                continue;
+            }
+            if let Ok(files) = fs::read_dir(lang_dir.path()) {
+                for file in files.flatten() {
+                    let path = file.path();
+                    if path.extension().map(|e| e == "yaml").unwrap_or(false) {
+                        if let Some(entry) = load_fs_entry(&path) {
+                            if let Some(patterns) = entry.patterns {
+                                let exclude = entry.exclude.unwrap_or_default();
+                                out.push((entry.id, patterns, exclude));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    out
 }
 
 // ── Filesystem lookup ──────────────────────────────────────────────────
