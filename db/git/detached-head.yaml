@@ -1,0 +1,29 @@
+id: detached-head
+tool: git
+language: git
+title: Detached HEAD state
+tags: [head, branches, checkout]
+patterns:
+  - ["You are in 'detached HEAD' state"]
+  - ["HEAD is now at"]
+
+explain: |
+  You checked out a specific commit, tag, or remote branch instead of a local branch.
+  In this state, any new commits you make won't belong to any branch and can be lost
+  if you switch away without saving them.
+
+fix: |
+  To keep any work you do in this state, create a new branch:
+    git checkout -b my-new-branch
+  To go back to a normal branch:
+    git checkout main
+  If you already made commits and switched away, find them with:
+    git reflog
+
+example_error: |
+  You are in 'detached HEAD' state. You can look around, make experimental
+  changes and commit them, and you can discard any commits you make in this
+  state without impacting any branches by switching back to a branch.
+
+links:
+  - https://git-scm.com/docs/git-checkout

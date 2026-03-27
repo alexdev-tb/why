@@ -1,0 +1,30 @@
+id: daemon-not-running
+tool: docker
+language: docker
+title: Docker daemon is not running
+tags: [daemon, service, socket]
+patterns:
+  - ["Cannot connect to the Docker daemon"]
+  - ["Is the docker daemon running"]
+  - ["connect: connection refused"]
+
+explain: |
+  The Docker CLI cannot communicate with the Docker daemon (the background service
+  that actually runs containers). Either the daemon is not started, or your user
+  does not have permission to access the Docker socket.
+
+fix: |
+  1. Start the Docker daemon:
+     sudo systemctl start docker      (Linux with systemd)
+     open -a Docker                    (macOS with Docker Desktop)
+  2. If it is running but you get permission errors, add yourself to the docker group:
+     sudo usermod -aG docker $USER
+     Then log out and back in.
+  3. Check the daemon status: sudo systemctl status docker
+
+example_error: |
+  Cannot connect to the Docker daemon at unix:///var/run/docker.sock.
+  Is the docker daemon running?
+
+links:
+  - https://docs.docker.com/config/daemon/

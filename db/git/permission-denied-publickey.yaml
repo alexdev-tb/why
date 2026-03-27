@@ -1,0 +1,32 @@
+id: permission-denied-publickey
+tool: git
+language: git
+title: Permission denied (publickey)
+tags: [ssh, authentication, remote]
+patterns:
+  - ["Permission denied (publickey)"]
+  - ["Could not read from remote repository"]
+
+explain: |
+  Git tried to connect to the remote server over SSH but your SSH key was not
+  accepted. This means the server does not recognize your machine. Common causes:
+  - No SSH key exists on your machine
+  - Your SSH key is not added to your GitHub/GitLab account
+  - The ssh-agent is not running or does not have your key loaded
+
+fix: |
+  1. Check if you have an SSH key: ls ~/.ssh/id_*.pub
+  2. If not, generate one: ssh-keygen -t ed25519
+  3. Add it to your account (copy the public key):
+     cat ~/.ssh/id_ed25519.pub
+  4. If the key exists but still fails, start the agent and add it:
+     eval "$(ssh-agent -s)" && ssh-add
+  5. Alternatively, switch to HTTPS:
+     git remote set-url origin https://github.com/user/repo.git
+
+example_error: |
+  git@github.com: Permission denied (publickey).
+  fatal: Could not read from remote repository.
+
+links:
+  - https://docs.github.com/en/authentication/connecting-to-github-with-ssh

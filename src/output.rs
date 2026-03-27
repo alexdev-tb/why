@@ -65,7 +65,7 @@ pub fn print_list(entries: &[(String, String, String)]) {
     }
     println!();
     println!(
-        "  {} errors across {} languages",
+        "  {} errors across {} tools",
         entries.len().to_string().bold(),
         {
             let mut langs: Vec<&str> = entries.iter().map(|(l, _, _)| l.as_str()).collect();

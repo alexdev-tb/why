@@ -1,0 +1,17 @@
+id: shell-detection-failed
+tool: why
+language: why
+title: Could not detect shell
+tags: [setup, shell]
+patterns:
+  - ["Could not detect your shell"]
+
+explain: |
+  `why --setup` tried to read your $SHELL environment variable to figure out which
+  shell you use, but it was either unset or not a supported shell. Currently only
+  bash and zsh are supported.
+
+fix: |
+  1. Check your shell: echo $SHELL
+  2. If you use bash or zsh, make sure $SHELL is set correctly
+  3. If you use a different shell, set up the hook manually: why --setup-manual

@@ -1,0 +1,30 @@
+id: uncommitted-changes
+tool: git
+language: git
+title: Cannot switch branches with uncommitted changes
+tags: [checkout, stash, changes]
+patterns:
+  - ["Your local changes to the following files would be overwritten"]
+  - ["Please commit your changes or stash them before you switch"]
+
+explain: |
+  You tried to switch branches or pull, but you have uncommitted changes that would
+  be overwritten. Git refuses to do this to prevent you from losing work.
+
+fix: |
+  Option 1 — commit your changes:
+    git add . && git commit -m "WIP"
+  Option 2 — stash them temporarily:
+    git stash
+    git checkout other-branch
+    git stash pop   # to get them back later
+  Option 3 — discard them (careful, this is permanent):
+    git checkout -- .
+
+example_error: |
+  error: Your local changes to the following files would be overwritten by checkout:
+      src/main.rs
+  Please commit your changes or stash them before you switch branches.
+
+links:
+  - https://git-scm.com/docs/git-stash

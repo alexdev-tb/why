@@ -1,0 +1,26 @@
+id: port-already-in-use
+tool: docker
+language: docker
+title: Port is already allocated
+tags: [port, networking, bind]
+patterns:
+  - ["port is already allocated"]
+  - ["address already in use"]
+  - ["Bind for", "failed"]
+
+explain: |
+  Docker tried to bind a container port to a host port that is already in use by
+  another container or a process running on your machine.
+
+fix: |
+  1. Find what is using the port: lsof -i :<port> or ss -tlnp | grep <port>
+  2. Stop the conflicting container: docker stop <container>
+  3. Or use a different host port: docker run -p 8081:80 instead of -p 8080:80
+  4. To see all running containers: docker ps
+
+example_error: |
+  docker: Error response from daemon: driver failed programming external connectivity
+  on endpoint mycontainer: Bind for 0.0.0.0:8080 failed: port is already allocated.
+
+links:
+  - https://docs.docker.com/engine/reference/run/#expose-incoming-ports

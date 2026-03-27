@@ -1,0 +1,29 @@
+id: enoent
+tool: npm
+language: npm
+title: File or directory not found
+tags: [install, missing, package-json]
+patterns:
+  - ["ENOENT", "no such file or directory"]
+  - ["npm error", "enoent"]
+
+explain: |
+  npm tried to access a file or directory that does not exist. This usually means
+  you are running npm in a directory without a package.json, a referenced script
+  path is wrong, or a dependency's postinstall script references a missing file.
+
+fix: |
+  1. Make sure you are in the right directory: ls package.json
+  2. If there is no package.json, create one: npm init -y
+  3. If this happens during install, delete node_modules and try again:
+     rm -rf node_modules package-lock.json && npm install
+  4. Check that any scripts in package.json reference files that exist
+
+example_error: |
+  npm error code ENOENT
+  npm error syscall open
+  npm error path /home/user/project/package.json
+  npm error enoent Could not read package.json
+
+links:
+  - https://docs.npmjs.com/cli/v10/commands/npm-init

@@ -1,0 +1,17 @@
+id: no-explanation-found
+tool: why
+language: why
+title: No explanation found for error code
+tags: [database, missing]
+patterns:
+  - ["No explanation found for"]
+
+explain: |
+  You asked `why` to explain an error code, but no matching entry exists in the database yet.
+  The database is community-maintained and does not cover every possible error.
+
+fix: |
+  1. Check if you typed the error code correctly
+  2. Run `why --update` to download the latest database — it may have been added recently
+  3. If it's still missing, consider contributing an explanation:
+     https://github.com/alexdev-tb/why/blob/main/CONTRIBUTING.md
