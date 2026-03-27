@@ -1,120 +1,170 @@
 # Contributing to why
 
-Welcome! Thanks for your interest in making compiler errors less painful for everyone.
+Thanks for helping make error messages less painful. Every contribution, a single YAML file, a better explanation, a typo fix helps developers who are stuck.
 
-`why` is a community-maintained database of plain English error explanations. Every contribution whether it is a single YAML file or a typo fix makes a real difference for developers who are stuck and frustrated.
+## How `why` works
 
-## Quick Start
+`why` has a database of error explanations stored as YAML files under `db/`. Each tool (compiler, CLI, etc.) gets its own directory:
 
-1. **Fork** the repo and clone it locally.
-2. **Copy the template** for the language you want to contribute to:
+```
+db/
+  rust/          # rustc errors (E0499.yaml, E0308.yaml, ...)
+  python/        # Python exceptions (TypeError.yaml, ImportError.yaml, ...)
+  c_cpp/         # gcc/clang errors (undefined-reference.yaml, ...)
+  go/            # Go compiler errors (undefined.yaml, unused-variable.yaml, ...)
+  git/           # git errors (diverged-branches.yaml, ...)
+```
+
+When a command fails, `why` reads the stderr output and tries to match it against database entries. For tools like `rustc` and `python`, it matches structured error codes (e.g., `E0499`, `TypeError`). For everything else, it uses the `patterns` field in each YAML file to find a match.
+
+## Adding a new error entry
+
+1. Fork the repo and clone it locally
+2. Copy the template:
    ```sh
-   cp db/rust/TEMPLATE.yaml db/rust/E0XXX.yaml
+   cp db/TEMPLATE.yaml db/<tool>/my-error.yaml
    ```
-3. **Fill in every field** with a clear, helpful explanation.
-4. **Validate locally** to make sure everything looks right:
+3. Fill in the fields (see below)
+4. Validate:
    ```sh
    python scripts/validate.py
    ```
-5. **Open a pull request.** That's it!
+5. Open a pull request
 
-## YAML Schema Reference
+### Adding a new tool
 
-Each error entry is a single YAML file. Here is every field:
+If the tool directory doesn't exist yet, create it:
 
-| Field           | Required | Description                                                                                       |
-| --------------- | -------- | ------------------------------------------------------------------------------------------------- |
-| `id`            | Yes      | The error code exactly as the tool prints it (e.g., `E0499`).                                     |
-| `tool`          | Yes      | The tool that produces this error (e.g., `rustc`, `gcc`, `python`).                               |
-| `language`      | Yes      | The programming language (e.g., `rust`, `python`, `cpp`).                                         |
-| `title`         | Yes      | A short, descriptive title (e.g., "Multiple mutable borrows"). Keep it under 60 characters.       |
-| `tags`          | No       | A list of keywords for search and filtering (e.g., `[borrowing, mutability, references]`).        |
-| `explain`       | Yes      | A plain English explanation of what the error means and why it happens. This is the core content. |
-| `fix`           | Yes      | Concrete, actionable steps to resolve the error. Be specific.                                     |
-| `example_error` | No       | The error message as the compiler actually prints it. Copy-paste from a real terminal.            |
-| `example_code`  | No       | Minimal code that reproduces the error. Keep it as short as possible.                             |
-| `links`         | No       | A list of URLs to official docs, relevant blog posts, or further reading.                         |
-
-### Example
-
-```yaml
-id: E0499
-tool: rustc
-language: rust
-title: Multiple mutable borrows
-tags: [borrowing, mutability, references]
-
-explain: |
-  You are trying to create a second mutable reference to a value while
-  the first mutable reference is still active. Rust enforces a strict
-  rule: only one mutable reference to a given value can exist at a time.
-  This prevents data races at compile time.
-
-fix: |
-  Make sure the first mutable borrow is no longer in use before creating
-  the second one. You can do this by:
-  - Limiting the scope of the first borrow with a block: { let r = &mut x; ... }
-  - Dropping the first reference explicitly before borrowing again.
-  - Using RefCell<T> if you need multiple mutable accesses at runtime.
-
-example_error: |
-  error[E0499]: cannot borrow `x` as mutable more than once at a time
-
-example_code: |
-  fn main() {
-      let mut x = String::from("hello");
-      let r1 = &mut x;
-      let r2 = &mut x; // Error: second mutable borrow
-      println!("{}, {}", r1, r2);
-  }
-
-links:
-  - https://doc.rust-lang.org/error_codes/E0499.html
-  - https://doc.rust-lang.org/book/ch04-02-references-and-borrowing.html
+```sh
+mkdir db/docker
+cp db/TEMPLATE.yaml db/docker/no-such-image.yaml
 ```
 
-## Quality Bar
+That's it. No code changes needed, `why` picks up new directories automatically.
 
-Before submitting, ask yourself:
+## YAML fields
 
-> **Would a junior developer understand this without prior context?**
+| Field           | Required | Description                                                                 |
+| --------------- | -------- | --------------------------------------------------------------------------- |
+| `id`            | Yes      | Unique identifier, must match the filename (without `.yaml`)                |
+| `tool`          | Yes      | The tool that produces this error (`rustc`, `gcc/clang`, `go`, `git`, etc.) |
+| `language`      | Yes      | Directory name under `db/` (`rust`, `c_cpp`, `go`, `git`, etc.)             |
+| `title`         | Yes      | Short description, under 60 characters                                      |
+| `tags`          | No       | Keywords for filtering (`[memory, pointers, segfault]`)                     |
+| `patterns`      | \*       | How `why` detects this error from stderr (see below)                        |
+| `exclude`       | No       | Strings that must NOT appear, to avoid false matches                        |
+| `explain`       | Yes      | Plain English explanation of what went wrong                                |
+| `fix`           | Yes      | Concrete steps to fix it                                                    |
+| `example_error` | No       | The actual error message, copy-pasted from a terminal                       |
+| `example_code`  | No       | Minimal code that reproduces the error                                      |
+| `links`         | No       | URLs to official docs or further reading                                    |
 
-If your explanation uses jargon, assumes background knowledge, or skips the "why," revise it until it does not.
+\* `patterns` is required for auto-detection unless the tool has structured error codes (like `rustc` or `python`).
 
-## Style Guide
+## How patterns work
 
-- **Use plain English.** Write the way you would explain something to a colleague over coffee.
+The `patterns` field tells `why` how to recognize an error from stderr output. Each pattern is a list of strings that must **all** appear in the same line:
+
+```yaml
+# Matches any line containing BOTH "undefined reference"
+patterns:
+  - ["undefined reference"]
+```
+
+Multiple patterns give you OR logic, if **any** pattern matches, the error is detected:
+
+```yaml
+# Matches "Segmentation fault" OR "segmentation fault"
+patterns:
+  - ["Segmentation fault"]
+  - ["segmentation fault"]
+```
+
+A pattern with multiple strings means all of them must appear in the same line (AND logic):
+
+```yaml
+# Matches a line containing BOTH "fatal error" AND "No such file or directory"
+patterns:
+  - ["No such file or directory", "fatal error"]
+```
+
+Use `exclude` when two tools have similar error messages:
+
+```yaml
+# "too many arguments" appears in both C and Go errors
+patterns:
+  - ["too many arguments"]
+exclude:
+  - "go"
+```
+
+### Tips for writing patterns
+
+- Use the most specific text you can, prefer `"undefined reference"` over `"undefined"`
+- Copy-paste directly from the error message in your terminal
+- Test against the `example_error` in your YAML: does the pattern match?
+- You don't need regex, simple substrings work
+
+## Example entry
+
+```yaml
+id: diverged-branches
+tool: git
+language: git
+title: Local and remote branches have diverged
+tags: [branches, merge, rebase, remote]
+patterns:
+  - ["have diverged"]
+  - ["divergent branches"]
+
+explain: |
+  Your local branch and the remote branch both have new commits that
+  the other doesn't. This usually happens when someone else pushed to
+  the remote after your last pull, and you also made local commits.
+
+fix: |
+  Pull with rebase to replay your commits on top of the remote:
+    git pull --rebase origin main
+  If there are conflicts, resolve them and run:
+    git rebase --continue
+  If you want to merge instead of rebase:
+    git pull origin main
+
+example_error: |
+  hint: Your branch and 'origin/main' have diverged,
+  hint: and have 2 and 3 different commits each, respectively.
+
+links:
+  - https://git-scm.com/docs/git-pull
+```
+
+## Writing good explanations
+
+**Would a beginner understand this without extra context?** If your explanation uses jargon without defining it, or skips the "why," revise it.
+
+- **Use plain English.** Write like you're explaining to a colleague, not writing a textbook.
 - **Avoid jargon.** If you must use a technical term, briefly define it.
-- **Be specific.** "Use a block to limit the borrow scope" is better than "restructure your code."
-- **Give actionable fixes.** Tell the reader exactly what to change, not just what is wrong.
-- **Keep it concise.** Aim for 3-6 sentences in `explain` and 2-4 concrete steps in `fix`.
-- **Use second person.** Say "you are trying to..." not "the programmer is trying to..."
+- **Be specific.** "Add `-lm` to link the math library" is better than "link the correct libraries."
+- **Give actionable fixes.** Tell the reader exactly what to change and how.
+- **Keep it concise.** 3-6 sentences for `explain`, 2-4 steps for `fix`.
+- **Use second person.** "You are trying to..." not "The programmer is trying to..."
 
-## How CI Validation Works
+## Validating locally
 
-Every pull request is automatically checked by CI:
-
-- **Schema validation** ensures your YAML file has all required fields and correct types.
-- **Format checks** catch common issues like missing titles or empty explanations.
-
-If CI fails, read the error output — it will tell you exactly which field has a problem.
-
-## Testing Locally
-
-Before opening a PR, run the validation script to catch issues early:
+Run the validation script before opening a PR:
 
 ```sh
 python scripts/validate.py
 ```
 
-This runs the same checks that CI does. Fix any errors it reports before submitting.
+This runs the same checks as CI. Fix any errors it reports before submitting.
 
-## Code of Conduct
+## Code of conduct
 
-Be kind. Be helpful. We are all here to make error messages less miserable.
+Be kind. Be helpful. We're all here to make error messages less miserable.
 
 - Treat every contributor with respect, regardless of experience level.
 - Give constructive feedback on pull requests.
-- Remember that someone stuck on a compiler error is already having a bad day — your explanation should make it better, not worse.
+- Remember that someone stuck on an error is already having a bad day, your explanation should make it better, not worse.
 
 Thank you for contributing!

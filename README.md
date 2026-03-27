@@ -6,7 +6,6 @@
 [![License](https://img.shields.io/github/license/alexdev-tb/why)](https://github.com/alexdev-tb/why/blob/main/LICENSE)
 [![Repo-Stars](https://img.shields.io/github/stars/alexdev-tb/why?style=flat&label=Stars&color=blue)](https://github.com/alexdev-tb/why/stargazers)
 [![Repo-Forks](https://img.shields.io/github/forks/alexdev-tb/why?style=flat&label=Forks&color=blue)](https://github.com/alexdev-tb/why/forks)
-[![Languages](https://img.shields.io/badge/Languages%20Supported-4-blue?style=flat)](https://github.com/alexdev-tb/why)
 
 **Plain English explanations for compiler errors and CLI failures.**
 
