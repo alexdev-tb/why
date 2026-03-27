@@ -1,6 +1,5 @@
 use regex::Regex;
 use std::env;
-use std::process::Command;
 
 pub fn from_env() -> Option<String> {
     let exit_code = env::var("WHY_LAST_EXIT").ok()?;
@@ -8,64 +7,8 @@ pub fn from_env() -> Option<String> {
         return None;
     }
 
-    if let Some(stderr) = env::var("WHY_LAST_STDERR").ok().filter(|s| !s.is_empty()) {
-        if let Some(code) = extract_error_code(&stderr) {
-            return Some(code);
-        }
-    }
-
-    // TODO: Replace re-run with a background daemon or shell-level stderr capture
-    // (e.g. a `why-daemon` on a Unix socket, or eBPF tracing)
-    let last_cmd = env::var("WHY_LAST_CMD").ok().filter(|s| !s.is_empty())?;
-    let stderr = rerun_for_stderr(&last_cmd)?;
+    let stderr = env::var("WHY_LAST_STDERR").ok().filter(|s| !s.is_empty())?;
     extract_error_code(&stderr)
-}
-
-const SAFE_COMMANDS: &[&str] = &[
-    "cargo", "rustc", "gcc", "g++", "clang", "clang++", "make", "cmake",
-    "python", "python3", "pip", "pip3",
-    "node", "npm", "npx", "yarn", "pnpm", "bun", "deno", "tsc",
-    "go", "javac", "kotlinc", "scalac", "ghc", "swiftc",
-    "ruby", "perl", "php", "lua", "elixir", "erlc",
-    "dotnet", "csc", "mcs",
-    "zig", "nim", "dart", "flutter",
-    "eslint", "prettier", "clippy", "mypy", "pylint", "ruff",
-    "shellcheck", "hadolint",
-    "ls", "cat", "head", "tail", "grep", "find", "wc",
-    "git",
-];
-
-fn is_safe_to_rerun(cmd: &str) -> bool {
-    let first_word = cmd.split_whitespace().next().unwrap_or("");
-    let binary = first_word.rsplit('/').next().unwrap_or(first_word);
-    SAFE_COMMANDS.iter().any(|&safe| binary == safe)
-}
-
-fn rerun_for_stderr(cmd: &str) -> Option<String> {
-    if !is_safe_to_rerun(cmd) {
-        return None;
-    }
-
-    eprintln!(
-        "  {} Re-running `{}` to capture error...",
-        "\u{2192}",
-        cmd
-    );
-
-    let output = Command::new("sh")
-        .arg("-c")
-        .arg(cmd)
-        .stdout(std::process::Stdio::null())
-        .stderr(std::process::Stdio::piped())
-        .output()
-        .ok()?;
-
-    let stderr = String::from_utf8_lossy(&output.stderr).to_string();
-    if stderr.is_empty() {
-        None
-    } else {
-        Some(stderr)
-    }
 }
 
 struct PatternRule {
@@ -221,19 +164,4 @@ mod tests {
         assert_eq!(extract_error_code("some random output"), None);
     }
 
-    #[test]
-    fn test_is_safe_to_rerun() {
-        for cmd in &["cargo build", "rustc main.rs", "python3 script.py", "gcc -o main main.c",
-                      "npm run build", "/usr/bin/cargo build", "git status"] {
-            assert!(is_safe_to_rerun(cmd), "expected safe: {cmd}");
-        }
-    }
-
-    #[test]
-    fn test_is_not_safe_to_rerun() {
-        for cmd in &["rm -rf /", "curl -X POST http://example.com", "docker run something",
-                      "sudo anything", "ssh server", ""] {
-            assert!(!is_safe_to_rerun(cmd), "expected unsafe: {cmd}");
-        }
-    }
 }
