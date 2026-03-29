@@ -1,0 +1,23 @@
+id: not-a-directory
+tool: shell
+language: shell
+title: Path is not a directory
+tags: [shell, path, directory, cd]
+patterns:
+  - ["cd:", "Not a directory"]
+  - ["cd:", "not a directory:"]
+
+explain: |
+  You used a command that expects a directory, but the path points to a regular
+  file or something else that cannot be used as a directory.
+
+fix: |
+  1. Check what the path is: ls -ld <path>
+  2. If it is a file, use its parent directory instead
+  3. If the path is wrong, correct the typo or the variable that built it
+
+example_error: |
+  bash: cd: notes.txt: Not a directory
+
+links:
+  - https://www.gnu.org/software/bash/manual/html_node/Bourne-Shell-Builtins.html

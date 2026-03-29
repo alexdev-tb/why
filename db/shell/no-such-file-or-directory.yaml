@@ -1,0 +1,27 @@
+id: no-such-file-or-directory
+tool: shell
+language: shell
+title: File or directory not found
+tags: [shell, path, file, directory]
+patterns:
+  - ["bash:", "No such file or directory"]
+  - ["zsh:", "no such file or directory:"]
+  - ["cd:", "No such file or directory"]
+  - ["cd:", "no such file or directory:"]
+
+explain: |
+  Your shell tried to use a path that does not exist. This can happen when you
+  change into a missing directory, run a script from the wrong location, or use a
+  relative path that does not point where you think it does.
+
+fix: |
+  1. Check that the path exists: ls <path>
+  2. If you meant a different location, use the correct absolute or relative path
+  3. If the directory is missing, create it first: mkdir -p <path>
+  4. If you are running a script, make sure you are in the right directory: pwd
+
+example_error: |
+  bash: cd: missing-dir: No such file or directory
+
+links:
+  - https://www.gnu.org/software/bash/manual/html_node/Bourne-Shell-Builtins.html
