@@ -1,0 +1,34 @@
+id: E0026
+tool: rustc
+language: rust
+title: Struct pattern uses a field that does not exist
+tags: [pattern-matching, structs, destructuring]
+
+explain: |
+  You tried to destructure a struct in a pattern using a field name that does
+  not exist on that struct. This often happens after renaming a struct field or
+  copying a pattern from a similar but different struct. Rust checks field names
+  in patterns at compile time and will not guess what you meant.
+
+fix: |
+  Check the struct definition and make sure every field name used in your
+  pattern exactly matches a real field on the struct. Remove or rename any
+  fields in the pattern that do not exist.
+
+example_error: |
+  error[E0026]: struct `Point` does not have a field named `z`
+   --> src/main.rs:8:18
+    |
+  8 |     let Point { x, z } = p;
+    |                     ^ struct `Point` does not have this field
+
+example_code: |
+  struct Point { x: i32, y: i32 }
+
+  fn main() {
+      let p = Point { x: 1, y: 2 };
+      let Point { x, z } = p; // Error: no field `z` on `Point`
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0026.html

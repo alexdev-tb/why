@@ -1,0 +1,30 @@
+id: IsADirectoryError
+tool: python
+language: python
+title: Expected a file, got a directory
+tags: [file, filesystem, directory]
+
+explain: |
+  An IsADirectoryError occurs when you perform a file operation on a directory when a file was expected.
+  Common causes:
+  - Trying to open a directory with open()
+  - Attempting to read or write to a path that is actually a directory
+  - Operating on a symlink to a directory with file-specific operations
+
+fix: |
+  Use os.path.isdir() or os.path.isfile() to check the path type
+  Use stat.S_ISDIR() on the result of os.stat()
+  Pass a file path instead of directory path
+  Handle both files and directories if needed
+  Use pathlib to check Path.is_dir() or Path.is_file()
+
+example_error: |
+  IsADirectoryError: [Errno 21] Is a directory: '/path/to/dir'
+
+example_code: |
+  # This fails if 'path' is a directory
+  with open('/path/to/dir', 'r') as f:
+      data = f.read()
+
+links:
+  - https://docs.python.org/3/library/exceptions.html#IsADirectoryError

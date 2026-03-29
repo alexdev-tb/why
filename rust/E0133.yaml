@@ -1,0 +1,40 @@
+id: E0133
+tool: rustc
+language: rust
+title: Unsafe block required
+tags: [unsafe, safety, ffi, raw-pointers]
+
+explain: |
+  You tried to perform an unsafe operation without wrapping it in an `unsafe`
+  block. Certain operations in Rust -- like dereferencing raw pointers, calling
+  `unsafe` functions, or accessing mutable statics -- can violate memory safety
+  guarantees. Rust requires you to explicitly acknowledge these risks by placing
+  the code inside `unsafe { ... }`, signaling that you take responsibility for
+  upholding safety invariants.
+
+fix: |
+  Wrap the unsafe operation in an `unsafe { }` block. Before doing so, make sure
+  you understand why the operation is unsafe and verify that the safety
+  preconditions are met. Add a `// SAFETY:` comment above the block explaining
+  why the usage is sound.
+
+example_error: |
+  error[E0133]: call to unsafe function `std::ptr::read` is unsafe and requires
+                unsafe function or block
+   --> src/main.rs:4:5
+    |
+  4 |     std::ptr::read(ptr);
+    |     ^^^^^^^^^^^^^^^^^^^^ call to unsafe function
+    |
+    = note: consult the function's documentation for the safety preconditions
+            you must uphold
+
+example_code: |
+  fn main() {
+      let x: i32 = 42;
+      let ptr = &x as *const i32;
+      std::ptr::read(ptr); // Error: call to unsafe function requires unsafe block
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0133.html

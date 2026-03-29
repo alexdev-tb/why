@@ -1,0 +1,31 @@
+id: FileNotFoundError
+tool: python
+language: python
+title: File or directory not found
+tags: [file-io, file-system, path]
+
+explain: |
+  A FileNotFoundError occurs when you try to open a file or access a directory that doesn't exist.
+  Common causes include:
+  - Typos in file paths
+  - Using relative paths incorrectly
+  - File was deleted before trying to access it
+  - Working directory is different than expected
+  - File is in a different location than assumed
+
+fix: |
+  Check the file path spelling and ensure it's correct.
+  Use absolute paths instead of relative paths to avoid confusion.
+  Verify the file exists before trying to open it using os.path.exists() or Path.exists().
+  Check your current working directory using os.getcwd() to debug path issues.
+  Add error handling with try-except blocks to handle missing files gracefully.
+
+example_error: |
+  FileNotFoundError: [Errno 2] No such file or directory: 'missing.txt'
+
+example_code: |
+  with open("missing.txt", "r") as f:  # Error: file doesn't exist
+      content = f.read()
+
+links:
+  - https://docs.python.org/3/library/exceptions.html#FileNotFoundError

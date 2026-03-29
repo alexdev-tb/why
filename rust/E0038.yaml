@@ -1,0 +1,37 @@
+id: E0038
+tool: rustc
+language: rust
+title: Trait cannot be made into an object
+tags: [traits, trait-objects, dyn, object-safety]
+
+explain: |
+  You tried to use a trait as a dynamic trait object (`dyn Trait`) but the
+  trait is not "object-safe". A trait can only be used as a trait object if all
+  its methods can be called without knowing the concrete type at compile time.
+  Common reasons a trait is not object-safe include: it has methods that return
+  `Self`, it has generic methods, or it has associated functions with no `self`
+  parameter.
+
+fix: |
+  If you need dynamic dispatch, refactor the trait to remove the features that
+  make it non-object-safe. For methods that return `Self`, return a `Box<Self>`
+  instead. For generic methods, consider using an associated type. If you do not
+  actually need dynamic dispatch, use generics (`impl Trait` or `<T: Trait>`)
+  instead of `dyn Trait`.
+
+example_error: |
+  error[E0038]: the trait `Cloneable` cannot be made into an object
+   --> src/main.rs:5:18
+    |
+  5 | fn make(x: &dyn Cloneable) {}
+    |               ^^^^^^^^^ `Cloneable` cannot be made into an object
+    |
+  note: the trait cannot be made into an object because it requires `Self: Sized`
+
+example_code: |
+  trait Cloneable: Clone {}
+
+  fn make(x: &dyn Cloneable) {} // Error: Clone is not object-safe
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0038.html

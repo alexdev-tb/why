@@ -1,0 +1,32 @@
+id: engine-unsupported
+tool: npm
+language: npm
+title: Unsupported Node.js version
+tags: [node, version, engine]
+patterns:
+  - ["EBADENGINE"]
+  - ["Unsupported engine"]
+  - ["does not support Node"]
+
+explain: |
+  The package you are trying to install requires a different version of Node.js
+  than what you have installed. The package's "engines" field in its package.json
+  specifies which versions it supports.
+
+fix: |
+  1. Check your Node version: node --version
+  2. Check what the package needs (look at the npm error output)
+  3. Switch to a compatible Node version using a version manager:
+     nvm install 20 && nvm use 20
+  4. Or ignore the engine check (may cause issues):
+     npm install --ignore-engines
+
+example_error: |
+  npm warn EBADENGINE Unsupported engine {
+  npm warn EBADENGINE   package: 'some-package@1.0.0',
+  npm warn EBADENGINE   required: { node: '>=18.0.0' },
+  npm warn EBADENGINE   current: { node: 'v16.20.0' }
+  npm warn EBADENGINE }
+
+links:
+  - https://docs.npmjs.com/cli/v10/configuring-npm/package-json#engines

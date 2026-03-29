@@ -1,0 +1,36 @@
+id: undeclared-identifier
+tool: gcc/clang
+language: c_cpp
+title: Use of undeclared identifier
+tags: [declaration, scope, variables, identifiers]
+patterns:
+  - ["undeclared", "first use in this function"]
+
+explain: |
+  You are trying to use a variable, function, or other identifier that hasn't been declared before its use. In C/C++, all identifiers must be declared before they can be used. Common causes include:
+  - Misspelling a variable or function name
+  - Using an identifier before including the necessary header file
+  - Using an identifier in the wrong scope
+  - Missing function prototype declaration
+  - Using a variable outside of its scope (e.g., outside a function where it was declared)
+
+fix: |
+  1. Check that the identifier is spelled correctly
+  2. Ensure you have included the necessary header files for standard library functions
+  3. Make sure the identifier is declared before use (or use a forward declaration for functions)
+  4. Verify the identifier is used within its scope
+  5. For functions in other files, make sure to declare them or include the header file
+
+example_error: |
+  error: 'x' undeclared (first use in this function; got one parse error before 'x')
+
+example_code: |
+  #include <stdio.h>
+
+  int main() {
+      printf("%d\n", x);  // Error: 'x' is not declared
+      return 0;
+  }
+
+links:
+  - https://gcc.gnu.org/onlinedocs/gcc/Error-and-Warning-Options.html

@@ -1,0 +1,40 @@
+id: E0507
+tool: rustc
+language: rust
+title: Cannot move out of borrowed content
+tags: [ownership, borrowing, move-semantics, borrow-checker]
+
+explain: |
+  You tried to move a value out of a reference (borrowed content). When you have a
+  reference to something, you are only borrowing it -- you don't own it. Moving the
+  value out would leave the original owner with invalid data, which Rust prevents.
+  This commonly happens when you try to take a field out of a struct you only have
+  a reference to, or index into a borrowed Vec.
+
+fix: |
+  Clone the value instead of moving it by calling `.clone()`, or restructure your
+  code to work with a reference rather than an owned value. If the value is behind
+  a mutable reference, you can use `std::mem::replace` or `std::mem::take` to
+  swap it out safely.
+
+example_error: |
+  error[E0507]: cannot move out of `*name` which is behind a shared reference
+   --> src/main.rs:6:5
+    |
+  6 |     let s = *name;
+    |             ^^^^^ move occurs because `*name` has type `String`,
+    |                   which does not implement the `Copy` trait
+
+example_code: |
+  fn take_name(name: &String) {
+      let s = *name; // Error: cannot move out of borrowed content
+      println!("{}", s);
+  }
+
+  fn main() {
+      let name = String::from("hello");
+      take_name(&name);
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0507.html

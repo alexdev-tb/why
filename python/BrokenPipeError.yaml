@@ -1,0 +1,25 @@
+id: BrokenPipeError
+tool: python
+language: python
+title: Broken pipe
+tags: [pipe, socket, io, write]
+
+explain: |
+  Your program tried to write to a pipe or socket whose other end has been
+  closed. This commonly happens when piping output to a program like `head`
+  that stops reading early, or when a network connection is dropped while
+  you are writing data.
+
+fix: |
+  1. If piping to another command (e.g., python script.py | head), this is
+     expected behavior — head closes the pipe after reading enough lines.
+  2. To suppress the error when piping, catch BrokenPipeError or set
+     signal.signal(signal.SIGPIPE, signal.SIG_DFL) at the start.
+  3. For network sockets, add error handling around write operations and
+     close connections gracefully.
+
+example_error: |
+  Traceback (most recent call last):
+    File "output.py", line 5, in <module>
+      print(line)
+  BrokenPipeError: [Errno 32] Broken pipe

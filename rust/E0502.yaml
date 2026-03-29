@@ -1,0 +1,38 @@
+id: E0502
+tool: rustc
+language: rust
+title: Mutable borrow while immutable borrow exists
+tags: [borrowing, borrow-checker, mutability, references]
+
+explain: |
+  You tried to take a mutable reference to a value while an immutable reference to it is still
+  in use. Rust prevents this because if you could mutate data while someone else is reading it,
+  you could end up with inconsistent or corrupted data. The borrow checker ensures that reads
+  and writes never overlap, which is one of Rust's key safety guarantees.
+
+fix: |
+  Make sure the immutable borrow is no longer used before you create the mutable borrow. You can
+  often fix this by reordering your code so the read happens before the write, or by cloning the
+  data you need from the immutable reference before mutating the original.
+
+example_error: |
+  error[E0502]: cannot borrow `list` as mutable because it is also borrowed as immutable
+   --> src/main.rs:5:5
+    |
+  4 |     let first = &list[0];
+    |                  ---- immutable borrow occurs here
+  5 |     list.push(4);
+    |     ^^^^^^^^^^^^ mutable borrow occurs here
+  6 |     println!("{}", first);
+    |                    ----- immutable borrow later used here
+
+example_code: |
+  fn main() {
+      let mut list = vec![1, 2, 3];
+      let first = &list[0];       // immutable borrow
+      list.push(4);               // Error: mutable borrow while immutable exists
+      println!("{}", first);
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0502.html

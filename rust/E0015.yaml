@@ -1,0 +1,42 @@
+id: E0015
+tool: rustc
+language: rust
+title: Calls in constants are limited to const functions
+tags: [const, compile-time, functions, constants]
+
+explain: |
+  You tried to call a non-const function inside a `const` or `static` context.
+  Constants and statics are evaluated at compile time, so only functions explicitly
+  marked as `const fn` can be called there. Regular functions might do things that
+  are only possible at runtime (like allocate heap memory or perform I/O), so the
+  compiler forbids them in const contexts.
+
+fix: |
+  If you control the function, mark it as `const fn` (assuming its body only uses
+  const-compatible operations). If you can't make it const, consider using
+  `lazy_static!` or `std::sync::LazyLock` to initialize the value at runtime
+  instead of at compile time.
+
+example_error: |
+  error[E0015]: cannot call non-const fn `compute_default` in constants
+   --> src/main.rs:5:20
+    |
+  5 | const DEFAULT: i32 = compute_default();
+    |                       ^^^^^^^^^^^^^^^^^
+    |
+    = note: calls in constants are limited to constant functions, tuple structs
+            and tuple variants
+
+example_code: |
+  fn compute_default() -> i32 {
+      42
+  }
+
+  const DEFAULT: i32 = compute_default(); // Error: cannot call non-const fn in constants
+
+  fn main() {
+      println!("{}", DEFAULT);
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0015.html

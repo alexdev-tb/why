@@ -1,0 +1,30 @@
+id: FileExistsError
+tool: python
+language: python
+title: File or directory already exists
+tags: [file, filesystem, exists]
+
+explain: |
+  A FileExistsError occurs when you try to create a file or directory that already exists.
+  Common situations:
+  - Using os.mkdir() on a directory that exists
+  - Creating a file with exclusive creation mode when it already exists
+  - Renaming or moving a file to a location that exists
+
+fix: |
+  Check if the file/directory exists before attempting creation
+  Use os.makedirs() with exist_ok=True instead of os.mkdir()
+  Use pathlib.Path.mkdir(exist_ok=True) for a modern approach
+  Handle the exception and decide to overwrite or use a different name
+  Use conditional logic to skip creation if already exists
+
+example_error: |
+  FileExistsError: [Errno 17] File exists: 'mydir'
+
+example_code: |
+  import os
+  os.mkdir('mydir')
+  os.mkdir('mydir')  # Error: already exists
+
+links:
+  - https://docs.python.org/3/library/exceptions.html#FileExistsError

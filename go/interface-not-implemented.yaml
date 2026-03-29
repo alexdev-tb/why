@@ -1,0 +1,36 @@
+id: interface-not-implemented
+tool: go
+language: go
+title: Type does not implement interface
+tags: [interface, implementation, methods]
+
+explain: |
+  This error occurs when you try to use a type as an interface, but the type doesn't have all the
+  methods required by that interface. Go uses structural typing - a type implements an interface
+  if it has all the required methods with matching signatures, even if it never explicitly declares this.
+
+fix: |
+  Implement all required methods for the interface
+  Check the interface definition to see what methods are needed
+  Ensure method signatures match exactly: parameter types and return types
+  Method names are case-sensitive and must match exactly
+  Add missing methods to the type definition
+  Use compiler error messages to see which methods are missing
+
+example_error: |
+  cannot use person (type Person) as type Writer in return statement
+
+example_code: |
+  package main
+  type Writer interface {
+      Write([]byte) error
+  }
+  type Person struct {
+      name string
+  }
+  func getPerson() Writer {
+      return Person{"Alice"}  // Error: Person doesn't implement Writer
+  }
+
+links:
+  - https://golang.org/doc/effective_go#interfaces

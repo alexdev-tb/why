@@ -1,0 +1,33 @@
+id: index-out-of-range
+tool: go
+language: go
+title: Slice or array index out of bounds
+tags: [index, array, slice, bounds]
+patterns:
+  - ["index out of range"]
+
+explain: |
+  An index out of range panic occurs when you try to access an element of a slice or array at an index
+  that doesn't exist. Arrays and slices are zero-indexed, so valid indices range from 0 to length-1.
+  For slices with length 3, valid indices are 0, 1, and 2 only.
+
+fix: |
+  Check the length of the slice/array before accessing by index
+  Use len(slice) to get the length
+  Ensure your index is between 0 and len(slice)-1
+  Use range loops instead of manual indexing when iterating
+  Add bounds checking: if i >= 0 && i < len(slice) { ... }
+  For dynamic access, handle the out-of-bounds case gracefully
+
+example_error: |
+  panic: runtime error: index out of range [5] with length 3
+
+example_code: |
+  package main
+  func main() {
+      data := [3]int{1, 2, 3}
+      value := data[5]  // Error: index 5 doesn't exist
+  }
+
+links:
+  - https://golang.org/doc/effective_go#slices

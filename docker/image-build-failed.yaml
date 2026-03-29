@@ -1,0 +1,26 @@
+id: image-build-failed
+tool: docker
+language: docker
+title: Dockerfile build failed
+tags: [build, dockerfile, layer]
+patterns:
+  - ["executor failed running"]
+  - ["returned a non-zero code"]
+  - ["ERROR", "failed to solve"]
+
+explain: |
+  A command in your Dockerfile (usually a RUN instruction) exited with a
+  non-zero status, which means it failed. Docker stops the build immediately
+  when any layer fails. Common causes include missing packages, network issues
+  during apt/yum install, or incorrect file paths in COPY/ADD instructions.
+
+fix: |
+  1. Read the error output above the failure line to see what command failed.
+  2. If a package install failed, make sure you run apt-get update before apt-get install.
+  3. For COPY/ADD failures, verify the source file exists in your build context.
+  4. Test the failing command manually: docker run -it <base-image> /bin/sh, then run the command.
+
+example_error: |
+  => ERROR [3/5] RUN pip install -r requirements.txt
+  ------
+  executor failed running [/bin/sh -c pip install -r requirements.txt]: exit code: 1

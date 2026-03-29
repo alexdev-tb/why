@@ -1,0 +1,39 @@
+id: E0432
+tool: rustc
+language: rust
+title: Unresolved import
+tags: [imports, modules, use-statements, name-resolution]
+
+explain: |
+  A `use` statement refers to a path that does not exist or is not accessible. This means you
+  are trying to import something that is not defined at the given path. Common causes include
+  typos in the import path, importing a private item from another module, or referencing a
+  module or item that was renamed or removed. It can also happen if you confuse the module
+  structure of a crate.
+
+fix: |
+  Verify the exact path of the item you are importing by checking the crate documentation or
+  source code. Make sure the item is public (`pub`) if you are importing it from another module.
+  Check for typos and ensure the module hierarchy matches your `use` path.
+
+example_error: |
+  error[E0432]: unresolved import `std::collection`
+   --> src/main.rs:1:5
+    |
+  1 | use std::collection::HashMap;
+    |     ^^^^^^^^^^^^^^^ could not find `collection` in `std`
+    |
+  help: a similar path exists
+    |
+  1 | use std::collections::HashMap;
+    |         ~~~~~~~~~~~
+
+example_code: |
+  use std::collection::HashMap;  // Error: should be `collections` (plural)
+
+  fn main() {
+      let map: HashMap<String, i32> = HashMap::new();
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0432.html

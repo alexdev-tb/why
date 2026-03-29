@@ -1,0 +1,39 @@
+id: E0408
+tool: rustc
+language: rust
+title: Variable not bound in all patterns of an or-pattern
+tags: [pattern-matching, bindings, or-patterns]
+
+explain: |
+  You used an or-pattern (with `|`) in a `match` arm but one of the alternatives
+  does not bind a variable that the others do. Every alternative in an or-pattern
+  must bind exactly the same set of variable names, because the code in the arm
+  body must be able to use those variables regardless of which alternative
+  matched.
+
+fix: |
+  Make sure every alternative in your or-pattern binds all the same names. If
+  a particular alternative does not have a meaningful value for one of the
+  variables, you can still bind it using `_` as a placeholder, but the name
+  must appear in every branch.
+
+example_error: |
+  error[E0408]: variable `y` is not bound in all patterns
+   --> src/main.rs:6:15
+    |
+  5 |         (1, y) | (2, _) => println!("{}", y),
+    |              -       ^ pattern doesn't bind `y`
+    |              |
+    |              variable not in all patterns
+
+example_code: |
+  fn main() {
+      let t = (1, 10);
+      match t {
+          (1, y) | (2, _) => println!("{}", y), // Error: y not bound in second pattern
+          _ => {}
+      }
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0408.html

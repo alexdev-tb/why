@@ -1,0 +1,26 @@
+id: E0053
+tool: rustc
+language: rust
+title: Method has incompatible type for trait
+tags: [trait, method, signature, type-mismatch]
+
+explain: |
+  You implemented a trait method but its signature does not match what the trait
+  definition requires. The argument types, return type, or number of parameters
+  differ from the trait's declaration. Rust requires your impl to match the trait
+  signature exactly (except for lifetime elision).
+
+fix: |
+  1. Check the trait definition to see the expected method signature.
+  2. Update your impl to match the exact parameter types and return type.
+  3. If you need different types, consider using associated types or generics on the trait.
+
+example_error: |
+  error[E0053]: method `process` has an incompatible type for trait
+   --> src/lib.rs:12:22
+    |
+  12 |     fn process(&self, input: String) -> bool {
+    |                      ^^^^^^^^^^^^^ expected `&str`, found `String`
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0053.html

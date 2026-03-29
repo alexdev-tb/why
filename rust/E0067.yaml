@@ -1,0 +1,34 @@
+id: E0067
+tool: rustc
+language: rust
+title: Invalid left-hand side of assignment
+tags: [assignment, expressions, mutability]
+
+explain: |
+  You tried to assign a value to something that cannot be assigned to. In Rust,
+  only variables, fields, and dereferenced pointers can appear on the left side
+  of an `=`. Attempting to assign to a function call result, a literal, a tuple
+  expression that is not a simple place, or any other non-place expression
+  causes this error.
+
+fix: |
+  Make sure the left side of your assignment is a variable, a struct field, an
+  array index, or a dereference. If you are trying to update a computed value,
+  store it in a variable first and then assign to that.
+
+example_error: |
+  error[E0067]: invalid left-hand side of assignment
+   --> src/main.rs:3:5
+    |
+  3 |     get_value() = 42;
+    |     ^^^^^^^^^^^ cannot assign to this expression
+
+example_code: |
+  fn get_value() -> i32 { 0 }
+
+  fn main() {
+      get_value() = 42; // Error: function call result is not assignable
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0067.html

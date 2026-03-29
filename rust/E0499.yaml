@@ -1,0 +1,39 @@
+id: E0499
+tool: rustc
+language: rust
+title: Multiple mutable borrows
+tags: [borrowing, borrow-checker, mutability, references]
+
+explain: |
+  You tried to create a second mutable reference to a value while the first mutable reference is
+  still active. Rust's borrow checker enforces that you can have either one mutable reference or
+  any number of immutable references to a value at a time, but never both. This rule prevents
+  data races at compile time and ensures memory safety without a garbage collector.
+
+fix: |
+  Limit the scope of the first mutable borrow so it ends before the second one begins. You can
+  do this by introducing a block `{ }` around the first borrow, or by restructuring your code
+  so that both mutations do not overlap. Sometimes using a method that takes `&mut self` once
+  to perform both operations is the cleanest solution.
+
+example_error: |
+  error[E0499]: cannot borrow `data` as mutable more than once at a time
+   --> src/main.rs:5:17
+    |
+  4 |     let r1 = &mut data;
+    |              --------- first mutable borrow occurs here
+  5 |     let r2 = &mut data;
+    |              ^^^^^^^^^ second mutable borrow occurs here
+  6 |     println!("{}, {}", r1, r2);
+    |                        -- first borrow later used here
+
+example_code: |
+  fn main() {
+      let mut data = vec![1, 2, 3];
+      let r1 = &mut data;
+      let r2 = &mut data;         // Error: second mutable borrow
+      println!("{}, {:?}", r1.len(), r2);
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0499.html

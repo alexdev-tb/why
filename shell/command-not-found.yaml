@@ -1,0 +1,24 @@
+id: command-not-found
+tool: shell
+language: shell
+title: Command not found
+tags: [shell, path, executable]
+patterns:
+  - ["bash:", "command not found"]
+  - ["zsh:", "command not found:"]
+
+explain: |
+  Your shell could not find the command you typed. Usually that means the command
+  is misspelled, not installed, or installed somewhere that is not in your PATH.
+
+fix: |
+  1. Check the command name for typos
+  2. See whether it exists in your PATH: command -v <command>
+  3. If it is not installed, install it with your package manager
+  4. If it is installed somewhere custom, add that directory to PATH
+
+example_error: |
+  bash: rgx: command not found
+
+links:
+  - https://www.gnu.org/software/bash/manual/html_node/Bourne-Shell-Builtins.html

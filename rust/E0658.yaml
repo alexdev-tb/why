@@ -1,0 +1,43 @@
+id: E0658
+tool: rustc
+language: rust
+title: Unstable feature used
+tags: [nightly, features, unstable, compiler]
+
+explain: |
+  You tried to use a feature that is not yet stabilized in Rust. Many features go
+  through an experimental "nightly-only" phase before they become available on
+  stable Rust. If you're on stable or beta Rust, these features are simply not
+  available. Even on nightly, you must explicitly enable them with a feature gate
+  attribute.
+
+fix: |
+  If you need this feature, switch to the nightly compiler and add
+  `#![feature(feature_name)]` at the top of your crate root (lib.rs or main.rs).
+  If you need to stay on stable Rust, look for a stable alternative or a crate
+  that provides equivalent functionality.
+
+example_error: |
+  error[E0658]: use of unstable library feature 'once_cell_try'
+   --> src/main.rs:1:5
+    |
+  1 |     use std::sync::OnceLock;
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: see issue #97718 <https://github.com/rust-lang/rust/issues/97718>
+    = help: add `#![feature(once_cell_try)]` to the crate attributes to enable
+
+example_code: |
+  // On stable Rust, trying to use a nightly-only API:
+  #![feature(never_type)] // Error on stable: unstable feature
+
+  fn diverge() -> ! {
+      panic!("this function never returns");
+  }
+
+  fn main() {
+      diverge();
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0658.html

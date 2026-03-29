@@ -1,0 +1,25 @@
+id: container-already-in-use
+tool: docker
+language: docker
+title: Container name already in use
+tags: [container, name, conflict]
+patterns:
+  - ["is already in use by container"]
+
+explain: |
+  You tried to create a container with a name that already exists. Docker requires
+  unique names for containers, even if the existing container is stopped.
+
+fix: |
+  1. Remove the old container: docker rm <name>
+  2. Or remove and recreate in one step: docker rm -f <name> && docker run --name <name> ...
+  3. Or use a different name
+  4. To see all containers including stopped ones: docker ps -a
+
+example_error: |
+  docker: Error response from daemon: Conflict. The container name "/myapp" is
+  already in use by container "abc123". You have to remove (or rename) that
+  container to be able to reuse that name.
+
+links:
+  - https://docs.docker.com/engine/reference/commandline/rm/

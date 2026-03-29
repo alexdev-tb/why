@@ -1,0 +1,30 @@
+id: MemoryError
+tool: python
+language: python
+title: Out of memory
+tags: [memory, performance, resource]
+
+explain: |
+  A MemoryError occurs when Python runs out of available memory to allocate.
+  This can happen with:
+  - Creating extremely large lists or arrays
+  - Memory leaks in long-running processes
+  - Processing huge files all at once
+  - Infinite loops creating objects
+
+fix: |
+  Process data in chunks or streams instead of loading everything into memory
+  Use generators for large datasets instead of lists
+  Close files and release unused objects explicitly
+  Use memory-efficient data structures (sets instead of lists for membership tests)
+  Monitor memory usage and add limits to input sizes
+
+example_error: |
+  MemoryError
+
+example_code: |
+  # This may raise MemoryError
+  huge_list = list(range(10**9))
+
+links:
+  - https://docs.python.org/3/library/exceptions.html#MemoryError

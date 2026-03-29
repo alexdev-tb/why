@@ -1,0 +1,43 @@
+id: no-member
+tool: gcc/clang
+language: c_cpp
+title: Struct or class has no member with that name
+tags: [structs, classes, members, fields]
+patterns:
+  - ["has no member named"]
+
+explain: |
+  You are trying to access a member (field or method) of a struct, union, or class that does not exist. The compiler cannot find a member with the name you specified. Common causes include:
+  - Typo in the member name
+  - Accessing a member that belongs to a different struct
+  - Using dot (.) instead of arrow (->) on a pointer or vice versa
+  - Member defined in a different version or configuration of the struct
+  - Missing or wrong header file with the struct definition
+
+fix: |
+  1. Check the spelling of the member name
+  2. Verify the struct/class definition to see available members
+  3. Use -> for pointer-to-struct and . for struct values
+  4. Ensure you included the correct header with the full struct definition
+  5. Check that you are using the right struct type for the variable
+
+example_error: |
+  error: 'struct point' has no member named 'z'
+
+example_code: |
+  #include <stdio.h>
+
+  struct point {
+      int x;
+      int y;
+  };
+
+  int main() {
+      struct point p = {1, 2};
+      printf("%d\n", p.z);  // Error: no member 'z'
+      return 0;
+  }
+
+links:
+  - https://en.cppreference.com/w/c/language/struct
+  - https://en.cppreference.com/w/c/language/operator_member_access

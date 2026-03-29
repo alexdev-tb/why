@@ -1,0 +1,24 @@
+id: use-after-free
+tool: gcc/clang
+language: c_cpp
+title: Use after free
+tags: [memory, heap, asan, runtime]
+patterns:
+  - ["heap-use-after-free"]
+  - ["use after free"]
+
+explain: |
+  Your program accessed memory that was already freed. After calling free() on
+  a pointer, that memory is returned to the allocator and may be reused. Reading
+  or writing through the old pointer leads to undefined behavior — corrupted data,
+  crashes, or security vulnerabilities.
+
+fix: |
+  1. Find the free() call and the subsequent access using the stack trace.
+  2. Set pointers to NULL after freeing them so accidental use crashes immediately.
+  3. Review ownership — make sure only one part of your code is responsible for freeing each allocation.
+  4. Use AddressSanitizer (-fsanitize=address) to catch these reliably during testing.
+
+example_error: |
+  ==12345==ERROR: AddressSanitizer: heap-use-after-free on address 0x602000000010
+  READ of size 4 at 0x602000000010 thread T0

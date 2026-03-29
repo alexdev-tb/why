@@ -1,0 +1,33 @@
+id: syntax-error
+tool: go
+language: go
+title: Syntax error in code
+tags: [syntax, parsing]
+patterns:
+  - ["syntax error"]
+
+explain: |
+  A syntax error occurs when Go's parser encounters code that doesn't follow Go's language rules.
+  This could be missing punctuation, incorrect keyword usage, unmatched braces, or other grammatical errors.
+  Syntax errors prevent the code from compiling at all.
+
+fix: |
+  Read the error message carefully - it usually points to where the problem is or what was expected
+  Check for missing or extra punctuation: semicolons, braces, parentheses, commas
+  Ensure statements are properly structured (if conditions need braces, function calls need parentheses)
+  Look for typos in keywords (func vs function)
+  Make sure all blocks are properly closed
+
+example_error: |
+  syntax error: unexpected x, expected }
+
+example_code: |
+  package main
+  func main() {
+      x := 5
+      y := 10
+      println(x, y)
+  // Error: missing closing brace for main function
+
+links:
+  - https://golang.org/ref/spec

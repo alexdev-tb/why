@@ -1,0 +1,27 @@
+id: deadlock
+tool: go
+language: go
+title: All goroutines are asleep - deadlock
+tags: [goroutine, deadlock, channel, concurrency]
+patterns:
+  - ["all goroutines are asleep", "deadlock"]
+  - ["fatal error: all goroutines are asleep"]
+
+explain: |
+  Every goroutine in your program is blocked waiting for something (a channel
+  send/receive, a mutex lock, etc.) and no goroutine is able to make progress.
+  The Go runtime detects this situation and panics. This usually means you have
+  a channel operation with no matching sender or receiver, or a circular lock
+  dependency.
+
+fix: |
+  1. Check channel operations — make sure every send has a matching receive.
+  2. If using unbuffered channels, ensure sender and receiver run in separate goroutines.
+  3. Use buffered channels if the sender should not block: make(chan int, 1)
+  4. For mutexes, check that you are not locking the same mutex twice without unlocking.
+
+example_error: |
+  fatal error: all goroutines are asleep - deadlock!
+  goroutine 1 [chan receive]:
+  main.main()
+      /app/main.go:8 +0x34

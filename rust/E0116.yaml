@@ -1,0 +1,36 @@
+id: E0116
+tool: rustc
+language: rust
+title: Cannot define inherent impl for type outside this crate
+tags: [impl, traits, orphan-rule, modules]
+
+explain: |
+  You tried to write an `impl` block directly on a type that was defined in
+  another crate (like the standard library or a dependency). Rust only lets you
+  add methods directly to types you own. This rule exists to prevent two
+  different crates from accidentally adding conflicting methods to the same type.
+
+fix: |
+  Instead of implementing methods directly on the foreign type, define your own
+  wrapper struct (a "newtype") that holds the foreign type, and implement your
+  methods on that. Alternatively, define a trait and implement it for the foreign
+  type — that is allowed as long as the trait itself is defined in your crate.
+
+example_error: |
+  error[E0116]: cannot define inherent `impl` for a type outside of its crate
+   --> src/main.rs:1:1
+    |
+  1 | impl String {
+    | ^^^^^^^^^^^^ impl for type defined outside of crate
+    |
+    = note: define and implement a trait or new type instead
+
+example_code: |
+  impl String { // Error: String is defined in std, not your crate
+      fn shout(&self) -> String {
+          self.to_uppercase()
+      }
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0116.html

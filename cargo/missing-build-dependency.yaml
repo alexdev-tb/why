@@ -1,0 +1,30 @@
+id: missing-build-dependency
+tool: cargo
+language: cargo
+title: Missing system dependency for build script
+tags: [build, system, dependency, pkg-config]
+patterns:
+  - ["pkg-config"]
+  - ["could not find system library"]
+  - ["Header", "not found"]
+  - ["failed to run custom build command"]
+exclude:
+  - "no custom build command"
+
+explain: |
+  A crate's build script (build.rs) tried to link against a system C library
+  that is not installed on your machine. Many Rust crates (like openssl-sys,
+  libsqlite3-sys, etc.) wrap C code and need the corresponding system headers
+  and libraries to compile.
+
+fix: |
+  1. Install the missing system library. On Debian/Ubuntu:
+     sudo apt install pkg-config libssl-dev (for openssl)
+     sudo apt install libsqlite3-dev (for sqlite)
+  2. On macOS: brew install openssl pkg-config
+  3. Check the crate's README for specific system requirements.
+  4. Set PKG_CONFIG_PATH if the library is in a non-standard location.
+
+example_error: |
+  error: failed to run custom build command for `openssl-sys v0.9.80`
+  run pkg_config fail: Could not run `"pkg-config" "--libs" "--cflags" "openssl"`

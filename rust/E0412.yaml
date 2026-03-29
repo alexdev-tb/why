@@ -1,0 +1,39 @@
+id: E0412
+tool: rustc
+language: rust
+title: Cannot find type name in this scope
+tags: [types, name-resolution, modules, imports]
+
+explain: |
+  You used a type name that the compiler cannot find in the current scope. This usually means you
+  have a typo in the type name, forgot to import the type with a `use` statement, or forgot to
+  define the type (struct, enum, trait, or type alias) before using it. It can also occur when a
+  type is defined in a different module that has not been brought into scope.
+
+fix: |
+  Check the spelling of the type name. If it is defined in another module or crate, add the
+  appropriate `use` statement (e.g., `use std::collections::HashMap;`). If you intended to define
+  the type yourself, make sure the definition appears before its usage or is accessible from the
+  current module.
+
+example_error: |
+  error[E0412]: cannot find type `Hashmap` in this scope
+   --> src/main.rs:3:12
+    |
+  3 |     let m: Hashmap<String, i32> = Hashmap::new();
+    |            ^^^^^^^ not found in this scope
+    |
+  help: a struct with a similar name exists
+    |
+  3 |     let m: HashMap<String, i32> = HashMap::new();
+    |            ~~~~~~~
+
+example_code: |
+  use std::collections::HashMap;
+
+  fn main() {
+      let m: Hashmap<String, i32> = Hashmap::new(); // Error: typo, should be HashMap
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0412.html

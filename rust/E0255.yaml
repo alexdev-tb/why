@@ -1,0 +1,37 @@
+id: E0255
+tool: rustc
+language: rust
+title: Name already used in scope (duplicate import)
+tags: [imports, naming, modules, conflicts]
+
+explain: |
+  You imported or defined two items with the same name in the same scope. Rust
+  doesn't allow name collisions because it wouldn't know which item you're
+  referring to when you use the name. This usually happens when two `use`
+  statements bring in types with the same name from different modules, or when a
+  `use` import shadows an existing definition.
+
+fix: |
+  Rename one of the conflicting imports using the `as` keyword, e.g.
+  `use std::fmt::Result as FmtResult;`. Alternatively, remove one of the
+  conflicting imports and use the full path when you need to refer to it.
+
+example_error: |
+  error[E0255]: the name `Result` is defined multiple times
+   --> src/main.rs:2:5
+    |
+  1 | use std::fmt::Result;
+    |     ---------------- previous import of the type `Result` here
+  2 | use std::io::Result;
+    |     ^^^^^^^^^^^^^^^^ `Result` reimported here
+    |
+    = note: `Result` must be defined only once in the type namespace of this module
+
+example_code: |
+  use std::fmt::Result;
+  use std::io::Result; // Error: the name `Result` is defined multiple times
+
+  fn main() {}
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0255.html

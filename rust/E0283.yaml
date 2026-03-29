@@ -1,0 +1,41 @@
+id: E0283
+tool: rustc
+language: rust
+title: Ambiguous type (cannot infer)
+tags: [type-inference, traits, ambiguity, generics]
+
+explain: |
+  The compiler found multiple trait implementations that could apply, and it can't
+  figure out which one you want. This typically happens when a value could satisfy
+  several different trait bounds and there isn't enough context for the compiler to
+  pick one. For example, calling `.into()` where multiple `From` implementations
+  exist, or using a trait method that's defined on multiple traits in scope.
+
+fix: |
+  Add explicit type annotations to disambiguate. You can annotate the variable
+  with a concrete type like `let x: TargetType = value.into();`, or use the
+  fully qualified syntax `<Type as Trait>::method(args)` to specify exactly which
+  trait implementation you mean.
+
+example_error: |
+  error[E0283]: type annotations needed
+   --> src/main.rs:7:9
+    |
+  7 |     let x = val.into();
+    |         ^
+    |
+    = note: cannot satisfy `_: From<i32>`
+    = note: multiple `impl`s satisfying `_: From<i32>` found
+
+example_code: |
+  fn convert(val: i32) {
+      let x = val.into(); // Error: ambiguous, multiple From<i32> impls exist
+      println!("{:?}", x);
+  }
+
+  fn main() {
+      convert(42);
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0283.html

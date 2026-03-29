@@ -1,0 +1,31 @@
+id: push-rejected
+tool: git
+language: git
+title: Push rejected (remote has new commits)
+tags: [push, remote, fetch]
+patterns:
+  - ["rejected", "failed to push"]
+  - ["Updates were rejected because the remote contains work"]
+  - ["Updates were rejected because the tip of your current branch is behind"]
+
+explain: |
+  Someone pushed commits to the remote branch after your last pull. Git refuses to
+  push because it would overwrite their work. You need to integrate the remote
+  changes first.
+
+fix: |
+  Pull the remote changes and rebase your commits on top:
+    git pull --rebase origin <branch>
+  Then push again:
+    git push
+  If there are conflicts during rebase, resolve them and:
+    git rebase --continue
+
+example_error: |
+  ! [rejected]        main -> main (fetch first)
+  error: failed to push some refs to 'origin'
+  hint: Updates were rejected because the remote contains work that you do not
+  hint: have locally.
+
+links:
+  - https://git-scm.com/docs/git-push

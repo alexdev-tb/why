@@ -1,0 +1,23 @@
+id: ProcessLookupError
+tool: python
+language: python
+title: No such process
+tags: [process, pid, os, signal]
+
+explain: |
+  You tried to send a signal to or interact with a process that no longer
+  exists. The process ID (PID) you referenced has either already exited, was
+  never valid, or belongs to a different process than you expected. This is
+  common in scripts that manage background processes.
+
+fix: |
+  1. Check if the process is still running before sending signals:
+     try: os.kill(pid, 0) except ProcessLookupError: ...
+  2. Store and verify PIDs carefully — PIDs can be reused by the OS.
+  3. Use subprocess.Popen objects directly instead of raw PIDs when possible.
+
+example_error: |
+  Traceback (most recent call last):
+    File "manager.py", line 22, in stop_worker
+      os.kill(pid, signal.SIGTERM)
+  ProcessLookupError: [Errno 3] No such process

@@ -1,0 +1,28 @@
+id: ZeroDivisionError
+tool: python
+language: python
+title: Division by zero
+tags: [arithmetic, division, math]
+
+explain: |
+  A ZeroDivisionError occurs when you attempt to divide a number by zero.
+  Common causes include:
+  - Dividing by a variable that contains zero
+  - Using the modulo operator (%) with zero
+  - Dividing by the result of a calculation that evaluates to zero
+  - Not validating user input before using it in division
+
+fix: |
+  Check that the divisor is not zero before performing division.
+  Use conditional statements (if) to validate the divisor.
+  Add error handling with try-except blocks for user input.
+  Initialize variables properly to prevent them from being zero unexpectedly.
+
+example_error: |
+  ZeroDivisionError: division by zero
+
+example_code: |
+  result = 10 / 0  # Error: can't divide by zero
+
+links:
+  - https://docs.python.org/3/library/exceptions.html#ZeroDivisionError

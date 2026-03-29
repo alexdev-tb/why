@@ -1,0 +1,27 @@
+id: enetwork
+tool: npm
+language: npm
+title: Network connectivity error
+tags: [network, timeout, registry, offline]
+patterns:
+  - ["ENETWORK"]
+  - ["ETIMEDOUT"]
+  - ["network timeout"]
+  - ["request to https://registry.npmjs.org", "failed"]
+
+explain: |
+  npm could not reach the registry (registry.npmjs.org) to download packages.
+  This means either your internet connection is down, a firewall or proxy is
+  blocking the request, the npm registry itself is experiencing an outage, or
+  your DNS resolution is failing.
+
+fix: |
+  1. Check your internet connection: ping registry.npmjs.org
+  2. If you are behind a proxy, configure npm: npm config set proxy http://proxy:port
+  3. Try switching to a different registry: npm config set registry https://registry.npmmirror.com
+  4. Check npm status at https://status.npmjs.org
+
+example_error: |
+  npm ERR! code ETIMEDOUT
+  npm ERR! errno ETIMEDOUT
+  npm ERR! network request to https://registry.npmjs.org/express failed, reason: connect ETIMEDOUT

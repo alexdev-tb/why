@@ -1,0 +1,31 @@
+id: AssertionError
+tool: python
+language: python
+title: Assertion failed
+tags: [assertion, testing, validation]
+
+explain: |
+  An AssertionError is raised when an assert statement's condition evaluates to False.
+  Assertions are used to check that code is working as expected - they shouldn't happen in normal operation.
+  Common causes include:
+  - Testing code that doesn't meet expected conditions
+  - Bugs in code logic that violate assumptions
+  - Assertions left in production code that fail under valid conditions
+  - Typos or logic errors in assertion conditions
+
+fix: |
+  Check what condition failed in the assert statement.
+  Review the logic leading up to the assertion to find the bug.
+  If the assertion is testing invalid conditions, remove or fix it.
+  Use assertions only for checking invariants, not for input validation.
+  Add better error messages to assertions using: assert condition, "message"
+
+example_error: |
+  AssertionError
+
+example_code: |
+  x = 5
+  assert x > 10, "x should be greater than 10"  # Error: condition is false
+
+links:
+  - https://docs.python.org/3/library/exceptions.html#AssertionError

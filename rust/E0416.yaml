@@ -1,0 +1,32 @@
+id: E0416
+tool: rustc
+language: rust
+title: Identifier is bound more than once in the same pattern
+tags: [pattern-matching, bindings, naming]
+
+explain: |
+  You used the same variable name more than once in a single pattern. For
+  example, writing `(x, x)` tries to bind two different values to the name `x`
+  at the same time, which is ambiguous. Each name in a pattern must be unique
+  so there is no confusion about which value it refers to.
+
+fix: |
+  Give each binding in the pattern a distinct name. If you want to check that
+  two parts of a value are equal, you cannot do that in a single pattern
+  directly — bind them to different names and then compare them in a guard:
+  `(a, b) if a == b`.
+
+example_error: |
+  error[E0416]: identifier `x` is bound more than once in the same pattern
+   --> src/main.rs:4:12
+    |
+  4 |     let (x, x) = (1, 2);
+    |             ^ used in a pattern more than once
+
+example_code: |
+  fn main() {
+      let (x, x) = (1, 2); // Error: x bound twice in same pattern
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0416.html

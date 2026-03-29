@@ -1,0 +1,27 @@
+id: E0423
+tool: rustc
+language: rust
+title: Expected value, found struct or module
+tags: [struct, constructor, value, path]
+
+explain: |
+  You used a struct, enum variant, or module name where Rust expected a value.
+  This usually happens when you try to use a struct with named fields as if it
+  were a function call (e.g., MyStruct() instead of MyStruct { ... }), or when
+  you reference a module path without specifying an item within it.
+
+fix: |
+  1. For structs with named fields, use brace syntax: MyStruct { field: value }
+  2. For tuple structs, use parentheses: MyStruct(value)
+  3. For unit structs, use just the name without parentheses or braces.
+  4. If you meant to call an associated function, use :: syntax: MyStruct::new()
+
+example_error: |
+  error[E0423]: expected value, found struct `Vec`
+   --> src/main.rs:2:13
+    |
+  2 |     let v = Vec;
+    |             ^^^ not a value
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0423.html

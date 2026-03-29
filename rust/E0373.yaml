@@ -1,0 +1,39 @@
+id: E0373
+tool: rustc
+language: rust
+title: Closure may outlive borrowed reference
+tags: [closures, lifetimes, borrowing, move]
+
+explain: |
+  You created a closure that captures a reference to a local variable, but the
+  closure might live longer than the variable it references. For example, if you
+  return a closure from a function, the local variables in that function are
+  dropped when the function returns, leaving the closure with a dangling
+  reference.
+
+fix: |
+  Add the `move` keyword before the closure: `move || { ... }`. This makes the
+  closure take ownership of the captured values rather than borrowing them, so
+  it no longer depends on the original variable staying alive. If the type does
+  not implement `Copy`, the original variable will no longer be usable after the
+  closure is created.
+
+example_error: |
+  error[E0373]: closure may outlive the current function, but it borrows `name`,
+                which is owned by the current function
+   --> src/main.rs:3:13
+    |
+  3 |     let f = || println!("{}", name);
+    |             ^^                ---- `name` is borrowed here
+    |             |
+    |             may outlive borrowed value `name`
+  help: to force the closure to take ownership of `name`, use the `move` keyword
+
+example_code: |
+  fn make_greeter() -> impl Fn() {
+      let name = String::from("Alice");
+      || println!("Hello, {}", name) // Error: closure may outlive `name`
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0373.html

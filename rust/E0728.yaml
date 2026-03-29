@@ -1,0 +1,43 @@
+id: E0728
+tool: rustc
+language: rust
+title: "`await` in non-async function"
+tags: [async, await, futures, concurrency]
+
+explain: |
+  You used `.await` inside a function that is not marked as `async`. The `.await`
+  keyword can only be used inside `async fn` or `async` blocks because it needs an
+  async runtime to suspend and resume execution. In a regular synchronous function,
+  there is no mechanism to pause and wait for a future to complete.
+
+fix: |
+  Mark the function as `async fn` so that `.await` is valid inside it. If this is
+  your `main` function, you'll need an async runtime like `tokio` or `async-std`
+  (e.g. `#[tokio::main] async fn main()`). Alternatively, use a blocking call
+  like `block_on()` if you need to run async code from a sync context.
+
+example_error: |
+  error[E0728]: `await` is only allowed inside `async` functions and blocks
+   --> src/main.rs:6:5
+    |
+  4 | fn fetch_data() -> String {
+    |    ---------- this is not `async`
+  5 |     let data = get_from_server().await;
+    |                                  ^^^^^ only allowed inside `async` functions and blocks
+
+example_code: |
+  async fn get_from_server() -> String {
+      "response".to_string()
+  }
+
+  fn fetch_data() -> String {
+      let data = get_from_server().await; // Error: `await` only allowed in async functions
+      data
+  }
+
+  fn main() {
+      fetch_data();
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0728.html

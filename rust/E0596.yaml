@@ -1,0 +1,35 @@
+id: E0596
+tool: rustc
+language: rust
+title: Cannot borrow as mutable (not declared mutable)
+tags: [borrowing, mutability, borrow-checker, references]
+
+explain: |
+  You tried to take a mutable reference (`&mut`) to something that is not declared
+  as mutable. Rust requires that the original binding be declared with `mut` before
+  you can create a mutable borrow of it. This rule ensures you are explicit about
+  which data can be changed, preventing accidental mutations.
+
+fix: |
+  Add the `mut` keyword to the variable binding, e.g. change `let items = vec![]`
+  to `let mut items = vec![]`. If the value comes from a function parameter,
+  change the parameter to `mut param: Type` or accept `&mut Type` instead.
+
+example_error: |
+  error[E0596]: cannot borrow `items` as mutable, as it is not declared as mutable
+   --> src/main.rs:3:5
+    |
+  2 |     let items = vec![1, 2, 3];
+    |         ----- help: consider changing this to be mutable: `mut items`
+  3 |     items.push(4);
+    |     ^^^^^^^^^^^^^ cannot borrow as mutable
+
+example_code: |
+  fn main() {
+      let items = vec![1, 2, 3];
+      items.push(4); // Error: cannot borrow `items` as mutable
+      println!("{:?}", items);
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0596.html

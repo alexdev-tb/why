@@ -1,0 +1,29 @@
+id: UnicodeEncodeError
+tool: python
+language: python
+title: Unicode encoding error
+tags: [unicode, encoding, string]
+
+explain: |
+  A UnicodeEncodeError occurs when a string cannot be encoded to bytes in the specified encoding.
+  Common causes include:
+  - Trying to encode Unicode characters to ASCII encoding
+  - Writing non-ASCII characters to a file without specifying UTF-8 encoding
+  - System default encoding not supporting certain characters
+
+fix: |
+  Specify UTF-8 encoding when opening files: open('file.txt', 'w', encoding='utf-8')
+  Use 'unicode_escape' or 'backslashreplace' error handlers for difficult characters
+  Check the encoding before writing strings to files
+  Use encode() with error handling: string.encode('ascii', errors='ignore')
+
+example_error: |
+  UnicodeEncodeError: 'ascii' codec can't encode character '\u00e9' in position 0: ordinal not in range(128)
+
+example_code: |
+  # This fails if terminal encoding is ASCII
+  text = "Café"
+  print(text.encode('ascii'))  # Error
+
+links:
+  - https://docs.python.org/3/library/exceptions.html#UnicodeEncodeError

@@ -1,0 +1,31 @@
+id: AttributeError
+tool: python
+language: python
+title: Object has no attribute
+tags: [attribute, object, method]
+
+explain: |
+  An AttributeError occurs when you try to access an attribute (property or method) that doesn't exist on an object.
+  Common causes include:
+  - Typos in attribute names
+  - Accessing attributes on None
+  - Confusing methods available on one type with another (e.g., trying to use .append() on a string)
+  - Using an attribute before it's been assigned
+  - Misspelling a method or property name
+
+fix: |
+  Check the spelling of the attribute or method name.
+  Verify the object is not None before accessing its attributes.
+  Use dir(object) or help(object) to see available attributes and methods.
+  Check the documentation for the object type to find the correct method name.
+  Ensure the attribute has been initialized before accessing it.
+
+example_error: |
+  AttributeError: 'str' object has no attribute 'append'
+
+example_code: |
+  s = "hello"
+  s.append("world")  # Error: strings don't have an append method
+
+links:
+  - https://docs.python.org/3/library/exceptions.html#AttributeError

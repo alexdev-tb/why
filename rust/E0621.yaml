@@ -1,0 +1,35 @@
+id: E0621
+tool: rustc
+language: rust
+title: Explicit lifetime required in function argument
+tags: [lifetimes, references, function-signatures, borrow-checker]
+
+explain: |
+  Rust could not figure out how the lifetimes of two references in your function
+  signature relate to each other. This usually happens when you pass a reference
+  into a function and also return a reference, but Rust cannot tell whether the
+  returned reference comes from that input or from somewhere else. Without that
+  information it cannot guarantee memory safety.
+
+fix: |
+  Add explicit lifetime annotations to your function signature to tell Rust
+  which output reference comes from which input. For example, if your function
+  takes `s: &str` and returns `&str`, write `fn foo<'a>(s: &'a str) -> &'a str`
+  to say "the returned reference lives as long as the input reference does".
+
+example_error: |
+  error[E0621]: explicit lifetime required in the type of `s`
+   --> src/main.rs:2:5
+    |
+  1 | fn first(s: &str, _other: &str) -> &str {
+    |                                    ^ lifetime `'static` required
+  2 |     s
+    |     ^ ...because of the return value
+
+example_code: |
+  fn first(s: &str, _other: &str) -> &str { // Error: ambiguous which lifetime to return
+      s
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0621.html

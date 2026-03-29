@@ -1,0 +1,23 @@
+id: is-a-directory
+tool: shell
+language: shell
+title: Tried to run a directory
+tags: [shell, directory, execute]
+patterns:
+  - ["bash:", "Is a directory"]
+  - ["zsh:", "is a directory:"]
+
+explain: |
+  You tried to run a directory as if it were a program or script. A directory can
+  contain executables, but it is not itself something the shell can execute.
+
+fix: |
+  1. Check what the path is: ls -ld <path>
+  2. If you meant to enter it, use: cd <path>
+  3. If you meant to run something inside it, point to the actual file instead
+
+example_error: |
+  bash: ./scripts: Is a directory
+
+links:
+  - https://www.gnu.org/software/bash/manual/html_node/Command-Search-and-Execution.html

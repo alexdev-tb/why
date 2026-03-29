@@ -1,0 +1,18 @@
+id: update-download-failed
+tool: why
+language: why
+title: Failed to download database
+tags: [update, network]
+patterns:
+  - ["Failed to download database"]
+
+explain: |
+  `why --update` tried to download the latest error database from GitHub but the
+  request failed. This is usually a network issue — no internet, DNS failure,
+  firewall blocking the connection, or GitHub being temporarily unavailable.
+
+fix: |
+  1. Check your internet connection
+  2. Try again in a few minutes if GitHub may be down
+  3. If you are behind a proxy, make sure HTTPS traffic to github.com is allowed
+  4. The embedded database still works — you just won't have the latest entries

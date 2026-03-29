@@ -1,0 +1,27 @@
+id: E0310
+tool: rustc
+language: rust
+title: Type parameter may not live long enough
+tags: [lifetime, static, bound, generic]
+
+explain: |
+  A generic type parameter needs a longer lifetime than the compiler can prove
+  it has. This commonly appears when storing references or trait objects that
+  must satisfy a 'static lifetime bound, or when spawning threads with data
+  that might not live long enough.
+
+fix: |
+  1. Add the required lifetime bound: T: 'static
+  2. If sending data to a thread, use owned types (String instead of &str).
+  3. Clone or move data into closures instead of borrowing.
+  4. If the lifetime bound is too restrictive, reconsider the API design.
+
+example_error: |
+  error[E0310]: the parameter type `T` may not live long enough
+   --> src/lib.rs:5:5
+    |
+  5 |     Box::new(val)
+    |     ^^^^^^^^^^^^^ ...so that the type `T` will meet its required lifetime bounds
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0310.html

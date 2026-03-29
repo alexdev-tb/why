@@ -1,0 +1,31 @@
+id: ImportError
+tool: python
+language: python
+title: Cannot import module or name
+tags: [import, module, dependency]
+
+explain: |
+  An ImportError occurs when an import statement fails to import a module or name from a module.
+  Common causes include:
+  - Module is not installed
+  - Typos in module or name
+  - Circular imports (modules importing each other)
+  - Module doesn't have the name you're trying to import
+  - Python path issues or incorrect working directory
+
+fix: |
+  Verify the module is installed (use pip list or package manager).
+  Install the module if missing using pip install or your package manager.
+  Check the spelling of module names and the names being imported.
+  Import the module with the correct name (check documentation).
+  Avoid circular imports by refactoring your code.
+  Verify the name exists in the module using dir(module).
+
+example_error: |
+  ImportError: No module named 'nonexistent'
+
+example_code: |
+  import nonexistent  # Error: module not installed or doesn't exist
+
+links:
+  - https://docs.python.org/3/library/exceptions.html#ImportError

@@ -1,0 +1,21 @@
+id: branch-already-exists
+tool: git
+language: git
+title: Branch already exists
+tags: [branch, create, duplicate]
+patterns:
+  - ["already exists"]
+  - ["fatal: a branch named", "already exists"]
+
+explain: |
+  You tried to create a branch with a name that is already taken by an existing
+  local branch. Git does not allow duplicate branch names.
+
+fix: |
+  1. Pick a different name for your new branch.
+  2. If you want to reset the existing branch to the current commit: git branch -f <name>
+  3. If the old branch is no longer needed, delete it first: git branch -d <name>
+  4. To see all existing branches: git branch --list
+
+example_error: |
+  fatal: a branch named 'feature/login' already exists

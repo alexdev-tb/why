@@ -1,0 +1,28 @@
+id: e404
+tool: npm
+language: npm
+title: Package not found in registry
+tags: [install, registry, missing]
+patterns:
+  - ["E404", "Not Found"]
+  - ["404 Not Found"]
+  - ["is not in this registry"]
+
+explain: |
+  npm could not find the package you requested in the registry. The package name
+  might be misspelled, unpublished, or in a private registry you are not configured to use.
+
+fix: |
+  1. Check the package name for typos: npm search <name>
+  2. Verify it exists on https://www.npmjs.com/
+  3. If it is a scoped package (@org/name), make sure the scope is correct
+  4. If using a private registry, check your .npmrc configuration:
+     npm config get registry
+
+example_error: |
+  npm error code E404
+  npm error 404 Not Found - GET https://registry.npmjs.org/my-typod-package
+  npm error 404 'my-typod-package@latest' is not in this registry.
+
+links:
+  - https://docs.npmjs.com/cli/v10/commands/npm-search

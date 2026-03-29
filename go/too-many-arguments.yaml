@@ -1,0 +1,34 @@
+id: too-many-arguments
+tool: go
+language: go
+title: Function called with extra arguments
+tags: [function, arguments, parameters]
+patterns:
+  - ["too many arguments"]
+
+explain: |
+  A "too many arguments" error occurs when you provide more arguments to a function than it expects.
+  Go functions have a defined number of parameters. Unless the function uses variadic parameters (...type),
+  you cannot pass more arguments than the function signature specifies.
+
+fix: |
+  Check the function signature to see how many parameters it accepts
+  Remove extra arguments that aren't needed
+  If the function should accept variable arguments, ensure it uses ... syntax in the signature
+  Verify you're calling the right function
+  Split multiple operations into separate function calls if needed
+
+example_error: |
+  too many arguments to call myFunc
+
+example_code: |
+  package main
+  func greet(name string) string {
+      return "Hello " + name
+  }
+  func main() {
+      msg := greet("Alice", "Bob")  // Error: too many arguments
+  }
+
+links:
+  - https://golang.org/doc/effective_go#functions

@@ -1,0 +1,33 @@
+id: E0282
+tool: rustc
+language: rust
+title: Type annotations needed
+tags: [type-inference, annotations, generics, turbofish]
+
+explain: |
+  The compiler cannot figure out the type of a variable or expression from context
+  alone. Rust has powerful type inference, but sometimes there's just not enough
+  information. This often happens with generic functions like `parse()`,
+  `collect()`, or `default()` where the return type could be many things. The
+  compiler needs you to tell it what type you want.
+
+fix: |
+  Add a type annotation to the variable (`let x: i32 = ...`) or use the turbofish
+  syntax on the function call (`str.parse::<i32>()`). Either approach gives the
+  compiler the missing piece of information it needs.
+
+example_error: |
+  error[E0282]: type annotations needed
+   --> src/main.rs:3:9
+    |
+  3 |     let x = "42".parse().unwrap();
+    |         ^ consider giving `x` a type
+
+example_code: |
+  fn main() {
+      let x = "42".parse().unwrap(); // Error: type annotations needed
+      println!("{}", x);
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0282.html

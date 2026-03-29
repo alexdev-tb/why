@@ -1,0 +1,38 @@
+id: format-specifier
+tool: gcc/clang
+language: c_cpp
+title: Format string type mismatch
+tags: [printf, format, strings, types, warnings]
+patterns:
+  - ["format", "expects argument of type"]
+
+explain: |
+  The format specifier in a printf/scanf family function does not match the type of the corresponding argument. This can cause incorrect output, crashes, or undefined behavior. Common mismatches include:
+  - Using %d for a float/double (should be %f or %lf)
+  - Using %f for an int (should be %d)
+  - Using %s for a non-string type
+  - Using %d for a long (should be %ld)
+  - Wrong number of arguments for format specifiers
+
+fix: |
+  1. Match format specifiers to argument types: %d for int, %f for float/double, %s for char*, %ld for long, %zu for size_t
+  2. Compile with -Wformat to enable format string checking
+  3. Use -Werror=format to treat format warnings as errors
+  4. In C++, prefer std::cout or std::format over printf for type safety
+  5. For scanf, remember to pass pointers: scanf("%d", &x)
+
+example_error: |
+  warning: format '%d' expects argument of type 'int', but argument 2 has type 'double' [-Wformat=]
+
+example_code: |
+  #include <stdio.h>
+
+  int main() {
+      double pi = 3.14159;
+      printf("%d\n", pi);  // Warning: %d expects int, not double
+      return 0;
+  }
+
+links:
+  - https://en.cppreference.com/w/c/io/fprintf
+  - https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wformat

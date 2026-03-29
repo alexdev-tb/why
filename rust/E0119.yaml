@@ -1,0 +1,36 @@
+id: E0119
+tool: rustc
+language: rust
+title: Conflicting trait implementations (overlapping impls)
+tags: [traits, generics, orphan-rule, conflicts]
+
+explain: |
+  You wrote two `impl` blocks for the same trait on types that could overlap.
+  Rust requires that for any given type, there is always exactly one matching
+  trait implementation. If two impls could both apply to the same type, Rust
+  refuses to compile because it wouldn't know which one to use.
+
+fix: |
+  Make your implementations more specific so they can never apply to the same
+  type at the same time. In many cases the simplest fix is to remove the
+  overlapping impl and either consolidate the logic or use a different approach
+  such as a concrete implementation instead of a blanket generic one.
+
+example_error: |
+  error[E0119]: conflicting implementations of trait `Greet` for type `String`
+   --> src/main.rs:8:1
+    |
+  5 | impl<T> Greet for T {}
+    | ---------------------- first implementation here
+  ...
+  8 | impl Greet for String {}
+    | ^^^^^^^^^^^^^^^^^^^^^^^^ conflicting implementation for `String`
+
+example_code: |
+  trait Greet {}
+
+  impl<T> Greet for T {}    // covers all types including String
+  impl Greet for String {}  // Error: String is already covered above
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0119.html

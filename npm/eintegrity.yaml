@@ -1,0 +1,31 @@
+id: eintegrity
+tool: npm
+language: npm
+title: Checksum mismatch
+tags: [integrity, checksum, cache, sha512]
+patterns:
+  - ["EINTEGRITY"]
+  - ["Integrity check failed"]
+  - ["sha512", "integrity checksum"]
+
+explain: |
+  npm downloaded a package but its checksum did not match what the lockfile or
+  registry expected. The downloaded tarball is different from the one originally
+  recorded. This is commonly caused by a corrupted npm cache, a stale lockfile
+  after a registry republish, or network interference.
+
+fix: |
+  1. Clean the npm cache: npm cache clean --force
+  2. Delete node_modules and lockfile, then reinstall:
+     rm -rf node_modules package-lock.json && npm install
+  3. If it keeps happening for the same package, check if you are behind a proxy
+     or corporate firewall that modifies downloads.
+
+example_error: |
+  npm error code EINTEGRITY
+  npm error sha512-abc123...== integrity checksum failed when using sha512:
+  npm error wanted sha512-abc123...== but got sha512-xyz789...==
+  npm error Integrity check failed for lodash (https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz)
+
+links:
+  - https://docs.npmjs.com/cli/v10/commands/npm-cache

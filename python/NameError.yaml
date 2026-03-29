@@ -1,0 +1,30 @@
+id: NameError
+tool: python
+language: python
+title: Name is not defined
+tags: [scope, variable, undefined]
+
+explain: |
+  A NameError occurs when you reference a variable or function name that hasn't been defined in the current scope.
+  Common causes include:
+  - Typos in variable names
+  - Using a variable before defining it
+  - Referencing a variable from global scope inside a function without declaring it global
+  - Forgetting to import a module or name
+  - Scope issues where a variable is defined in a nested scope but used outside
+
+fix: |
+  Check for typos in variable and function names (Python is case-sensitive).
+  Ensure the name is defined before using it.
+  Use the global keyword if you need to reference a global variable inside a function.
+  Import modules and names before using them.
+  Check that you're using the name in the correct scope.
+
+example_error: |
+  NameError: name 'x' is not defined
+
+example_code: |
+  print(undefined_var)  # Error: undefined_var hasn't been defined
+
+links:
+  - https://docs.python.org/3/library/exceptions.html#NameError

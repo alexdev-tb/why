@@ -1,0 +1,25 @@
+id: linker-library-not-found
+tool: gcc/clang
+language: c_cpp
+title: Library not found during linking
+tags: [linker, library, ld, linking]
+patterns:
+  - ["cannot find -l"]
+  - ["library not found for -l"]
+  - ["ld: cannot find"]
+
+explain: |
+  The linker could not find a library you specified with -l on the command line.
+  For example, -lm looks for libm.so (or libm.a). The library either is not
+  installed on your system, or the linker does not know the directory where it
+  lives.
+
+fix: |
+  1. Install the missing library. On Debian/Ubuntu: sudo apt install lib<name>-dev
+  2. If the library is installed in a non-standard path, add it with -L/path/to/lib
+  3. Check the library name — -lfoo looks for libfoo.so or libfoo.a
+  4. Use pkg-config to get the correct flags: pkg-config --libs <library>
+
+example_error: |
+  /usr/bin/ld: cannot find -lssl
+  collect2: error: ld returned 1 exit status

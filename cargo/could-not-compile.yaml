@@ -1,0 +1,25 @@
+id: could-not-compile
+tool: cargo
+language: cargo
+title: Could not compile package
+tags: [build, compile, errors]
+patterns:
+  - ["could not compile"]
+
+explain: |
+  Cargo tried to build your project but compilation failed. The actual compiler error
+  will be printed above this message. This is Cargo's summary line — scroll up to
+  find the specific error from rustc.
+
+fix: |
+  1. Read the compiler error printed above this line — it has the details
+  2. Run `why` with the specific error code if you see one: why E0308
+  3. Fix the code and run cargo build again
+  4. If a dependency fails to compile, check if you have the required system
+     libraries installed (e.g., openssl-dev, pkg-config)
+
+example_error: |
+  error: could not compile `myproject` (bin "myproject") due to 2 previous errors
+
+links:
+  - https://doc.rust-lang.org/cargo/commands/cargo-build.html

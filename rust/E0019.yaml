@@ -1,0 +1,35 @@
+id: E0019
+tool: rustc
+language: rust
+title: Static contains a value that requires runtime initialisation
+tags: [const, static, initialization, heap]
+
+explain: |
+  You tried to initialize a `static` variable with an expression that can only
+  be evaluated at runtime, such as calling a non-const function, allocating a
+  `String`, or creating a `Vec`. Statics are baked into your binary at compile
+  time, so their initial value must be fully known before the program even
+  starts.
+
+fix: |
+  Use only `const`-compatible expressions to initialize statics. For heap-
+  allocated types like `String` or `Vec`, use a `static` with `OnceLock`,
+  `LazyLock`, or the `once_cell` crate so initialization is deferred to the
+  first access at runtime.
+
+example_error: |
+  error[E0019]: static contains unimplemented expression type
+   --> src/main.rs:1:28
+    |
+  1 | static GREETING: String = String::from("hello");
+    |                            ^^^^^^^^^^^^^^^^^^^^^ non-constant expression in static
+
+example_code: |
+  static GREETING: String = String::from("hello"); // Error: runtime call in static
+
+  fn main() {
+      println!("{}", GREETING);
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0019.html
