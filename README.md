@@ -75,18 +75,6 @@ eval "$(why --hook zsh)"
 
 Then restart your shell or run `source ~/.bashrc` (or `~/.zshrc`).
 
-## Currently Supported
-
-- **Rust** - `rustc` error codes
-- **Python** - `python` tracebacks
-- **Go** - `go` error codes
-- **C/C++** - `gcc`/`g++`/`clang`/`clang++` errors
-
-### Coming Soon
-
-- Node.js errors
-- TypeScript
-
 ## Contributing
 
 Contributions are encouraged! Adding a new error explanation is as simple as copying a YAML template and writing a few sentences of plain English.
