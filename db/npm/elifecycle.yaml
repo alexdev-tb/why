@@ -1,0 +1,28 @@
+id: elifecycle
+tool: npm
+language: npm
+title: Script failed with exit code
+tags: [script, lifecycle, exit, build]
+patterns:
+  - ["ELIFECYCLE"]
+  - ["Exit status"]
+  - ["Failed at the", "script"]
+
+explain: |
+  An npm lifecycle script (like build, test, start, or a custom script) exited
+  with a non-zero status code, meaning it crashed or returned an error. The
+  root cause is in the script itself, not in npm. Look at the error output above
+  the npm error summary to find the actual failure.
+
+fix: |
+  1. Scroll up past the npm error to find the actual error from the script.
+  2. Run the failing script directly to get cleaner output: npx <command> or the raw command from package.json.
+  3. Common causes: missing files, syntax errors in code, failed compilation.
+  4. Try clearing caches and reinstalling: rm -rf node_modules && npm install
+
+example_error: |
+  npm ERR! code ELIFECYCLE
+  npm ERR! errno 1
+  npm ERR! myapp@1.0.0 build: `webpack --config webpack.prod.js`
+  npm ERR! Exit status 1
+  npm ERR! Failed at the myapp@1.0.0 build script.

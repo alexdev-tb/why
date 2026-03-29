@@ -1,0 +1,23 @@
+id: network-not-found
+tool: docker
+language: docker
+title: Network not found
+tags: [network, compose, bridge]
+patterns:
+  - ["network", "not found"]
+  - ["network", "declared as external"]
+
+explain: |
+  Docker tried to connect a container to a network that does not exist. This
+  happens when a docker-compose.yml references an external network that has not
+  been created yet, or when you manually specify a network name that does not
+  exist with --network.
+
+fix: |
+  1. Create the missing network: docker network create <network-name>
+  2. Check existing networks: docker network ls
+  3. If using docker-compose with external networks, create them before running compose.
+  4. If you do not need an external network, remove the "external: true" line from docker-compose.yml.
+
+example_error: |
+  Error response from daemon: network my-network not found

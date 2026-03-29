@@ -1,0 +1,29 @@
+id: peer-dep-conflict
+tool: npm
+language: npm
+title: Conflicting peer dependency
+tags: [peer, dependency, conflict, version]
+patterns:
+  - ["Could not resolve dependency"]
+  - ["peer dep", "conflict"]
+  - ["Conflicting peer dependency"]
+  - ["ERESOLVE overriding peer dependency"]
+
+explain: |
+  Two or more packages in your dependency tree require different, incompatible
+  versions of the same package. npm 7+ is strict about peer dependencies and
+  will refuse to install when it cannot find a version that satisfies all
+  constraints.
+
+fix: |
+  1. Try adding --legacy-peer-deps to bypass strict checking: npm install --legacy-peer-deps
+  2. Or use --force to accept the best available version: npm install --force
+  3. Check which packages conflict: npm ls <conflicting-package>
+  4. Consider upgrading packages to versions with compatible peer dependencies.
+
+example_error: |
+  npm ERR! ERESOLVE could not resolve
+  npm ERR! While resolving: react-scripts@5.0.0
+  npm ERR! Found: react@18.2.0
+  npm ERR! Could not resolve dependency:
+  npm ERR! peer react@"^17.0.0" from some-library@1.0.0

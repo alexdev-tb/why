@@ -1,0 +1,23 @@
+id: declared-not-used
+tool: go
+language: go
+title: Variable declared but not used
+tags: [variable, unused, compiler]
+patterns:
+  - ["declared and not used"]
+
+explain: |
+  You declared a variable but never read from it anywhere in its scope. Go's
+  compiler enforces that every local variable must be used at least once. This
+  prevents dead code from accumulating.
+
+fix: |
+  1. Use the variable somewhere, or remove the declaration entirely.
+  2. If you only need the side effect of an assignment, use the blank identifier: _ = value
+  3. For debugging, a temporary _ = myVar silences the error while you work.
+
+example_error: |
+  ./main.go:10:2: x declared and not used
+
+links:
+  - https://go.dev/ref/spec#Short_variable_declarations

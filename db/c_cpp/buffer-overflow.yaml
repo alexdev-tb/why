@@ -1,0 +1,28 @@
+id: buffer-overflow
+tool: gcc/clang
+language: c_cpp
+title: Buffer overflow detected
+tags: [buffer, overflow, security, asan, runtime]
+patterns:
+  - ["heap-buffer-overflow"]
+  - ["stack-buffer-overflow"]
+  - ["buffer overflow"]
+  - ["__fortify_fail"]
+
+explain: |
+  Your program wrote or read past the end (or before the beginning) of a buffer.
+  This is one of the most dangerous classes of bugs — it can corrupt adjacent
+  memory, crash, or create exploitable security vulnerabilities. Stack overflows
+  corrupt local variables and return addresses; heap overflows corrupt other
+  allocations.
+
+fix: |
+  1. Check the stack trace to find the offending read or write.
+  2. Verify array index bounds before accessing: if (i < array_size) { ... }
+  3. Use safer functions: strncpy instead of strcpy, snprintf instead of sprintf.
+  4. In C++, prefer std::string and std::vector which handle bounds automatically.
+  5. Compile with -fsanitize=address to catch overflows during development.
+
+example_error: |
+  ==12345==ERROR: AddressSanitizer: stack-buffer-overflow on address 0x7ffd...
+  WRITE of size 1 at 0x7ffd... thread T0

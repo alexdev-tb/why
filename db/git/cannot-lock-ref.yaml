@@ -1,0 +1,26 @@
+id: cannot-lock-ref
+tool: git
+language: git
+title: Cannot lock ref - reference exists
+tags: [ref, lock, branch, fetch]
+patterns:
+  - ["cannot lock ref"]
+  - ["is at", "but expected"]
+
+explain: |
+  Git tried to update a reference (branch or tag) but it conflicts with an
+  existing reference. This commonly happens when a remote branch was deleted
+  and recreated, or when there is a naming conflict between a branch and a
+  directory in the refs hierarchy (e.g., a branch named "feature" and another
+  named "feature/login").
+
+fix: |
+  1. Prune stale remote references: git remote prune origin
+  2. Or fetch with pruning: git fetch --prune
+  3. If the conflict is between branch names, rename the conflicting branch:
+     git branch -m old-name new-name
+  4. Delete the problematic local ref if it's stale: git update-ref -d refs/remotes/origin/<branch>
+
+example_error: |
+  error: cannot lock ref 'refs/remotes/origin/feature/login': 'refs/remotes/origin/feature'
+  exists; cannot create 'refs/remotes/origin/feature/login'

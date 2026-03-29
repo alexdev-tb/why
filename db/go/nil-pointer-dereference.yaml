@@ -1,0 +1,27 @@
+id: nil-pointer-dereference
+tool: go
+language: go
+title: Nil pointer dereference
+tags: [nil, pointer, runtime, panic]
+patterns:
+  - ["runtime error: invalid memory address or nil pointer dereference"]
+  - ["nil pointer dereference"]
+
+explain: |
+  Your program tried to access a field or call a method on a pointer that is nil.
+  This is one of the most common runtime panics in Go. It typically happens when
+  you use a variable before checking whether it was actually initialized or
+  returned as nil from a function.
+
+fix: |
+  1. Check the stack trace to find which variable is nil.
+  2. Add a nil check before using the pointer:  if ptr != nil { ... }
+  3. Trace back to where the variable is assigned — look for error returns you
+     may have ignored.
+  4. For struct fields, make sure the parent struct is fully initialized.
+
+example_error: |
+  goroutine 1 [running]:
+  main.process(0x0)
+      /app/main.go:15 +0x18
+  panic: runtime error: invalid memory address or nil pointer dereference

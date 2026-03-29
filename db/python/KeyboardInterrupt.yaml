@@ -1,0 +1,24 @@
+id: KeyboardInterrupt
+tool: python
+language: python
+title: Program interrupted by user
+tags: [interrupt, signal, ctrl-c]
+
+explain: |
+  You (or your system) sent an interrupt signal, usually by pressing Ctrl+C,
+  while the program was running. Python raises KeyboardInterrupt to let the
+  program know it should stop. This is not a bug — it is the normal way to
+  cancel a running Python script.
+
+fix: |
+  1. If you pressed Ctrl+C intentionally, no fix is needed.
+  2. If your program should handle interrupts gracefully, wrap the main code in
+     a try/except KeyboardInterrupt block.
+  3. For long-running tasks, consider adding a signal handler that cleans up
+     resources before exiting.
+
+example_error: |
+  Traceback (most recent call last):
+    File "server.py", line 12, in <module>
+      time.sleep(3600)
+  KeyboardInterrupt

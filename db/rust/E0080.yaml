@@ -1,0 +1,28 @@
+id: E0080
+tool: rustc
+language: rust
+title: Evaluation of constant value failed
+tags: [const, evaluation, overflow, compile-time]
+
+explain: |
+  The compiler tried to evaluate a constant expression at compile time and it
+  failed. This happens when const or static expressions perform operations that
+  would panic at runtime, such as integer overflow, division by zero, or out-of-
+  bounds array access. Since these are evaluated at compile time, Rust catches
+  them immediately.
+
+fix: |
+  1. Check the arithmetic in your const expression for overflow or division by zero.
+  2. Use checked arithmetic methods if values might be out of range.
+  3. If the value is not truly knowable at compile time, use lazy_static or
+     OnceLock instead of const.
+
+example_error: |
+  error[E0080]: evaluation of constant value failed
+   --> src/main.rs:1:20
+    |
+  1 | const X: usize = 1 - 2;
+    |                  ^^^^^ attempt to compute `1_usize - 2_usize`, which would overflow
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0080.html

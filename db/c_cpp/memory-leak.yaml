@@ -1,0 +1,27 @@
+id: memory-leak
+tool: gcc/clang
+language: c_cpp
+title: Memory leak detected
+tags: [memory, leak, heap, valgrind, asan]
+patterns:
+  - ["detected memory leaks"]
+  - ["definitely lost"]
+  - ["LeakSanitizer"]
+
+explain: |
+  Your program allocated memory on the heap (via malloc, calloc, new, etc.) but
+  never freed it before losing the last pointer to that memory. Over time, leaked
+  memory accumulates and can cause your program to use excessive memory or
+  eventually crash with an out-of-memory error.
+
+fix: |
+  1. Check the stack trace to find where the leaked memory was allocated.
+  2. Add a matching free() or delete for every allocation.
+  3. In C++, prefer smart pointers (std::unique_ptr, std::shared_ptr) over raw new/delete.
+  4. Use Valgrind (valgrind --leak-check=full ./program) or LeakSanitizer (-fsanitize=leak) to find all leaks.
+
+example_error: |
+  ==12345==ERROR: LeakSanitizer: detected memory leaks
+  Direct leak of 40 byte(s) in 1 object(s) allocated from:
+      #0 0x7f... in malloc
+      #1 0x40... in main /app/main.c:5

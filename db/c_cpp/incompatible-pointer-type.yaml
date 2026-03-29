@@ -1,0 +1,24 @@
+id: incompatible-pointer-type
+tool: gcc/clang
+language: c_cpp
+title: Incompatible pointer type
+tags: [pointer, type, warning, compiler]
+patterns:
+  - ["incompatible pointer type"]
+  - ["from incompatible pointer type"]
+
+explain: |
+  You passed or assigned a pointer of one type where a pointer of a different
+  type was expected. For example, passing an int* to a function that expects
+  a char*. While C may compile this with a warning, the types have different
+  sizes and alignment requirements, so accessing the data through the wrong
+  pointer type leads to undefined behavior.
+
+fix: |
+  1. Check that the pointer type matches what the function or assignment expects.
+  2. If the conversion is intentional, use an explicit cast: (char *)my_int_ptr
+  3. If using void*, make sure you cast it to the correct type when dereferencing.
+  4. Fix the root cause — usually the variable declaration or function signature is wrong.
+
+example_error: |
+  main.c:8:18: warning: passing argument 1 of 'process' from incompatible pointer type [-Wincompatible-pointer-types]

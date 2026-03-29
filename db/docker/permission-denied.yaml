@@ -1,0 +1,25 @@
+id: permission-denied
+tool: docker
+language: docker
+title: Permission denied connecting to Docker socket
+tags: [socket, permission, daemon, sudo]
+patterns:
+  - ["permission denied", "docker.sock"]
+  - ["Got permission denied while trying to connect"]
+  - ["connect: permission denied"]
+
+explain: |
+  Your user account does not have permission to communicate with the Docker
+  daemon. The Docker socket at /var/run/docker.sock is owned by the "docker"
+  group, and your user is not in that group. This is a common issue on Linux
+  after first installing Docker.
+
+fix: |
+  1. Add your user to the docker group: sudo usermod -aG docker $USER
+  2. Log out and back in (or run newgrp docker) for the change to take effect.
+  3. As a quick workaround, prefix with sudo: sudo docker ps
+  4. Verify it works: docker info
+
+example_error: |
+  Got permission denied while trying to connect to the Docker daemon socket
+  at unix:///var/run/docker.sock: dial unix /var/run/docker.sock: connect: permission denied

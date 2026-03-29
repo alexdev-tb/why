@@ -1,0 +1,24 @@
+id: JSONDecodeError
+tool: python
+language: python
+title: Failed to parse JSON
+tags: [json, parse, decode, syntax]
+
+explain: |
+  Python's json module could not parse the string you gave it because it is
+  not valid JSON. Common causes include: the data is empty, it contains
+  trailing commas, it uses single quotes instead of double quotes, or the
+  response is HTML/XML instead of JSON (e.g., an error page from an API).
+
+fix: |
+  1. Print or log the raw string before parsing to see what you are actually getting.
+  2. Validate your JSON at https://jsonlint.com
+  3. If the data comes from an API, check the response status code and Content-Type
+     header before parsing.
+  4. If the string is empty, add a check: if data: json.loads(data)
+
+example_error: |
+  Traceback (most recent call last):
+    File "app.py", line 8, in <module>
+      data = json.loads(response.text)
+  json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)

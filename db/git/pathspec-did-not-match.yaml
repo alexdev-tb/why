@@ -1,0 +1,23 @@
+id: pathspec-did-not-match
+tool: git
+language: git
+title: Pathspec did not match any files
+tags: [checkout, path, file, typo]
+patterns:
+  - ["pathspec", "did not match any file"]
+  - ["error: pathspec"]
+
+explain: |
+  Git could not find the file, branch, or path you specified. This usually
+  means you have a typo in the branch name or file path, the branch only
+  exists on the remote and has not been fetched yet, or the file was never
+  tracked by Git.
+
+fix: |
+  1. Double-check the spelling of the branch or file name.
+  2. Run git branch -a to see all local and remote branches.
+  3. If the branch is remote-only, fetch first: git fetch origin
+  4. If you meant a file, check that it is tracked: git ls-files <path>
+
+example_error: |
+  error: pathspec 'feture/login' did not match any file(s) known to git

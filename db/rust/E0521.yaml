@@ -1,0 +1,27 @@
+id: E0521
+tool: rustc
+language: rust
+title: Borrowed data escapes outside of closure
+tags: [borrow, closure, lifetime, escape]
+
+explain: |
+  You have a closure or function that borrows data, but the borrowed reference
+  would escape outside the scope where it is valid. The compiler detected that
+  the borrow could outlive the data it refers to, which would create a dangling
+  reference.
+
+fix: |
+  1. Clone the data and move the owned copy into the closure instead of borrowing.
+  2. Use move closures: move |args| { ... } to transfer ownership.
+  3. If the data must be shared, use Arc<T> for thread-safe reference counting.
+  4. Restructure code so the borrowed data outlives the closure.
+
+example_error: |
+  error[E0521]: borrowed data escapes outside of closure
+   --> src/main.rs:8:9
+    |
+  8 |         results.push(&item);
+    |         ^^^^^^^^^^^^^^^^^^^^ `item` escapes the closure body here
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0521.html
