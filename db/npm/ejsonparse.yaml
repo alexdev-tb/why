@@ -1,0 +1,30 @@
+id: ejsonparse
+tool: npm
+language: npm
+title: Invalid package.json
+tags: [json, parse, package, syntax]
+patterns:
+  - ["EJSONPARSE"]
+  - ["JSON.parse", "package.json"]
+  - ["Unexpected token", "package.json"]
+
+explain: |
+  Your package.json file contains invalid JSON. This is usually a syntax error like
+  a trailing comma, a missing quote, or a missing bracket. npm cannot read the file
+  and will refuse to do anything until the JSON is valid.
+
+fix: |
+  1. Open package.json and look near the line number mentioned in the error.
+  2. Common mistakes: trailing commas after the last item in an object or array,
+     missing or extra commas between entries, unquoted keys.
+  3. Validate with: npx jsonlint package.json
+  4. If you cannot find the issue, paste package.json into a JSON validator website.
+
+example_error: |
+  npm error code EJSONPARSE
+  npm error JSON.parse Unexpected token } in JSON at position 245 while parsing near '..."test": "jest",  }'
+  npm error Failed to parse json
+  npm error File: /home/user/myapp/package.json
+
+links:
+  - https://docs.npmjs.com/cli/v10/configuring-npm/package-json

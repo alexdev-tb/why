@@ -1,0 +1,33 @@
+id: eperm
+tool: npm
+language: npm
+title: Operation not permitted
+tags: [permissions, install, access]
+patterns:
+  - ["EPERM"]
+  - ["operation not permitted"]
+  - ["Error: EPERM"]
+
+explain: |
+  npm tried to perform a file operation (create, write, or delete) but the operating
+  system denied it. This usually means you are trying to install packages into a directory
+  you do not own, or another process has locked a file npm needs to modify.
+
+fix: |
+  1. Do not use sudo with npm install. Fix the permissions instead.
+  2. On Linux/macOS, fix the npm prefix ownership:
+     sudo chown -R $(whoami) $(npm config get prefix)/{lib/node_modules,bin,share}
+  3. On Windows, close any editors or terminals that might have files open in
+     node_modules, then retry.
+  4. If the issue persists, delete node_modules and reinstall:
+     rm -rf node_modules package-lock.json && npm install
+
+example_error: |
+  npm error code EPERM
+  npm error syscall rename
+  npm error path /home/user/myapp/node_modules/lodash
+  npm error errno -1
+  npm error Error: EPERM: operation not permitted, rename
+
+links:
+  - https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally

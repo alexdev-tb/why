@@ -1,0 +1,27 @@
+id: unrelated-histories
+tool: git
+language: git
+title: Refusing to merge unrelated histories
+tags: [merge, pull, unrelated, histories]
+patterns:
+  - ["refusing to merge unrelated histories"]
+  - ["fatal: refusing to merge unrelated histories"]
+
+explain: |
+  Git detected that the two branches you are trying to merge share no common ancestor
+  commit. This typically happens when you initialized a new repo locally and then tried
+  to pull from an existing remote that has its own separate history, or when you added
+  a remote that points to a completely different project.
+
+fix: |
+  1. If you intentionally want to combine the two histories:
+     git pull origin main --allow-unrelated-histories
+  2. Resolve any merge conflicts that arise, then commit.
+  3. If this was a mistake, check that your remote URL is correct:
+     git remote -v
+
+example_error: |
+  fatal: refusing to merge unrelated histories
+
+links:
+  - https://git-scm.com/docs/git-merge
