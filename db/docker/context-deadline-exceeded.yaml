@@ -1,0 +1,29 @@
+id: context-deadline-exceeded
+tool: docker
+language: docker
+title: Context deadline exceeded
+tags: [timeout, network, registry, pull]
+patterns:
+  - ["context deadline exceeded"]
+  - ["i/o timeout"]
+  - ["TLS handshake timeout"]
+  - ["net/http: request canceled"]
+
+explain: |
+  Docker timed out while trying to communicate with a container registry or network
+  resource. This typically happens when pulling or pushing images over a slow or
+  unreliable network connection, when a corporate firewall or proxy blocks Docker
+  registry traffic, or when the registry itself is experiencing issues.
+
+fix: |
+  1. Check your internet connection: curl -I https://registry-1.docker.io
+  2. If behind a proxy, configure Docker's proxy settings in ~/.docker/config.json
+  3. Retry the operation — transient network issues often resolve on retry
+  4. Try an alternative registry mirror if the default registry is slow
+
+example_error: |
+  Error response from daemon: Get "https://registry-1.docker.io/v2/": net/http: request
+  canceled while waiting for connection (Client.Timeout exceeded while awaiting headers)
+
+links:
+  - https://docs.docker.com/engine/daemon/proxy/

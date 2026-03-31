@@ -1,0 +1,29 @@
+id: manifest-not-found
+tool: docker
+language: docker
+title: Manifest not found
+tags: [pull, image, manifest, registry, tag]
+patterns:
+  - ["manifest", "not found"]
+  - ["manifest unknown"]
+  - ["manifest for", "not found"]
+  - ["Error response from daemon: pull access denied"]
+
+explain: |
+  Docker could not find the image you requested in the container registry. This means
+  the image name is misspelled, the tag does not exist, or the image is not available
+  for your CPU architecture (e.g., pulling an amd64 image on an ARM Mac). Private
+  images also show this error if you are not logged in.
+
+fix: |
+  1. Double-check the image name and tag for typos: docker pull nginx:latest
+  2. Search for the correct tag on Docker Hub or your registry
+  3. For private images, log in first: docker login
+  4. For architecture mismatches, use --platform: docker pull --platform linux/amd64 image:tag
+
+example_error: |
+  Error response from daemon: manifest for myapp:v2.0 not found: manifest unknown:
+  manifest unknown
+
+links:
+  - https://docs.docker.com/reference/cli/docker/image/pull/

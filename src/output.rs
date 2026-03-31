@@ -7,7 +7,6 @@ pub fn print_entry(entry: &ErrorEntry) {
     let divider = "─".repeat(width);
 
     let badge = format!("{}/{}", entry.language, entry.tool);
-    // "→ " + id + " — " + title = prefix; pad to right-align badge
     let prefix_len = 2 + entry.id.len() + 3 + entry.title.len();
     let padding = if prefix_len + badge.len() < width {
         width - prefix_len - badge.len()

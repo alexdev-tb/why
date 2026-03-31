@@ -1,0 +1,27 @@
+id: container-not-running
+tool: docker
+language: docker
+title: Container is not running
+tags: [container, exec, attach, stopped]
+patterns:
+  - ["is not running"]
+  - ["is paused, unpause the container"]
+  - ["No such container"]
+  - ["is restarting, wait until the container is running"]
+
+explain: |
+  You tried to exec into, attach to, or interact with a container that is stopped,
+  paused, or does not exist. Docker requires the target container to be in a running
+  state before you can execute commands inside it or attach to its process.
+
+fix: |
+  1. Check the container status: docker ps -a | grep <container>
+  2. Start a stopped container: docker start <container>
+  3. Then retry: docker exec -it <container> bash
+  4. If the container keeps exiting, check its logs: docker logs <container>
+
+example_error: |
+  Error response from daemon: Container 4a7f2b8c9d is not running
+
+links:
+  - https://docs.docker.com/reference/cli/docker/container/exec/

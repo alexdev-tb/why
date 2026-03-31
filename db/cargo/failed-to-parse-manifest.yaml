@@ -1,0 +1,34 @@
+id: failed-to-parse-manifest
+tool: cargo
+language: cargo
+title: Failed to parse manifest
+tags: [manifest, toml, parse, Cargo.toml]
+patterns:
+  - ["failed to parse manifest"]
+  - ["could not parse input as TOML"]
+  - ["expected", "for key", "Cargo.toml"]
+
+explain: |
+  Cargo could not read your Cargo.toml because it contains invalid TOML syntax. Common
+  causes include a missing quote, an extra comma, a duplicate key, incorrect table header
+  syntax, or putting a key-value pair after an inline table on the same line. Cargo.toml
+  follows strict TOML rules, so even small formatting mistakes will trigger this error.
+
+fix: |
+  1. Read the error message carefully — it usually points to the exact line and column
+  2. Check for unmatched quotes, brackets, or braces near the reported location
+  3. Verify table headers use the correct format: [dependencies], not [dependency]
+  4. Use a TOML linter or formatter to catch syntax issues: taplo fmt Cargo.toml
+
+example_error: |
+  error: failed to parse manifest at `/home/user/project/Cargo.toml`
+
+  Caused by:
+    could not parse input as TOML
+
+  Caused by:
+    TOML parse error at line 8, column 1
+    expected `.`, `=`
+
+links:
+  - https://doc.rust-lang.org/cargo/reference/manifest.html

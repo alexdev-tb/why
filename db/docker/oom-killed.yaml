@@ -1,0 +1,31 @@
+id: oom-killed
+tool: docker
+language: docker
+title: Container killed by out-of-memory
+tags: [oom, memory, killed, limit]
+patterns:
+  - ["OOMKilled"]
+  - ["out of memory"]
+  - ["Cannot allocate memory"]
+  - ["Killed", "memory"]
+
+explain: |
+  Your container used more memory than the limit allows, so the Linux OOM killer
+  terminated it. Docker sets memory limits via the -m or --memory flag. If no explicit
+  limit was set, the container may have exhausted all available host memory, causing
+  the kernel to kill it. This commonly happens with memory-hungry builds, large
+  datasets, or memory leaks in long-running processes.
+
+fix: |
+  1. Check if the container was OOM-killed: docker inspect <container> | grep OOMKilled
+  2. Increase the memory limit: docker run -m 4g your-image
+  3. If using Docker Desktop, increase the memory allocation in Settings > Resources
+  4. Profile your application for memory leaks or reduce its memory footprint
+
+example_error: |
+  docker: Error response from daemon: OCI runtime create failed: container_linux.go:380:
+  starting container process caused: process_linux.go:545: container init caused:
+  Cannot allocate memory: unknown.
+
+links:
+  - https://docs.docker.com/engine/containers/resource_constraints/#memory

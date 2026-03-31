@@ -1,0 +1,29 @@
+id: cyclic-dependency
+tool: cargo
+language: cargo
+title: Cyclic package dependency detected
+tags: [dependency, cycle, circular]
+patterns:
+  - ["cyclic package dependency"]
+  - ["cyclic dependency detected"]
+
+explain: |
+  Cargo found a circular chain of dependencies — crate A depends on crate B, and crate B
+  (directly or indirectly) depends back on crate A. Rust's build system does not allow
+  this because it cannot determine a valid compilation order. This usually happens in
+  workspaces when two crates accidentally reference each other, or when adding a new
+  dependency creates an indirect loop through transitive deps.
+
+fix: |
+  1. Run cargo tree to visualize the dependency graph and find the cycle
+  2. Break the cycle by extracting shared types or traits into a new, separate crate
+  3. If the cycle is through dev-dependencies, move the offending dep to [dev-dependencies]
+     which Cargo handles separately
+  4. Use cargo tree -i <crate> to see the reverse dependency chain for a specific crate
+
+example_error: |
+  error: cyclic package dependency: package `crate_a v0.1.0` depends on itself.
+  Cycle: crate_a -> crate_b -> crate_a
+
+links:
+  - https://doc.rust-lang.org/cargo/reference/workspaces.html
