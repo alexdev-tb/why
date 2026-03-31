@@ -14,15 +14,11 @@ fn why_cmd() -> Command {
 
 #[test]
 fn lookup_rust_error() {
-    why_cmd()
-        .arg("E0499")
-        .assert()
-        .success()
-        .stdout(
-            predicate::str::contains("E0499")
-                .and(predicate::str::contains("Multiple mutable borrows"))
-                .and(predicate::str::contains("Fix:")),
-        );
+    why_cmd().arg("E0499").assert().success().stdout(
+        predicate::str::contains("E0499")
+            .and(predicate::str::contains("Multiple mutable borrows"))
+            .and(predicate::str::contains("Fix:")),
+    );
 }
 
 #[test]
