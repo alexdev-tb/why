@@ -1,0 +1,33 @@
+id: E0054
+tool: rustc
+language: rust
+title: Invalid cast between types
+tags: [casting, types, as, conversion]
+
+explain: |
+  You tried to cast a value from one type to another using `as`, but Rust does
+  not allow that particular conversion. Not all types can be cast to each other
+  with `as`. For example, you cannot cast a `bool` to a reference, or cast
+  between completely unrelated types that have no numeric or pointer
+  relationship.
+
+fix: |
+  Check whether a direct `as` cast makes sense for your types. For type
+  conversions between unrelated types, use the appropriate trait instead: `From`
+  / `Into` for infallible conversions, `TryFrom` / `TryInto` for fallible ones,
+  or methods like `.to_string()` and `.parse()` for string conversions.
+
+example_error: |
+  error[E0054]: cannot cast `bool` as `String`
+   --> src/main.rs:3:5
+    |
+  3 |     let s = true as String;
+    |             ^^^^^^^^^^^^^^ invalid cast
+
+example_code: |
+  fn main() {
+      let s = true as String; // Error: cannot cast bool to String
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0054.html

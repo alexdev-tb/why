@@ -1,0 +1,22 @@
+id: missing-return
+tool: go
+language: go
+title: Missing return at end of function
+tags: [function, return, compiler]
+patterns:
+  - ["missing return at end of function"]
+  - ["missing return"]
+
+explain: |
+  Your function signature declares a return type, but at least one code path
+  reaches the end of the function body without a return statement. Go requires
+  every branch to explicitly return a value when the function has a declared
+  return type.
+
+fix: |
+  1. Add a return statement at the end of the function.
+  2. If you have if/else branches, make sure every branch returns.
+  3. Alternatively, use a named return value and a bare `return` at the end.
+
+example_error: |
+  ./main.go:12:1: missing return at end of function

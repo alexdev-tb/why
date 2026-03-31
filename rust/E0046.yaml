@@ -1,0 +1,48 @@
+id: E0046
+tool: rustc
+language: rust
+title: Not all trait items implemented
+tags: [traits, implementation, methods, required]
+
+explain: |
+  You wrote an `impl Trait for Type` block but didn't provide implementations for
+  all of the trait's required methods, associated types, or constants. When you
+  implement a trait, you must provide a body for every item that doesn't have a
+  default implementation in the trait definition. The compiler lists exactly which
+  items are missing.
+
+fix: |
+  Add the missing methods, types, or constants to your `impl` block. Check the
+  trait definition to see the required signatures and implement each one. Your IDE
+  can usually auto-generate stubs for unimplemented trait items.
+
+example_error: |
+  error[E0046]: not all trait items implemented, missing: `area`, `perimeter`
+   --> src/main.rs:9:1
+    |
+  3 |     fn area(&self) -> f64;
+    |     ---------------------- `area` from trait
+  4 |     fn perimeter(&self) -> f64;
+    |     --------------------------- `perimeter` from trait
+  ...
+  9 | impl Shape for Circle {
+    | ^^^^^^^^^^^^^^^^^^^^^^ missing `area`, `perimeter` in implementation
+
+example_code: |
+  trait Shape {
+      fn area(&self) -> f64;
+      fn perimeter(&self) -> f64;
+  }
+
+  struct Circle {
+      radius: f64,
+  }
+
+  impl Shape for Circle {
+      // Error: missing `area` and `perimeter` in implementation
+  }
+
+  fn main() {}
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0046.html

@@ -1,0 +1,25 @@
+id: not-a-git-repository
+tool: git
+language: git
+title: Not a git repository
+tags: [init, repository]
+patterns:
+  - ["not a git repository"]
+
+explain: |
+  You ran a git command in a directory that is not inside a git repository. Either
+  you are in the wrong directory, or the project has not been initialized with git yet.
+
+fix: |
+  If this should be a git repo, initialize it:
+    git init
+  If the repo exists elsewhere, navigate to the correct directory:
+    cd /path/to/your/project
+  If you cloned it somewhere, find it:
+    find ~ -name ".git" -type d 2>/dev/null
+
+example_error: |
+  fatal: not a git repository (or any of the parent directories): .git
+
+links:
+  - https://git-scm.com/docs/git-init

@@ -1,0 +1,22 @@
+id: cannot-convert
+tool: go
+language: go
+title: Cannot convert between types
+tags: [type, conversion, compiler]
+patterns:
+  - ["cannot convert"]
+
+explain: |
+  You tried to convert a value to a type that Go does not allow. Go has strict
+  type conversion rules — you can convert between numeric types, and between
+  string and byte/rune slices, but you cannot convert between unrelated types
+  like structs or interfaces without proper assertions or explicit logic.
+
+fix: |
+  1. Check that the source and target types are compatible for conversion.
+  2. For numeric types, use explicit conversion: float64(myInt)
+  3. For interfaces, use a type assertion: val, ok := myInterface.(TargetType)
+  4. For structs, you may need to write a manual mapping function.
+
+example_error: |
+  ./main.go:9:12: cannot convert x (variable of type string) to type int

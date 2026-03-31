@@ -1,0 +1,25 @@
+id: bad-substitution
+tool: bash
+language: shell
+title: Bad substitution
+tags: [substitution, bash, variable, expansion]
+patterns:
+  - ["bad substitution"]
+
+explain: |
+  Bash does not recognize the variable or parameter expansion syntax you used. This
+  often happens when you use a feature that requires bash (like ${var,,} or ${var:0:3})
+  but your script runs under sh or dash instead. It can also happen with a typo inside
+  ${...}, or when using $() where ${} was intended and vice versa.
+
+fix: |
+  1. Make sure your script's shebang is #!/bin/bash, not #!/bin/sh
+  2. If running manually, use bash script.sh instead of sh script.sh
+  3. Check for typos inside ${...} — variable names cannot have spaces or special chars
+  4. Verify the expansion syntax is valid for your bash version: bash --version
+
+example_error: |
+  bash: ${name,,}: bad substitution
+
+links:
+  - https://www.gnu.org/software/bash/manual/bash.html#Shell-Parameter-Expansion

@@ -1,0 +1,43 @@
+id: E0061
+tool: rustc
+language: rust
+title: Wrong number of function arguments
+tags: [functions, arguments, parameters]
+
+explain: |
+  You called a function with a different number of arguments than it expects. Rust requires
+  that every function call provides exactly the number of arguments defined in the function
+  signature. Unlike some other languages, Rust does not have optional parameters or variadic
+  functions (except through macros). Each argument must be explicitly provided.
+
+fix: |
+  Check the function definition to see how many parameters it expects and what their types are.
+  Adjust your function call to pass exactly that many arguments. If you need optional behavior,
+  consider using `Option<T>` parameters, default values via a builder pattern, or function
+  overloading via traits.
+
+example_error: |
+  error[E0061]: this function takes 2 arguments but 1 argument was supplied
+   --> src/main.rs:6:5
+    |
+  6 |     add(5);
+    |     ^^^ --- an argument of type `i32` is missing
+    |
+  note: function defined here
+   --> src/main.rs:1:4
+    |
+  1 | fn add(a: i32, b: i32) -> i32 {
+    |    ^^^ ------  ------
+
+example_code: |
+  fn add(a: i32, b: i32) -> i32 {
+      a + b
+  }
+
+  fn main() {
+      let result = add(5);  // Error: takes 2 arguments but 1 was supplied
+      println!("{}", result);
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0061.html

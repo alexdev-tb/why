@@ -1,0 +1,29 @@
+id: eotp
+tool: npm
+language: npm
+title: OTP required for publish
+tags: [otp, publish, 2fa, auth]
+patterns:
+  - ["EOTP"]
+  - ["one-time password"]
+  - ["This operation requires a one-time password"]
+
+explain: |
+  You tried to publish a package or change package settings, but your npm account
+  has two-factor authentication enabled. npm requires a one-time password from
+  your authenticator app to complete this action.
+
+fix: |
+  1. Publish with the OTP flag: npm publish --otp=<code>
+  2. Get the code from your authenticator app (Google Authenticator, Authy, etc.).
+  3. The code changes every 30 seconds, so enter it quickly after generating.
+  4. If you no longer have access to your authenticator, contact npm support
+     to recover your account.
+
+example_error: |
+  npm error code EOTP
+  npm error This operation requires a one-time password from your authenticator.
+  npm error You can provide a one-time password by passing --otp=<code> to the command you ran.
+
+links:
+  - https://docs.npmjs.com/configuring-two-factor-authentication

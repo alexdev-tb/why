@@ -1,0 +1,37 @@
+id: E0433
+tool: rustc
+language: rust
+title: Unresolved module path
+tags: [modules, paths, imports, name-resolution]
+
+explain: |
+  The compiler could not find a module, crate, or item at the path you specified. This typically
+  means you are trying to use a path like `std::collections::HashSet` but misspelled part of it,
+  or you are referencing a module that does not exist in the crate. It can also happen if you
+  forgot to declare a module with `mod` or forgot to add a dependency to `Cargo.toml`.
+
+fix: |
+  Verify the full path is correct by checking the documentation for the crate or module you are
+  referencing. Make sure external crates are listed in your `Cargo.toml` under `[dependencies]`
+  and that you have declared any local modules with `mod module_name;` in the appropriate file.
+
+example_error: |
+  error[E0433]: failed to resolve: use of undeclared crate or module `serde`
+   --> src/main.rs:1:5
+    |
+  1 | use serde::Deserialize;
+    |     ^^^^^ use of undeclared crate or module `serde`
+
+example_code: |
+  // Cargo.toml does not include serde as a dependency
+  use serde::Deserialize; // Error: use of undeclared crate or module `serde`
+
+  #[derive(Deserialize)]
+  struct Config {
+      name: String,
+  }
+
+  fn main() {}
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0433.html

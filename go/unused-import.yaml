@@ -1,0 +1,34 @@
+id: unused-import
+tool: go
+language: go
+title: Imported but unused package
+tags: [import, unused, package]
+patterns:
+  - ["imported and not used"]
+
+explain: |
+  An unused import occurs when you import a package but don't use anything from it in your code.
+  Go treats unused imports as errors to keep code clean and dependencies minimal.
+  This also helps identify if a function name or import path changed and broke your code unintentionally.
+
+fix: |
+  Remove the unused import statement
+  Actually use something from the imported package
+  If you're temporarily not using it, remove it and re-add when needed
+  Use a blank import _ for side effects: import _ "package/init"
+  Check the package name - you might have the wrong import path
+
+example_error: |
+  imported and not used: "fmt"
+
+example_code: |
+  package main
+  import (
+      "fmt"    // Error: imported but not used
+  )
+  func main() {
+      println("Hello")
+  }
+
+links:
+  - https://golang.org/doc/effective_go#imports

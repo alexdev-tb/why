@@ -1,0 +1,32 @@
+id: eacces
+tool: npm
+language: npm
+title: Permission denied
+tags: [permissions, global, install]
+patterns:
+  - ["EACCES", "permission denied"]
+  - ["npm error", "EACCES"]
+
+explain: |
+  npm does not have permission to write to the directory it needs. This almost always
+  happens when installing global packages without proper permissions, or when
+  node_modules is owned by root.
+
+fix: |
+  Never use sudo with npm. Instead, fix the permissions:
+  1. Change npm's default global directory:
+     mkdir ~/.npm-global
+     npm config set prefix '~/.npm-global'
+     Add to your shell config: export PATH=~/.npm-global/bin:$PATH
+  2. Or use a version manager like nvm, which avoids this entirely
+  3. If node_modules is owned by root:
+     sudo chown -R $(whoami) node_modules
+
+example_error: |
+  npm error code EACCES
+  npm error syscall mkdir
+  npm error path /usr/local/lib/node_modules/package
+  npm error errno -13
+
+links:
+  - https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally

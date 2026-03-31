@@ -1,0 +1,25 @@
+id: failed-to-fetch
+tool: cargo
+language: cargo
+title: Failed to fetch from registry
+tags: [network, registry, fetch, offline]
+patterns:
+  - ["failed to fetch"]
+  - ["spurious network error"]
+  - ["failed to download"]
+
+explain: |
+  Cargo could not download a crate or the registry index from the network.
+  This happens when you have no internet connection, a firewall is blocking
+  the request, or the crates.io registry is experiencing issues.
+
+fix: |
+  1. Check your internet connection.
+  2. Try again — transient failures are common: cargo build
+  3. If behind a proxy, set the HTTP_PROXY and HTTPS_PROXY environment variables.
+  4. Use cargo's offline mode if you have the crates cached: cargo build --offline
+  5. Check crates.io status at https://status.crates.io
+
+example_error: |
+  warning: spurious network error (3 tries remaining): [6] Couldn't resolve host name
+  error: failed to fetch `https://github.com/rust-lang/crates.io-index`

@@ -1,0 +1,35 @@
+id: uninitialized-variable
+tool: gcc/clang
+language: c_cpp
+title: Variable used without being initialized
+tags: [variables, initialization, warnings, undefined-behavior]
+patterns:
+  - ["is used uninitialized"]
+  - ["may be uninitialized"]
+
+explain: |
+  You are reading the value of a local variable before assigning it a value. In C/C++, local variables are not automatically initialized to zero — they contain whatever garbage data was previously on the stack. Using an uninitialized variable is undefined behavior and can produce unpredictable results.
+
+fix: |
+  1. Always initialize variables when declaring them: int x = 0;
+  2. Ensure all code paths assign a value before the variable is read
+  3. Compile with -Wall -Wuninitialized to catch these issues
+  4. Use -Werror=uninitialized to treat it as a compile error
+  5. In C++, prefer initialization with braces: int x{};
+  6. Use static analysis tools like cppcheck for deeper analysis
+
+example_error: |
+  warning: 'x' is used uninitialized [-Wuninitialized]
+
+example_code: |
+  #include <stdio.h>
+
+  int main() {
+      int x;
+      printf("%d\n", x);  // Warning: x is uninitialized
+      return 0;
+  }
+
+links:
+  - https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wuninitialized
+  - https://en.cppreference.com/w/c/language/initialization

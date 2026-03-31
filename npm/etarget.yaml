@@ -1,0 +1,30 @@
+id: etarget
+tool: npm
+language: npm
+title: Version not found in registry
+tags: [version, install, registry, notfound]
+patterns:
+  - ["ETARGET"]
+  - ["No matching version found"]
+  - ["notarget No matching version"]
+
+explain: |
+  npm could not find the specific version you requested in the registry. The package
+  exists, but not with the version or tag you specified. This happens when you
+  pin a version that was unpublished, typo a version number, or use a dist-tag
+  that does not exist.
+
+fix: |
+  1. Check available versions: npm view <package> versions
+  2. Check available dist-tags: npm view <package> dist-tags
+  3. Fix the version in package.json to a version that exists.
+  4. If you need the latest: npm install <package>@latest
+
+example_error: |
+  npm error code ETARGET
+  npm error notarget No matching version found for express@99.0.0.
+  npm error notarget In most cases you or one of your dependencies are requesting
+  npm error notarget a package version that doesn't exist.
+
+links:
+  - https://docs.npmjs.com/cli/v10/commands/npm-view

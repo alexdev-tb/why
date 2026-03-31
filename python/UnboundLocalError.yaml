@@ -1,0 +1,28 @@
+id: UnboundLocalError
+tool: python
+language: python
+title: Local variable referenced before assignment
+tags: [scope, variables, local]
+
+explain: |
+  An UnboundLocalError occurs when you reference a local variable before assigning it a value.
+  Python determines variable scope at parse time - if you assign to a variable anywhere in a function,
+  Python treats it as local throughout that function, even before the assignment.
+
+fix: |
+  Ensure variables are assigned before use
+  If you need to use a global variable, declare it with 'global' keyword at the start of the function
+  If you need to modify a nonlocal variable in a nested function, use 'nonlocal'
+  Restructure your code to separate local assignments from references
+
+example_error: |
+  UnboundLocalError: local variable 'count' referenced before assignment
+
+example_code: |
+  count = 5
+  def increment():
+      count += 1  # Error: count is local, but referenced before assignment
+  increment()
+
+links:
+  - https://docs.python.org/3/library/exceptions.html#UnboundLocalError

@@ -1,0 +1,32 @@
+id: enogit
+tool: npm
+language: npm
+title: Git not found
+tags: [git, install, missing]
+patterns:
+  - ["ENOGIT"]
+  - ["No git binary found"]
+  - ["not found: git"]
+
+explain: |
+  npm tried to fetch a package from a Git repository (a dependency specified as a
+  GitHub URL or git+https:// URL) but could not find git installed on your system.
+  Git is required to clone these dependencies during install.
+
+fix: |
+  1. Install git for your platform:
+     - Debian/Ubuntu: sudo apt install git
+     - macOS: xcode-select --install or brew install git
+     - Windows: download from https://git-scm.com/download/win
+  2. Verify git is on your PATH: git --version
+  3. If git is installed but npm cannot find it, ensure the directory containing
+     the git binary is in your PATH environment variable.
+
+example_error: |
+  npm error code ENOGIT
+  npm error No git binary found in $PATH
+  npm error Failed to execute git
+  npm error This is most likely not a problem with npm itself.
+
+links:
+  - https://git-scm.com/book/en/v2/Getting-Started-Installing-Git

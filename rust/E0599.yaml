@@ -1,0 +1,35 @@
+id: E0599
+tool: rustc
+language: rust
+title: No method named X found for type
+tags: [methods, traits, type-system, impl]
+
+explain: |
+  You tried to call a method on a type that does not have that method. This can happen if you
+  misspelled the method name, if the method exists on a trait that is not in scope, or if the
+  method is defined for a different type than the one you are using. It can also occur when you
+  expect a method from a trait but have not brought that trait into scope with a `use` statement.
+
+fix: |
+  Check the spelling of the method name and verify the type you are calling it on. If the method
+  comes from a trait, make sure you have `use TheTrait;` at the top of your file. You can also
+  check the documentation for the type to see which methods are available.
+
+example_error: |
+  error[E0599]: no method named `push` found for struct `String` in the current scope
+   --> src/main.rs:3:9
+    |
+  3 |     msg.push("world");
+    |         ^^^^ method not found in `String`
+    |
+    = note: the method `push` exists on `String`, but it takes a `char`, not `&str`
+    = help: did you mean `push_str`?
+
+example_code: |
+  fn main() {
+      let mut msg = String::from("hello ");
+      msg.push("world");  // Error: push takes a char, not &str; use push_str instead
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0599.html

@@ -1,0 +1,31 @@
+id: TimeoutError
+tool: python
+language: python
+title: Operation timed out
+tags: [timeout, async, io]
+
+explain: |
+  A TimeoutError occurs when an operation takes longer than the specified timeout period.
+  Common contexts include:
+  - Network operations that exceed time limits
+  - Concurrent.futures operations with timeouts
+  - Socket operations configured with timeouts
+  - asyncio operations that exceed their deadline
+
+fix: |
+  Increase the timeout value if the operation legitimately takes time
+  Optimize the operation to complete faster
+  Use try/except to handle timeout gracefully
+  Implement retry logic with exponential backoff
+  Check network connectivity or server status
+
+example_error: |
+  TimeoutError: timed out
+
+example_code: |
+  import socket
+  socket.settimeout(1)
+  socket.connect(('server.com', 80))  # May timeout if connection is slow
+
+links:
+  - https://docs.python.org/3/library/exceptions.html#TimeoutError

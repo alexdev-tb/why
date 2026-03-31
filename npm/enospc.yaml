@@ -1,0 +1,32 @@
+id: enospc
+tool: npm
+language: npm
+title: No space left on device
+tags: [disk, space, install, filesystem]
+patterns:
+  - ["ENOSPC"]
+  - ["no space left on device"]
+  - ["ENOSPC: System limit for number of file watchers"]
+
+explain: |
+  Your filesystem ran out of disk space during npm install, or the OS hit the
+  maximum number of file watchers. npm needs to write files to node_modules and
+  its cache directory, and the system refused because there is no room or
+  the inotify watcher limit was reached.
+
+fix: |
+  1. Check disk space: df -h
+  2. Free space by removing unused node_modules from other projects,
+     clearing the npm cache (npm cache clean --force), or removing old files.
+  3. If the error mentions file watchers, increase the limit:
+     echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+  4. On Docker, ensure your container or volume has sufficient space allocated.
+
+example_error: |
+  npm error code ENOSPC
+  npm error syscall write
+  npm error errno -28
+  npm error ENOSPC: no space left on device, write
+
+links:
+  - https://docs.npmjs.com/cli/v10/commands/npm-cache

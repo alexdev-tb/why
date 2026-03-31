@@ -1,0 +1,18 @@
+id: no-error-detected
+tool: why
+language: why
+title: No error detected
+tags: [setup, shell-hook]
+patterns:
+  - ["No error detected"]
+
+explain: |
+  You ran `why` but there was no failed command to explain. This happens when:
+  - The last command you ran succeeded (exit code 0)
+  - The shell hook is not installed, so `why` cannot capture stderr
+  - You opened a new terminal and haven't run any commands yet
+
+fix: |
+  1. Run a command that fails first, then run `why`
+  2. You can also pass an error code directly: why E0499
+  3. If the shell hook is not set up, run: why --setup

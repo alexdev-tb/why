@@ -1,0 +1,26 @@
+id: RuntimeError
+tool: python
+language: python
+title: Generic runtime error
+tags: [runtime, error, execution]
+
+explain: |
+  A RuntimeError is a generic error that Python raises when something goes wrong during execution but doesn't fall into more specific error categories.
+  Common causes include:
+  - Issues with generators or iterators
+  - Problems with threading or async operations
+  - Issues with compiled extensions or C libraries
+  - Specific errors from third-party libraries
+
+fix: |
+  Check the error message for details about what went wrong.
+  Look at the traceback to see which line caused the error.
+  Search for the error message in the library documentation if it's from a third-party module.
+  Consider simplifying your code to isolate the problem.
+  Check if you're using generators, threading, or async code correctly.
+
+example_error: |
+  RuntimeError: Event loop is closed
+
+links:
+  - https://docs.python.org/3/library/exceptions.html#RuntimeError

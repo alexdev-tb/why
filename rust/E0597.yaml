@@ -1,0 +1,44 @@
+id: E0597
+tool: rustc
+language: rust
+title: Value does not live long enough
+tags: [lifetimes, borrowing, borrow-checker, references]
+
+explain: |
+  A value is being dropped (freed) while something still holds a reference to it. This happens
+  when a reference outlives the data it points to. For example, if you create a value inside a
+  block and try to return a reference to it, the value will be destroyed when the block ends,
+  leaving a dangling reference. Rust catches this at compile time to prevent use-after-free bugs.
+
+fix: |
+  Either move the value to an outer scope so it lives long enough, or return the owned value
+  instead of a reference. If the value is created in a local scope, consider returning it by
+  value (e.g., return a `String` instead of `&str`) so the caller takes ownership.
+
+example_error: |
+  error[E0597]: `temp` does not live long enough
+   --> src/main.rs:4:13
+    |
+  3 |     let r;
+  4 |     {
+  5 |         let temp = String::from("hi");
+    |             ---- binding `temp` declared here
+  6 |         r = &temp;
+    |             ^^^^^ borrowed value does not live long enough
+  7 |     }
+    |     - `temp` dropped here while still borrowed
+  8 |     println!("{}", r);
+    |                    - borrow later used here
+
+example_code: |
+  fn main() {
+      let r;
+      {
+          let temp = String::from("hi");
+          r = &temp;       // Error: `temp` does not live long enough
+      }
+      println!("{}", r);
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0597.html

@@ -1,0 +1,28 @@
+id: no-such-image
+tool: docker
+language: docker
+title: Image not found
+tags: [image, pull, registry]
+patterns:
+  - ["No such image"]
+  - ["manifest unknown"]
+  - ["pull access denied"]
+
+explain: |
+  Docker could not find the image you referenced. Either the image name is wrong,
+  the tag does not exist, or the image is in a private registry you are not
+  authenticated to.
+
+fix: |
+  1. Check the image name and tag for typos: docker pull nginx:latest
+  2. Search for the image: docker search <name>
+  3. If it is private, log in first: docker login
+  4. Check the registry URL if using a custom registry
+  5. Verify the tag exists on Docker Hub or your registry's web UI
+
+example_error: |
+  Unable to find image 'myapp:latest' locally
+  docker: Error response from daemon: pull access denied for myapp, repository does not exist or may require 'docker login'.
+
+links:
+  - https://docs.docker.com/engine/reference/commandline/pull/

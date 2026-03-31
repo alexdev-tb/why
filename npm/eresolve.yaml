@@ -1,0 +1,34 @@
+id: eresolve
+tool: npm
+language: npm
+title: Dependency conflict
+tags: [install, dependencies, peer, conflict]
+patterns:
+  - ["ERESOLVE"]
+  - ["Could not resolve dependency"]
+  - ["unable to resolve dependency tree"]
+
+explain: |
+  npm found conflicting version requirements in your dependency tree. Package A
+  requires one version of a shared dependency, and package B requires a different
+  incompatible version. npm cannot satisfy both.
+
+fix: |
+  1. Try installing with the legacy resolution algorithm:
+     npm install --legacy-peer-deps
+  2. Or force the install (may cause runtime issues):
+     npm install --force
+  3. For a proper fix, check which packages conflict (npm will show the tree)
+     and update them to compatible versions
+  4. Delete node_modules and lockfile, then reinstall:
+     rm -rf node_modules package-lock.json && npm install
+
+example_error: |
+  npm error code ERESOLVE
+  npm error ERESOLVE unable to resolve dependency tree
+  npm error While resolving: myapp@1.0.0
+  npm error Found: react@18.2.0
+  npm error   peer react@"^17.0.0" from some-package@2.0.0
+
+links:
+  - https://docs.npmjs.com/cli/v10/commands/npm-install

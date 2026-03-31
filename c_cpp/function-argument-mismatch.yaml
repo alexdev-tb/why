@@ -1,0 +1,44 @@
+id: function-argument-mismatch
+tool: gcc/clang
+language: c_cpp
+title: Function called with wrong number of arguments
+tags: [functions, arguments, parameters]
+patterns:
+  - ["too few arguments"]
+  - ["too many arguments"]
+exclude:
+  - "go"
+
+explain: |
+  You called a function with a different number of arguments than the function requires. Functions have a specific number of parameters they expect. Common causes include:
+  - Missing required parameter in function call
+  - Too many arguments passed to function
+  - Function defined with different parameter count than called
+  - Variadic functions (like printf) need correct format specifiers for number of args
+  - Header file not included showing function prototype
+
+fix: |
+  1. Check the function definition or manual/documentation for required parameters
+  2. Count the arguments you're passing vs. what's expected
+  3. Include the proper header file to see the function signature
+  4. For variadic functions like printf, count format specifiers and arguments
+  5. Use function declaration/prototype to make compiler check argument count
+  6. Enable compiler warnings: -Wall -Wextra to catch these issues
+
+example_error: |
+  error: too few arguments to function 'int add(int, int)'
+
+example_code: |
+  #include <stdio.h>
+
+  int add(int a, int b) {
+      return a + b;
+  }
+
+  int main() {
+      printf("%d\n", add(5));  // Error: missing second argument
+      return 0;
+  }
+
+links:
+  - https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html

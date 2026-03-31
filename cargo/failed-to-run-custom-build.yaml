@@ -1,0 +1,30 @@
+id: failed-to-run-custom-build
+tool: cargo
+language: cargo
+title: Custom build script failed
+tags: [build-script, native, linking]
+patterns:
+  - ["failed to run custom build command"]
+
+explain: |
+  A dependency has a build.rs build script that failed. This usually happens when
+  a native C/C++ library required by the crate is not installed on your system.
+  Common examples: openssl-sys needs OpenSSL, ring needs clang, sqlite3-sys needs
+  SQLite development headers.
+
+fix: |
+  1. Read the build script output above for the specific error
+  2. Install the missing system library:
+     Ubuntu/Debian: sudo apt install pkg-config libssl-dev
+     Fedora: sudo dnf install openssl-devel
+     macOS: brew install openssl
+  3. Make sure pkg-config is installed: which pkg-config
+  4. If the error mentions a C compiler, install one: sudo apt install build-essential
+
+example_error: |
+  error: failed to run custom build command for `openssl-sys v0.9.100`
+  --- stderr
+  thread 'main' panicked at 'Could not find directory of OpenSSL installation'
+
+links:
+  - https://doc.rust-lang.org/cargo/reference/build-scripts.html

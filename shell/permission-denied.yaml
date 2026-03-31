@@ -1,0 +1,27 @@
+id: permission-denied
+tool: shell
+language: shell
+title: Permission denied
+tags: [shell, permissions, execute]
+patterns:
+  - ["bash:", "Permission denied"]
+  - ["zsh:", "permission denied:"]
+  - ["cd:", "Permission denied"]
+  - ["cd:", "permission denied:"]
+
+explain: |
+  Your shell reached the file or directory, but your user account is not allowed
+  to use it the way you asked. Common cases are trying to run a script without the
+  execute bit, or changing into a directory you cannot enter.
+
+fix: |
+  1. Check the permissions: ls -l <path>
+  2. If it is a script, make it executable: chmod +x <script>
+  3. If it is a directory, make sure you have execute permission on it
+  4. If the file belongs to another user, use the right account or fix ownership
+
+example_error: |
+  bash: ./deploy.sh: Permission denied
+
+links:
+  - https://www.gnu.org/software/coreutils/manual/html_node/Mode-Structure.html

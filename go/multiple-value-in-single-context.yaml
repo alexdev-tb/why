@@ -1,0 +1,21 @@
+id: multiple-value-in-single-context
+tool: go
+language: go
+title: Multiple-value in single-value context
+tags: [function, return, multiple-values]
+patterns:
+  - ["multiple-value", "in single-value context"]
+
+explain: |
+  You called a function that returns multiple values (like a value and an error)
+  in a place where only a single value is expected — for example, passing it
+  directly as an argument or assigning it to one variable. Go does not
+  automatically discard extra return values.
+
+fix: |
+  1. Assign the result to multiple variables: val, err := myFunc()
+  2. If you want to discard the error: val, _ := myFunc()
+  3. If used inline, extract the call to a separate line with proper assignment first.
+
+example_error: |
+  ./main.go:8:14: multiple-value os.Open() (multivalue) in single-value context

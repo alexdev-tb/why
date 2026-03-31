@@ -1,0 +1,32 @@
+id: eexist
+tool: npm
+language: npm
+title: File already exists
+tags: [install, file, exists, conflict]
+patterns:
+  - ["EEXIST"]
+  - ["File exists", "npm"]
+  - ["dest already exists"]
+
+explain: |
+  npm tried to create a file or directory that already exists at the target
+  location. This commonly occurs when installing global packages whose binaries
+  conflict with existing files, or when the node_modules directory is in a
+  corrupted state from a previous interrupted install.
+
+fix: |
+  1. Delete node_modules and reinstall: rm -rf node_modules && npm install
+  2. For global installs, check what owns the conflicting file:
+     ls -la $(npm config get prefix)/bin/<name>
+  3. Remove the conflicting file manually if it is stale, then retry.
+  4. Clean the npm cache if the issue persists: npm cache clean --force
+
+example_error: |
+  npm error code EEXIST
+  npm error syscall symlink
+  npm error path ../lib/node_modules/typescript/bin/tsc
+  npm error dest /usr/local/bin/tsc
+  npm error File exists: /usr/local/bin/tsc
+
+links:
+  - https://docs.npmjs.com/cli/v10/commands/npm-install

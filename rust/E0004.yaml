@@ -1,0 +1,52 @@
+id: E0004
+tool: rustc
+language: rust
+title: Non-exhaustive match patterns
+tags: [match, patterns, enums, exhaustiveness]
+
+explain: |
+  Your `match` expression does not cover all possible values of the type being matched. Rust
+  requires that every `match` is exhaustive, meaning it handles every possible variant. This is
+  especially common with enums -- if you add a new variant to an enum, every `match` on that
+  enum must be updated to handle the new variant. This compile-time check prevents bugs where
+  an unexpected value slips through unhandled.
+
+fix: |
+  Add the missing patterns to your `match` expression. If you only care about specific variants,
+  add a wildcard arm `_ => { ... }` to catch everything else. The compiler error message will
+  tell you exactly which patterns are not covered, so you can add them directly.
+
+example_error: |
+  error[E0004]: non-exhaustive patterns: `Color::Blue` not covered
+   --> src/main.rs:10:11
+    |
+  10 |     match color {
+    |           ^^^^^ pattern `Color::Blue` not covered
+    |
+  note: `Color` defined here
+   --> src/main.rs:1:1
+    |
+  1 | enum Color { Red, Green, Blue }
+    |                          ---- not covered
+    = help: ensure that all possible cases are being handled by adding a match arm with a wildcard pattern or an explicit pattern
+
+example_code: |
+  enum Color {
+      Red,
+      Green,
+      Blue,
+  }
+
+  fn describe(color: Color) -> &'static str {
+      match color {             // Error: `Color::Blue` not covered
+          Color::Red => "red",
+          Color::Green => "green",
+      }
+  }
+
+  fn main() {
+      println!("{}", describe(Color::Red));
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0004.html

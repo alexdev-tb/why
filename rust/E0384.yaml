@@ -1,0 +1,40 @@
+id: E0384
+tool: rustc
+language: rust
+title: Cannot assign twice to immutable variable
+tags: [ownership, mutability, variables, borrow-checker]
+
+explain: |
+  You tried to assign a new value to a variable that was not declared as mutable.
+  In Rust, variables are immutable by default, meaning once you bind a value to a
+  name, you cannot change it unless you explicitly opt in with `mut`. This is a
+  deliberate design choice that helps prevent accidental data changes and makes
+  code easier to reason about.
+
+fix: |
+  Add the `mut` keyword to the variable declaration to make it mutable, e.g.
+  change `let x = 5;` to `let mut x = 5;`. Alternatively, if immutability is
+  intentional, create a new binding with `let x = new_value;` instead of
+  reassigning.
+
+example_error: |
+  error[E0384]: cannot assign twice to immutable variable `x`
+   --> src/main.rs:3:5
+    |
+  2 |     let x = 5;
+    |         -
+    |         |
+    |         first assignment to `x`
+    |         help: consider making this binding mutable: `mut x`
+  3 |     x = 10;
+    |     ^^^^^^ cannot assign twice to immutable variable
+
+example_code: |
+  fn main() {
+      let x = 5;
+      x = 10; // Error: cannot assign twice to immutable variable
+      println!("{}", x);
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0384.html

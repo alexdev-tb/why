@@ -1,0 +1,43 @@
+id: E0271
+tool: rustc
+language: rust
+title: Type mismatch in trait associated type
+tags: [traits, associated-types, generics, type-mismatch]
+
+explain: |
+  A function or trait bound expects a specific associated type, but the type you
+  provided doesn't match. Associated types are like type-level outputs of a trait;
+  for example, `Iterator` has an associated type `Item`. When a function requires
+  `Iterator<Item = u32>` but you pass an iterator over `&str`, you'll get this
+  error. It means the concrete type plugged in for the associated type doesn't
+  match what's expected.
+
+fix: |
+  Check what associated type is expected and ensure your concrete type provides a
+  matching one. You may need to use `.map()` or `.into()` to transform the output
+  into the expected type, or change the trait bound to match the actual associated
+  type your type produces.
+
+example_error: |
+  error[E0271]: type mismatch resolving `<std::vec::IntoIter<&str> as Iterator>::Item == u32`
+   --> src/main.rs:5:18
+    |
+  5 |     process_items(words.into_iter());
+    |                   ^^^^^^^^^^^^^^^^^ expected `u32`, found `&str`
+    |
+  note: required by a bound in `process_items`
+
+example_code: |
+  fn process_items<I: Iterator<Item = u32>>(iter: I) {
+      for item in iter {
+          println!("{}", item);
+      }
+  }
+
+  fn main() {
+      let words = vec!["hello", "world"];
+      process_items(words.into_iter()); // Error: type mismatch, expected u32, found &str
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0271.html

@@ -1,0 +1,31 @@
+id: ReferenceError
+tool: python
+language: python
+title: Weak reference object no longer exists
+tags: [reference, weakref, memory]
+
+explain: |
+  A ReferenceError occurs when you try to access the object of a weak reference that has been garbage collected.
+  Weak references allow you to reference objects without preventing them from being deleted.
+  If the original object is deleted, accessing the weak reference after that raises ReferenceError.
+
+fix: |
+  Check that the weakly referenced object still exists before using it
+  Use a callback function in the weak reference to handle deletion
+  Store the strong reference if you need to keep the object alive
+  Handle the case when the weak reference returns None
+
+example_error: |
+  ReferenceError: weakly-referenced object no longer exists
+
+example_code: |
+  import weakref
+  class MyClass:
+      pass
+  obj = MyClass()
+  ref = weakref.ref(obj)
+  del obj
+  ref().some_method()  # Error: ReferenceError
+
+links:
+  - https://docs.python.org/3/library/weakref.html

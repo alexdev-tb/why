@@ -1,0 +1,28 @@
+id: OverflowError
+tool: python
+language: python
+title: Numeric overflow
+tags: [numeric, math, overflow]
+
+explain: |
+  An OverflowError occurs when a numeric result is too large to be represented.
+  This typically happens with:
+  - Operations on very large integers in C float operations
+  - Exponentiation with extremely large exponents
+  - Converting numbers that are out of range
+
+fix: |
+  Use integer arithmetic instead of float when dealing with very large numbers
+  Check input ranges before performing operations
+  Use the Decimal module for arbitrary precision arithmetic
+  Implement overflow checks before operations
+
+example_error: |
+  OverflowError: (34, 'Numerical result out of range')
+
+example_code: |
+  import math
+  result = math.exp(1000)  # Raises OverflowError
+
+links:
+  - https://docs.python.org/3/library/exceptions.html#OverflowError

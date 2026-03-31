@@ -1,0 +1,26 @@
+id: argument-list-too-long
+tool: bash
+language: shell
+title: Argument list too long
+tags: [argument, glob, expansion, exec]
+patterns:
+  - ["Argument list too long"]
+
+explain: |
+  The command you ran expanded to more arguments than the operating system allows in a
+  single exec call. This usually happens when a glob pattern like rm *.log or cat dir/*
+  matches thousands of files, and the combined length of all filenames exceeds the
+  kernel's ARG_MAX limit (typically 2 MB on Linux). Piping through xargs or using find
+  avoids this by splitting the work into batches.
+
+fix: |
+  1. Use find with -exec or -delete: find . -name "*.log" -delete
+  2. Or pipe through xargs: find . -name "*.log" -print0 | xargs -0 rm
+  3. Process files in smaller batches with a for loop: for f in dir/a*; do rm "$f"; done
+  4. Check the limit on your system: getconf ARG_MAX
+
+example_error: |
+  bash: /usr/bin/rm: Argument list too long
+
+links:
+  - https://www.gnu.org/software/findutils/manual/html_mono/find.html

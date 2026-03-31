@@ -1,0 +1,29 @@
+id: merge-conflict
+tool: git
+language: git
+title: Merge conflict
+tags: [merge, conflict, branches]
+patterns:
+  - ["CONFLICT", "Merge conflict"]
+  - ["Automatic merge failed"]
+  - ["fix conflicts and then commit"]
+
+explain: |
+  Git tried to merge two branches but the same lines were changed in both. Git cannot
+  decide which version to keep, so it marks the conflicting sections in your files and
+  asks you to resolve them manually.
+
+fix: |
+  1. Open the conflicting files — look for <<<<<<< / ======= / >>>>>>> markers
+  2. Edit each conflict to keep the code you want, removing the markers
+  3. Stage the resolved files: git add <file>
+  4. Complete the merge: git commit
+  If you want to abort the merge entirely: git merge --abort
+
+example_error: |
+  Auto-merging src/main.rs
+  CONFLICT (content): Merge conflict in src/main.rs
+  Automatic merge failed; fix conflicts and then commit the result.
+
+links:
+  - https://git-scm.com/docs/git-merge

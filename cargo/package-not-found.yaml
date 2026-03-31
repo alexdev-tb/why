@@ -1,0 +1,25 @@
+id: package-not-found
+tool: cargo
+language: cargo
+title: Package not found in registry
+tags: [dependency, registry, crate, typo]
+patterns:
+  - ["no matching package named"]
+  - ["no matching package found"]
+
+explain: |
+  Cargo could not find a crate with the name you specified in your Cargo.toml
+  on crates.io. This usually means there is a typo in the crate name, the crate
+  has been yanked or does not exist, or you are pointing to a registry that does
+  not have the crate.
+
+fix: |
+  1. Double-check the crate name on https://crates.io
+  2. Crate names use hyphens in Cargo.toml but underscores in Rust code:
+     serde-json in Cargo.toml becomes serde_json in use statements.
+  3. Make sure you are not confusing the crate name with a module or feature name.
+  4. If using a private registry, verify the registry URL in .cargo/config.toml.
+
+example_error: |
+  error: no matching package named `serde_jso` found
+  location searched: registry `crates-io`

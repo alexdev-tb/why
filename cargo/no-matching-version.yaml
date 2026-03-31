@@ -1,0 +1,27 @@
+id: no-matching-version
+tool: cargo
+language: cargo
+title: No matching package version found
+tags: [dependencies, version, crate]
+patterns:
+  - ["no matching package named"]
+  - ["failed to select a version for the requirement"]
+
+explain: |
+  Cargo could not find a crate with the name or version you specified in Cargo.toml.
+  Either the crate name is misspelled, the version does not exist, or the crate has
+  been yanked from crates.io.
+
+fix: |
+  1. Check the crate name on https://crates.io/
+  2. Verify the version exists: cargo search <crate>
+  3. Fix the version in Cargo.toml to one that exists
+  4. If using a git dependency, check the branch/tag/rev is correct
+  5. Run cargo update to refresh the index
+
+example_error: |
+  error: failed to select a version for the requirement `nonexistent-crate = "^1.0"`
+  candidate versions found which didn't match: 0.9.0, 0.8.2, 0.7.0
+
+links:
+  - https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html

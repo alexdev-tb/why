@@ -1,0 +1,26 @@
+id: no-space-left
+tool: docker
+language: docker
+title: No space left on device
+tags: [disk, storage, prune]
+patterns:
+  - ["no space left on device"]
+
+explain: |
+  Docker ran out of disk space. Docker images, containers, volumes, and build cache
+  accumulate over time and can consume a lot of storage. This can happen during a
+  build, pull, or when a container is writing data.
+
+fix: |
+  1. Clean up unused Docker resources:
+     docker system prune            (removes stopped containers, dangling images, unused networks)
+     docker system prune -a         (also removes all unused images, not just dangling)
+  2. Check disk usage: docker system df
+  3. Remove specific large images: docker image rm <image>
+  4. Check host disk usage: df -h
+
+example_error: |
+  Error response from daemon: write /var/lib/docker/tmp/...: no space left on device
+
+links:
+  - https://docs.docker.com/engine/reference/commandline/system_prune/

@@ -1,0 +1,29 @@
+id: KeyError
+tool: python
+language: python
+title: Dictionary key does not exist
+tags: [dictionary, key-access, lookup]
+
+explain: |
+  A KeyError is raised when you try to access a dictionary key that doesn't exist.
+  Common causes include:
+  - Typos in key names
+  - Accessing a key before it's been added to the dictionary
+  - Case sensitivity (e.g., 'Name' vs 'name' are different keys)
+  - Confusing dictionary syntax with other data structures
+
+fix: |
+  Check the spelling and case of the key you're accessing.
+  Use the in operator to check if a key exists before accessing it: if key in dict.
+  Use dict.get(key) instead of dict[key] to return None for missing keys (or a default value).
+  Verify the dictionary contains the key you expect.
+
+example_error: |
+  KeyError: 'name'
+
+example_code: |
+  person = {"age": 30}
+  print(person["name"])  # Error: 'name' key doesn't exist
+
+links:
+  - https://docs.python.org/3/library/exceptions.html#KeyError

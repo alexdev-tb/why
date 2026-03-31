@@ -1,0 +1,29 @@
+id: eaudit
+tool: npm
+language: npm
+title: Audit found vulnerabilities
+tags: [audit, security, vulnerability]
+patterns:
+  - ["found vulnerabilities"]
+  - ["npm audit", "vulnerability"]
+  - ["EAUDIT"]
+
+explain: |
+  npm audit scanned your dependency tree and found packages with known security
+  vulnerabilities. These range from low to critical severity. The vulnerable
+  packages may be direct dependencies or nested deep in your dependency tree.
+
+fix: |
+  1. Run npm audit to see the full report with severity levels.
+  2. Run npm audit fix to automatically install compatible patched versions.
+  3. If some fixes require major version bumps: npm audit fix --force (may introduce breaking changes).
+  4. For vulnerabilities in transitive dependencies you cannot fix, add overrides in package.json
+     to force a patched version.
+
+example_error: |
+  6 vulnerabilities (2 moderate, 3 high, 1 critical)
+  To address all issues, run:
+    npm audit fix
+
+links:
+  - https://docs.npmjs.com/cli/v10/commands/npm-audit

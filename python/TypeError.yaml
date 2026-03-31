@@ -1,0 +1,30 @@
+id: TypeError
+tool: python
+language: python
+title: Unsupported operand type or incorrect function argument
+tags: [types, type-mismatch, function-call]
+
+explain: |
+  A TypeError occurs when an operation or function is applied to an object of an inappropriate type.
+  Common causes include:
+  - Calling a non-callable object as a function (e.g., calling an integer)
+  - Using unsupported operands for an operator (e.g., adding a string and int without conversion)
+  - Passing the wrong number of arguments to a function
+  - Passing arguments of the wrong type to a function
+
+fix: |
+  Check the types of values being used and ensure they're compatible with the operation or function.
+  Use type conversions (e.g., int(), str(), float()) when needed.
+  Verify function signatures match the arguments you're passing.
+  For operators, ensure the operands support the operation (e.g., can't add a string and int directly).
+
+example_error: |
+  TypeError: unsupported operand type(s) for +: 'str' and 'int'
+
+example_code: |
+  x = "hello"
+  y = 5
+  result = x + y  # Error: can't add string and int
+
+links:
+  - https://docs.python.org/3/library/exceptions.html#TypeError

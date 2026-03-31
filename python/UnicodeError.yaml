@@ -1,0 +1,24 @@
+id: UnicodeError
+tool: python
+language: python
+title: Unicode error
+tags: [unicode, encoding, bytes, string]
+
+explain: |
+  Python encountered an error while encoding or decoding text between bytes and
+  strings. This happens when the data contains byte sequences that are not valid
+  for the specified encoding (e.g., reading a Latin-1 file as UTF-8, or trying
+  to encode special characters into ASCII).
+
+fix: |
+  1. Specify the correct encoding when opening files: open(path, encoding='utf-8')
+  2. If the encoding is unknown, try 'latin-1' which accepts all byte values.
+  3. Use errors='replace' or errors='ignore' to handle bad characters:
+     open(path, encoding='utf-8', errors='replace')
+  4. For bytes you need to decode: my_bytes.decode('utf-8', errors='replace')
+
+example_error: |
+  Traceback (most recent call last):
+    File "app.py", line 5, in <module>
+      text = data.decode('utf-8')
+  UnicodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte

@@ -1,0 +1,44 @@
+id: syntax-error
+tool: gcc/clang
+language: c_cpp
+title: Syntax error in C/C++ code
+tags: [syntax, parsing, compilation]
+patterns:
+  - ["expected", "before"]
+  - ["expected", "';'"]
+
+explain: |
+  Your code violates the C/C++ grammar rules. The compiler couldn't parse your code. Common syntax errors include:
+  - Missing semicolons at end of statements
+  - Mismatched braces { } or parentheses ( )
+  - Missing closing quotes for strings
+  - Typo in keywords (e.g., retrun instead of return)
+  - Incorrect operator usage
+  - Missing colon after case in switch statement
+  - Incorrect preprocessor directives
+  - Using undeclared or reserved keywords incorrectly
+
+fix: |
+  1. Check the line number reported by the compiler error
+  2. Look for missing semicolons, braces, or quotes
+  3. Verify all opening braces have closing braces
+  4. Verify all parentheses are matched
+  5. Check preprocessor directives for typos (#inclue vs #include)
+  6. Use an editor with syntax highlighting to catch errors visually
+  7. Compile frequently while coding to catch errors early
+  8. Read compiler output carefully - the actual error might be on a line before the reported one
+
+example_error: |
+  error: expected ';' before 'return'
+
+example_code: |
+  #include <stdio.h>
+
+  int main() {
+      int x = 5
+      return 0;  // Error: missing semicolon above
+  }
+
+links:
+  - https://en.cppreference.com/w/c/language/statements
+  - https://gcc.gnu.org/onlinedocs/gcc-14/cpp/

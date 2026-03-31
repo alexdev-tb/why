@@ -1,0 +1,30 @@
+id: syntax-error
+tool: bash
+language: shell
+title: Syntax error near unexpected token
+tags: [syntax, bash, token, parsing]
+patterns:
+  - ["syntax error near unexpected token"]
+  - ["syntax error: unexpected end of file"]
+  - ["unexpected EOF while looking for matching"]
+  - ["syntax error: unterminated quoted string"]
+
+explain: |
+  Bash could not parse your command or script because of a syntax mistake. Common
+  causes include mismatched quotes, missing closing brackets or parentheses, an extra
+  or missing semicolon, or using syntax from a different shell (like zsh) in bash.
+  If you see "unexpected end of file," you likely have an unclosed quote, brace, or
+  if/while/for block missing its closing keyword (fi, done, esac).
+
+fix: |
+  1. Check for mismatched quotes (' or ") and brackets ({}, (), [])
+  2. Make sure every if has a fi, every do has a done, every case has an esac
+  3. If pasting multi-line commands, ensure line continuations use \ at the end
+  4. Run bash -n script.sh to syntax-check without executing
+
+example_error: |
+  bash: syntax error near unexpected token `('
+  bash: line 12: syntax error: unexpected end of file
+
+links:
+  - https://www.gnu.org/software/bash/manual/bash.html#Shell-Syntax

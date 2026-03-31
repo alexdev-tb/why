@@ -1,0 +1,33 @@
+id: invalid-operation
+tool: go
+language: go
+title: Invalid operation between types
+tags: [operator, operation, types]
+patterns:
+  - ["invalid operation"]
+
+explain: |
+  An "invalid operation" error occurs when you try to perform an operation between incompatible types.
+  For example, you might try to add a number and a string, or perform bitwise operations on non-integer types.
+  Go's type system is strict and doesn't allow these operations without explicit conversion.
+
+fix: |
+  Convert operands to compatible types before performing the operation
+  Use appropriate methods for the types you're working with
+  Check what operations are valid for each type in the Go documentation
+  Use helper functions or packages (like strconv) for type conversion
+  For strings and numbers, convert explicitly before concatenation or arithmetic
+
+example_error: |
+  invalid operation: myString + myInt (mismatched types string and int)
+
+example_code: |
+  package main
+  func main() {
+      text := "count: "
+      count := 42
+      result := text + count  // Error: cannot add string and int
+  }
+
+links:
+  - https://golang.org/ref/spec#Operators

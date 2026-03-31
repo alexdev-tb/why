@@ -1,0 +1,31 @@
+id: StopIteration
+tool: python
+language: python
+title: Iterator exhausted
+tags: [iterator, loop, generator]
+
+explain: |
+  A StopIteration exception is raised by iterator objects when there are no more items to return.
+  In normal iteration (for loops), this is caught automatically. However, you may see it if:
+  - Manually calling next() on an iterator past the end
+  - Generators that don't yield any more values
+  - Custom iterators not handling the end properly
+
+fix: |
+  Use for loops instead of manual next() calls - they handle StopIteration automatically
+  If using next() manually, catch the exception: try: next(iterator) except StopIteration
+  Check that your generator or iterator has items before iterating
+  Provide a default value to next(): next(iterator, default_value)
+
+example_error: |
+  StopIteration
+
+example_code: |
+  iterator = iter([1, 2, 3])
+  next(iterator)  # 1
+  next(iterator)  # 2
+  next(iterator)  # 3
+  next(iterator)  # Error: StopIteration
+
+links:
+  - https://docs.python.org/3/library/exceptions.html#StopIteration

@@ -1,0 +1,31 @@
+id: undefined
+tool: go
+language: go
+title: Undefined identifier or variable
+tags: [scope, undefined, identifier]
+patterns:
+  - ["undefined:"]
+
+explain: |
+  An undefined error occurs when you reference a variable, function, type, or package that doesn't exist or is out of scope.
+  This usually means you either misspelled the name, forgot to import a package, or the identifier was defined in a different scope.
+  Go is case-sensitive, so myVar and MyVar are different names.
+
+fix: |
+  Check spelling of the identifier - Go is case-sensitive
+  Verify the variable was declared before use
+  Make sure you imported the required package if using an external type or function
+  Check that the identifier is exported (starts with uppercase) when importing from a package
+  If referencing a package member, use the correct package name and dot notation
+
+example_error: |
+  undefined: myVariable
+
+example_code: |
+  package main
+  func main() {
+      println(myVariable)  // Error: myVariable is undefined
+  }
+
+links:
+  - https://golang.org/doc/effective_go#names

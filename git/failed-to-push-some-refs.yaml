@@ -1,0 +1,26 @@
+id: failed-to-push-some-refs
+tool: git
+language: git
+title: Failed to push - remote contains work you don't have
+tags: [push, remote, behind, fetch]
+patterns:
+  - ["failed to push some refs"]
+  - ["Updates were rejected because the remote contains work"]
+  - ["Updates were rejected because the tip of your current branch is behind"]
+
+explain: |
+  Someone else pushed commits to the remote branch since your last pull. Git
+  refuses to push because it would overwrite their changes. Your local branch
+  is behind the remote branch.
+
+fix: |
+  1. Pull the latest changes first: git pull --rebase origin <branch>
+  2. Resolve any conflicts if they arise.
+  3. Push again: git push origin <branch>
+  4. Avoid using --force unless you are certain nobody else is using the branch.
+
+example_error: |
+  ! [rejected]        main -> main (fetch first)
+  error: failed to push some refs to 'origin'
+  hint: Updates were rejected because the remote contains work that you do not
+  hint: have locally.

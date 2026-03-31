@@ -1,0 +1,36 @@
+id: range-on-non-iterable
+tool: go
+language: go
+title: Cannot range over non-iterable type
+tags: [range, loop, iterable]
+
+explain: |
+  A range error occurs when you try to use a for-range loop on a type that isn't iterable.
+  You can only range over arrays, slices, maps, strings, and channels. Trying to range over
+  a regular struct, function, or other non-iterable type will cause a compile error.
+
+fix: |
+  Check the type of the value you're trying to range over
+  If it's a map, remember you get key-value pairs
+  If it's a string, you get runes (characters) as integers
+  Convert the type to something iterable if needed
+  Use a traditional for loop if the type doesn't support range
+  Make sure you're iterating over the right variable
+
+example_error: |
+  cannot range over myStruct (type Person)
+
+example_code: |
+  package main
+  type Person struct {
+      name string
+  }
+  func main() {
+      person := Person{"Alice"}
+      for _, v := range person {  // Error: can't range over struct
+          println(v)
+      }
+  }
+
+links:
+  - https://golang.org/doc/effective_go#for

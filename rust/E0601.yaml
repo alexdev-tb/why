@@ -1,0 +1,41 @@
+id: E0601
+tool: rustc
+language: rust
+title: No main function found
+tags: [entry-point, main, binary, compilation]
+
+explain: |
+  Rust could not find a `main` function in your binary crate. Every executable
+  Rust program needs a `main` function because that is where the program starts
+  running. If there is no `main`, Rust does not know where to begin and refuses
+  to compile.
+
+fix: |
+  Add a `main` function to your `src/main.rs` file:
+
+    fn main() {
+        // your code here
+    }
+
+  If you are writing a library (a crate meant to be used by other code rather
+  than run directly), make sure your file is named `src/lib.rs` instead of
+  `src/main.rs` and that your `Cargo.toml` does not declare it as a binary.
+  If you have both and only want the library, remove the `[[bin]]` entry from
+  your `Cargo.toml`.
+
+example_error: |
+  error[E0601]: `main` function not found in crate `my_project`
+   --> src/main.rs:1:1
+    |
+  1 | / fn add(a: i32, b: i32) -> i32 {
+  2 | |     a + b
+  3 | | }
+    | |_^ consider adding a `main` function to `src/main.rs`
+
+example_code: |
+  fn add(a: i32, b: i32) -> i32 { // Error: no main function defined
+      a + b
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0601.html

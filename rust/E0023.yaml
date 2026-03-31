@@ -1,0 +1,41 @@
+id: E0023
+tool: rustc
+language: rust
+title: Wrong number of fields in enum variant pattern
+tags: [pattern-matching, enums, destructuring]
+
+explain: |
+  You wrote a pattern to destructure an enum variant but provided the wrong
+  number of fields. For example, if a variant is defined as `Point(i32, i32)`
+  (two fields) but your pattern only binds one, Rust does not know what to do
+  with the extra field and refuses to compile.
+
+fix: |
+  Match the number of fields in your pattern exactly to the number defined in
+  the enum variant. If you do not need all the fields, use `_` as a placeholder
+  for the ones you want to ignore, for example `Point(x, _)`.
+
+example_error: |
+  error[E0023]: this pattern has 1 field, but the corresponding tuple struct has 2 fields
+   --> src/main.rs:7:9
+    |
+  2 |     Point(i32, i32),
+    |           ---  --- tuple struct has 2 fields
+  ...
+  7 |         Shape::Point(x) => println!("{}", x),
+    |                      ^ expected 2 fields, found 1
+
+example_code: |
+  enum Shape {
+      Point(i32, i32),
+  }
+
+  fn main() {
+      let s = Shape::Point(1, 2);
+      match s {
+          Shape::Point(x) => println!("{}", x), // Error: expected 2 fields
+      }
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0023.html

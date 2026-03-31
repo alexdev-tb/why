@@ -1,0 +1,30 @@
+id: eneedauth
+tool: npm
+language: npm
+title: Authentication required
+tags: [auth, login, publish, registry, token]
+patterns:
+  - ["ENEEDAUTH"]
+  - ["need auth", "npm"]
+  - ["You need to authorize this machine"]
+
+explain: |
+  npm tried to access a private package or publish to the registry, but you are
+  not logged in or your auth token is missing/expired. This happens when accessing
+  scoped private packages, publishing, or using a private registry that requires
+  authentication.
+
+fix: |
+  1. Log in to npm: npm login
+  2. If using a private registry, specify it: npm login --registry=https://your-registry.example.com
+  3. Check your .npmrc for a valid auth token: cat ~/.npmrc
+  4. For CI environments, set the NPM_TOKEN environment variable and add
+     //registry.npmjs.org/:_authToken=${NPM_TOKEN} to the project .npmrc.
+
+example_error: |
+  npm error code ENEEDAUTH
+  npm error need auth This command requires you to be logged in.
+  npm error need auth You need to authorize this machine using `npm adduser`
+
+links:
+  - https://docs.npmjs.com/cli/v10/commands/npm-login

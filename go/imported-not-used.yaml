@@ -1,0 +1,20 @@
+id: imported-not-used
+tool: go
+language: go
+title: Imported package not used
+tags: [import, unused, compiler]
+patterns:
+  - ["imported and not used"]
+
+explain: |
+  You imported a package but never referenced it anywhere in the file. Like
+  unused variables, Go's compiler considers unused imports an error, not just
+  a warning. This keeps dependencies clean and explicit.
+
+fix: |
+  1. Remove the unused import statement.
+  2. If you need the package for side effects only, use a blank import: _ "pkg/name"
+  3. Use goimports or your editor's auto-import feature to manage imports automatically.
+
+example_error: |
+  ./main.go:4:2: "fmt" imported and not used

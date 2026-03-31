@@ -1,0 +1,26 @@
+id: E0562
+tool: rustc
+language: rust
+title: impl Trait not allowed in this position
+tags: [impl-trait, return, argument, type]
+
+explain: |
+  You used `impl Trait` syntax in a position where it is not allowed. `impl Trait`
+  can only be used in function argument positions and return types of free functions
+  and inherent methods. It cannot be used in let bindings, struct fields, or trait
+  method return types (use associated types or Box<dyn Trait> there instead).
+
+fix: |
+  1. In struct fields or let bindings, use a concrete type or Box<dyn Trait>.
+  2. In trait definitions, use an associated type instead of impl Trait in return position.
+  3. For dynamic dispatch, use Box<dyn Trait> or &dyn Trait.
+
+example_error: |
+  error[E0562]: `impl Trait` not allowed outside of function and method return types
+   --> src/lib.rs:3:14
+    |
+  3 |     let x: impl Display = "hello";
+    |            ^^^^^^^^^^^^^
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0562.html

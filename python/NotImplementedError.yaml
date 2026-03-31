@@ -1,0 +1,35 @@
+id: NotImplementedError
+tool: python
+language: python
+title: Method or function not implemented
+tags: [implementation, abstract, interface]
+
+explain: |
+  A NotImplementedError is raised when a method that should be implemented in a subclass hasn't been.
+  It's typically used in abstract base classes or interfaces to indicate derived classes must provide an implementation.
+  Common causes include:
+  - Forgetting to implement a required method in a subclass
+  - Using a library that has placeholder methods not yet implemented
+  - Calling a method on an object that doesn't support that operation
+
+fix: |
+  Check the interface or base class documentation to see what methods need implementing.
+  In your subclass, implement the missing method.
+  For library code, check if you're using a version that has the method implemented.
+  Consider using abstract base classes (abc module) to make this clearer.
+
+example_error: |
+  NotImplementedError
+
+example_code: |
+  class Shape:
+      def area(self):
+          raise NotImplementedError("Subclasses must implement area()")
+
+  class Circle(Shape):
+      pass  # Error: didn't implement area()
+
+  Circle().area()
+
+links:
+  - https://docs.python.org/3/library/exceptions.html#NotImplementedError

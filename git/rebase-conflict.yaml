@@ -1,0 +1,27 @@
+id: rebase-conflict
+tool: git
+language: git
+title: Rebase conflict
+tags: [rebase, conflict, merge]
+patterns:
+  - ["could not apply"]
+  - ["CONFLICT", "when rebasing branch"]
+  - ["git rebase --continue"]
+  - ["Resolve all conflicts manually"]
+
+explain: |
+  During a rebase, Git tried to replay one of your commits on top of the
+  updated base, but the changes conflict with what's already there. The rebase
+  is paused and you need to resolve the conflicts before it can continue.
+
+fix: |
+  1. Open the conflicted files and resolve the conflict markers (<<<, ===, >>>).
+  2. Stage the resolved files: git add <file>
+  3. Continue the rebase: git rebase --continue
+  4. To abort and go back to your original state: git rebase --abort
+
+example_error: |
+  CONFLICT (content): Merge conflict in src/main.rs
+  error: could not apply abc1234... Add new feature
+  Resolve all conflicts manually, mark them as resolved with
+  "git add/rm <conflicted_files>", then run "git rebase --continue".

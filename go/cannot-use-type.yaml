@@ -1,0 +1,32 @@
+id: cannot-use-type
+tool: go
+language: go
+title: Type mismatch or cannot convert type
+tags: [types, type-mismatch, conversion]
+patterns:
+  - ["cannot use"]
+
+explain: |
+  A "cannot use" error occurs when you try to use a value of one type where a different type is expected.
+  Go does not perform automatic type conversions - even for similar types like int and int32.
+  This is a feature of Go's type system to prevent subtle bugs from implicit conversions.
+
+fix: |
+  Explicitly convert the type using: targetType(value)
+  Use strconv package for string conversions (strconv.Itoa, strconv.ParseInt, etc.)
+  Ensure the types are actually compatible for conversion
+  For interfaces, check that the concrete type implements the required interface
+  Use type assertions for interface{} to concrete types
+
+example_error: |
+  cannot use myInt (type int) as type int32 in assignment
+
+example_code: |
+  package main
+  func main() {
+      var x int = 5
+      var y int32 = x  // Error: cannot use int as int32
+  }
+
+links:
+  - https://golang.org/doc/effective_go#conversions

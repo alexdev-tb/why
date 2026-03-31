@@ -1,0 +1,45 @@
+id: undefined-reference
+tool: gcc/clang
+language: c_cpp
+title: Undefined reference to a symbol
+tags: [linking, functions, symbols, linker]
+patterns:
+  - ["undefined reference"]
+
+explain: |
+  The compiler can find the declaration of a function or variable, but the linker cannot find its definition/implementation. This is a linker error that occurs during the linking phase. Common causes include:
+  - Function is declared but not defined (not implemented)
+  - Missing object files during linking
+  - Not linking against required libraries (e.g., -lm for math library)
+  - Function defined in a different file but not compiled/linked
+  - Name mangling mismatch in C++ (mixing C and C++ code)
+  - Typo in function name between declaration and definition
+
+fix: |
+  1. Ensure the function is actually defined (not just declared) somewhere in your code
+  2. Include all necessary object files when linking
+  3. Link against required libraries with -l flag (e.g., gcc main.o -lm)
+  4. Check that the function name matches exactly in both declaration and definition
+  5. For C++ and C mixing, ensure proper extern "C" declarations
+  6. Recompile all source files and ensure they are linked together
+
+example_error: |
+  /tmp/ccXXXXXXXX.o: In function `main':
+  main.c:(.text+0x18): undefined reference to `add'
+  collect2: error: ld returned 1 exit status
+
+example_code: |
+  // main.c
+  #include <stdio.h>
+
+  int add(int a, int b);  // Declaration only
+
+  int main() {
+      printf("%d\n", add(2, 3));
+      return 0;
+  }
+  // Error: add() is never defined!
+
+links:
+  - https://gcc.gnu.org/onlinedocs/gcc/Link-Options.html
+  - https://en.cppreference.com/w/cpp/language/extern

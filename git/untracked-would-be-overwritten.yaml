@@ -1,0 +1,32 @@
+id: untracked-would-be-overwritten
+tool: git
+language: git
+title: Untracked files would be overwritten
+tags: [checkout, merge, untracked, overwrite]
+patterns:
+  - ["untracked working tree files would be overwritten"]
+  - ["The following untracked working tree files would be overwritten"]
+
+explain: |
+  You have files in your working directory that are not tracked by git, but the branch
+  you are switching to (or merging) contains files with the same names. Git refuses to
+  proceed because it would silently overwrite your local files with the versions from
+  the other branch.
+
+fix: |
+  1. If you want to keep those files, move them somewhere safe:
+     mv <file> <file>.bak
+  2. If you don't need them, remove them:
+     git clean -fd
+  3. Or stash everything including untracked files:
+     git stash --include-untracked
+  4. Then retry your checkout or merge.
+
+example_error: |
+  error: The following untracked working tree files would be overwritten by merge:
+      src/config.json
+  Please move or remove them before you merge.
+  Aborting
+
+links:
+  - https://git-scm.com/docs/git-checkout

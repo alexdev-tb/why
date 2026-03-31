@@ -1,0 +1,41 @@
+id: type-mismatch
+tool: gcc/clang
+language: c_cpp
+title: Type mismatch in assignment or parameter
+tags: [types, conversion, casting, type-safety]
+patterns:
+  - ["incompatible types when"]
+  - ["incompatible type"]
+
+explain: |
+  You are trying to assign or pass a value of one type to something expecting a different type, and no implicit conversion is possible. C/C++ is type-strict about certain operations. Common causes include:
+  - Assigning an incompatible pointer type
+  - Passing wrong type to function parameter
+  - Returning wrong type from function
+  - Array and pointer confusion
+  - Integer to pointer conversions without proper casting
+  - Floating point to integer assignments (may be implicit but warned)
+
+fix: |
+  1. Use explicit type casting: (type)value or static_cast<type>(value) in C++
+  2. Change the variable to the correct type
+  3. Change the function parameter or return type
+  4. Use proper pointer conversions: use (void*) or appropriate pointer type casting
+  5. Use memcpy for copying between incompatible types safely
+  6. Enable and check compiler warnings with -Wall -Wextra
+
+example_error: |
+  error: incompatible types when assigning to type 'int *' from type 'double *'
+
+example_code: |
+  #include <stdio.h>
+
+  int main() {
+      double d = 3.14;
+      int *p = &d;  // Error: type mismatch
+      return 0;
+  }
+
+links:
+  - https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#Type-Checking
+  - https://en.cppreference.com/w/c/language/conversion

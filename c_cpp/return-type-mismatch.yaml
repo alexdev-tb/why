@@ -1,0 +1,35 @@
+id: return-type-mismatch
+tool: gcc/clang
+language: c_cpp
+title: Control reaches end of non-void function
+tags: [functions, return, types, warnings]
+patterns:
+  - ["control reaches end of non-void function"]
+
+explain: |
+  A function declared to return a value does not have a return statement on all code paths. This means the function could exit without returning anything, leading to undefined behavior when the caller uses the return value. Common causes include:
+  - Missing return statement at the end of a function
+  - Conditional branches where some paths return a value and others do not
+  - Forgetting to return a value after error handling
+  - The function should be void but was declared with a return type
+
+fix: |
+  1. Add a return statement at the end of the function
+  2. Ensure every code path (including else branches) returns a value
+  3. If the function should not return a value, change its return type to void
+  4. Compile with -Wall -Werror to treat this warning as an error
+  5. Add a default return value after switch statements or if-else chains
+
+example_error: |
+  warning: control reaches end of non-void function [-Wreturn-type]
+
+example_code: |
+  int max(int a, int b) {
+      if (a > b) {
+          return a;
+      }
+      // Error: no return if a <= b
+  }
+
+links:
+  - https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wreturn-type

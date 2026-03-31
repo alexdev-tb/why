@@ -1,0 +1,36 @@
+id: E0716
+tool: rustc
+language: rust
+title: Temporary value dropped while still borrowed
+tags: [lifetimes, temporaries, borrowing, references]
+
+explain: |
+  You created a temporary value, took a reference to it, and then the temporary
+  was dropped at the end of the statement — but you tried to keep using the
+  reference after that. Because the value it points to no longer exists, Rust
+  refuses to compile this to prevent a dangling reference.
+
+fix: |
+  Bind the temporary value to a named variable so it lives long enough for your
+  reference to remain valid. For example, instead of
+  `let r = some_fn().field;` where `some_fn()` is a temporary, write
+  `let owned = some_fn(); let r = &owned.field;`.
+
+example_error: |
+  error[E0716]: temporary value does not live long enough
+   --> src/main.rs:3:14
+    |
+  3 |     let r = &String::from("hello");
+    |              ^^^^^^^^^^^^^^^^^^^^^ creates a temporary value which is freed
+    |                                    while still in use
+  4 |     println!("{}", r);
+    |                    - borrow later used here
+
+example_code: |
+  fn main() {
+      let r = &String::from("hello"); // Error: temporary dropped immediately
+      println!("{}", r);
+  }
+
+links:
+  - https://doc.rust-lang.org/error_codes/E0716.html
